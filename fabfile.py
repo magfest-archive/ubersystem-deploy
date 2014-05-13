@@ -6,6 +6,7 @@ def apply():
     sudo('puppet apply --modulepath /usr/local/puppet/modules /usr/local/puppet/manifests/site.pp')
 
 def setup_client():
+    sudo('hostname staging.magfest.net') # TODO dont hardcode
     sudo('apt-get update')
     sudo('apt-get install puppet')
     sudo('mkdir -p /usr/local/puppet')

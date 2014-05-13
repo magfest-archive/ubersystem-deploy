@@ -3,4 +3,4 @@
 # TODO: make this take arguments
 
 # apply config settings to remote host
-fab -H staging.magfest.net apply
+fab -u root -H staging.magfest.net apply

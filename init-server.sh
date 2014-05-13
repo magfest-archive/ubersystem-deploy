@@ -6,4 +6,4 @@
 # which can then be used to do stuff. only run this script once, and once
 # it's successful, use apply instead
 
-fab -H staging.magfest.net setup_client apply
+fab -u root -H staging.magfest.net setup_client apply
