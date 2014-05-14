@@ -12,9 +12,9 @@ class uber-db {
 }
 
 class postgres::install{
-  package { 'postgresql':
-    ensure => present
-  }
+  package { 'postgresql':  ensure        => present }
+  package { 'postgresql-contrib': ensure => present }
+  package { 'libpq-dev': ensure          => present }
 }
 
 class postgres::config{
