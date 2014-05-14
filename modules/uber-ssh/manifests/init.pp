@@ -1,4 +1,4 @@
-class ssh {
+class uber-ssh {
       include ssh::install, ssh::config, ssh::service
 }
 
@@ -14,7 +14,7 @@ class ssh::config {
     owner  => 'root',
     group  => 'root',
     mode   => 600,
-    source => "puppet:///modules/ssh/sshd_config",
+    source => "puppet:///modules/uber-ssh/sshd_config",
     notify => Class["ssh::service"],
   }
 }

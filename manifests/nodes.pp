@@ -1,5 +1,6 @@
 node default {
-  include users 
-  include ssh
-  include postgres
+  include uber-firewall
+  include uber-users 
+  include uber-ssh
+  include uber-db
 }

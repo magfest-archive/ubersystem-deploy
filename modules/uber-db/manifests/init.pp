@@ -7,7 +7,7 @@ class { 'postgresql::server':
   #postgres_password => 'TPSrep0r234t!',
 }
 
-class postgres {
+class uber-db {
   include postgresql::server, postgres::install, postgres::config
 }
 
