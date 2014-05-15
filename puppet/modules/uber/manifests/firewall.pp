@@ -1,8 +1,8 @@
-class uber-firewall {
+class uber::firewall {
   include ufw
 
   ufw::allow { "allow-ssh-from-all":
-      port => 22,
+    port => 22,
   }
 
   ufw::allow { "http":
