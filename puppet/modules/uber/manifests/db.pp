@@ -31,7 +31,7 @@ class uber::db (
   class { 'postgresql::server':
     ip_mask_deny_postgres_user => '0.0.0.0/32',
     ip_mask_allow_all_users    => '0.0.0.0/0',
-    listen_addresses           => '127.0.0.1',
+    listen_addresses           => 'localhost', # it doesn't like 127.0.0.1 for some reason
     #ipv4acls                  => ['hostssl all johndoe1 192.168.0.0/24 cert'],
     manage_firewall            => true,
     #postgres_password         => 'TPSrep0r234t!',
