@@ -10,11 +10,10 @@ class uber::python (
   $python_ver = '3',
   $venv_path = '/usr/local/uber/env',
   $venv_bin = '/usr/local/uber/bin',
-  $checkout_path = $uber_path,
 ) {
 
-  class { 'python':
-    ensure     => present,
+  class { '::python':
+    # ensure     => present,
     version    => $python_ver,
     dev        => true,
     pip        => true,
@@ -23,12 +22,12 @@ class uber::python (
   }
 
   package { "git": ensure => present }
-  package { "python3-dev": ensure => present }
+  # package { "python3-dev": ensure => present }
   #package { "python3-pip": ensure => present } # dont think we need it
   #package { "python-pip": ensure => present }  # dont think we need it
   # TODO UTF stuff in Eli's Vagrant script
 
-  vcsrepo { $checkout_path:
+  vcsrepo { $uber_path:
     ensure   => latest,
     owner    => $uber_user,
     group    => $uber_group,
