@@ -1,9 +1,9 @@
-# Class uber-db
+# Class uber::db
 #
 # Document the class here
 #
 # No newline after comment
-class uber-db (
+class uber::db (
   $user = 'default_user',
   $pass = 'default_pass',
 ) {

@@ -1,12 +1,12 @@
-class uber-users
+class uber::users
 {
   # users in this group can sudo
-  group { "admin":
+  group { 'admin':
     ensure  => present
   }
 
   # users in this group can edit app files
-  group { "apps":
+  group { 'apps':
     ensure  => present
   }
 
