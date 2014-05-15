@@ -4,6 +4,10 @@
 # TODO: probably rename this file from python to ubersystem
 # or, move the ubersystem-specific stuff out of here.
 
+# TODO: dont hardcode venv path, can we assign it inside the class itself
+
+# TODO: hostname as a paramater
+
 class uber::python (
   # modify this if you want.
   $uber_path = '/usr/local/uber',
@@ -12,11 +16,19 @@ class uber::python (
   $uber_user = 'uber',
   $uber_group = 'apps',
 
-  # probably no need to modify any of this
-  $python_ver = '3',
-  $venv_path = '/usr/local/uber/env',
-  $venv_bin = '/usr/local/uber/bin',
+  $db_host = 'localhost',
+  $db_user = 'm13',
+  $db_pass = 'm13',
+  $db_name = 'm13',
+
+  $socket_port = '4321',
+  $socket_hostname = '0.0.0.0',
+  $ubersystem_url_prefix = '/magfest',
 ) {
+
+  $python_ver = '3'
+  $venv_path = "${uber_path}/env"
+  $venv_bin = "${uber_path}/bin"
 
   class { '::python':
     # ensure     => present,
@@ -27,11 +39,8 @@ class uber::python (
     gunicorn   => false,
   }
 
+  # TODO install UTF lcoale stuff from Eli's Vagrant script
   package { "git": ensure => present }
-  # package { "python3-dev": ensure => present }
-  #package { "python3-pip": ensure => present } # dont think we need it
-  #package { "python-pip": ensure => present }  # dont think we need it
-  # TODO UTF stuff in Eli's Vagrant script
 
   vcsrepo { $uber_path:
     ensure   => latest,
@@ -63,6 +72,14 @@ class uber::python (
     command     => "${venv_bin}/python distribute_setup.py",
     cwd         => "${uber_path}",
     refreshonly => true,
+    notify      => File["${uber_path}/production.conf"],
+  }
+
+  file { "${uber_path}/production.conf":
+    # TODO: add some stuff in here for db name/etc
+    ensure => present,
+    mode   => 660,
+    content => template('uber/production.conf.erb'),
     notify      => Exec['uber_setup'],
   }
 
@@ -73,6 +90,7 @@ class uber::python (
     notify      => Exec['uber_init_db'],
   }
 
+  # TODO: dont always do this
   exec { 'uber_init_db' :
     command     => "${venv_bin}/python uber/init_db.py",
     cwd         => "${uber_path}",

@@ -1,0 +1,22 @@
+# magfest ubersystem config file
+
+# this info is used by cherrypy to start its own internal webserver
+path = "<%= @ubersystem_url_prefix %>"
+hostname = "<%= @socket_host %>"
+
+# url_root is used to generate public clickable links (example: in emails)
+# if you are behind a proxy like apache, pick this carefully.
+url_root = "http://<%= @socket_host %>/<%= @ubersystem_url_prefix %>"
+
+[cherrypy]
+path = "<%= @ubersystem_url_prefix %>"  # work around a bug that makes us put this here.
+server.socket_host = <%= @socket_host %>
+server.socket_port = <%= @socket_port %>
+
+[django]
+[[DATABASES]]
+[[[default]]]
+HOST = "<%= @db_host %>"
+NAME = "<%= @db_name %>"
+USER = "<%= @db_user %>"
+PASSWORD = "<%= @db_pass %>"
