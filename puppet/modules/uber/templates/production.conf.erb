@@ -2,11 +2,12 @@
 
 # this info is used by cherrypy to start its own internal webserver
 path = "<%= @ubersystem_url_prefix %>"
-hostname = "<%= @socket_host %>"
+hostname = "<%= @hostname_to_use %>"
 
 # url_root is used to generate public clickable links (example: in emails)
 # if you are behind a proxy like apache, pick this carefully.
-url_root = "http://<%= @socket_host %>/<%= @ubersystem_url_prefix %>"
+# url_root = "http://<%= @hostname_to_use %>:<%= @socket_port %>/<%= @ubersystem_url_prefix %>"
+url_root = "<%= @url_root %>"
 
 [cherrypy]
 path = "<%= @ubersystem_url_prefix %>"  # work around a bug that makes us put this here.
