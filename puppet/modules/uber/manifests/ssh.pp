@@ -1,6 +1,6 @@
 class uber::ssh {
   package { 'ssh':
-        ensure => present,
+    ensure => present,
   }
 
   file { '/etc/ssh/sshd_config':
@@ -9,14 +9,14 @@ class uber::ssh {
     group  => 'root',
     mode   => 600,
     source => 'puppet:///modules/uber/sshd_config',
-    notify => Class['ssh::service'],
+    notify => Service['ssh'],
   }
 
   service { 'ssh':
-      ensure     => running,
-      hasstatus  => true,
-      hasrestart => true,
-      enable     => true,
-      require    => File['/etc/ssh/sshd_config'],
+    ensure     => running,
+    hasstatus  => true,
+    hasrestart => true,
+    enable     => true,
+    require    => File['/etc/ssh/sshd_config'],
   }
 }

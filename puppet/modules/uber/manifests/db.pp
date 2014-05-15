@@ -6,6 +6,7 @@
 class uber::db (
   $user = 'default_user',
   $pass = 'default_pass',
+  $dbname = 'default_dbname',
 ) {
 
   package { 'postgresql':
@@ -18,7 +19,7 @@ class uber::db (
     ensure => present,
   }
 
-  postgresql::server::db { 'm13':
+  postgresql::server::db { $dbname:
     user     => $user,
     password => postgresql_password($user, $pass),
     require  => [
@@ -35,6 +36,5 @@ class uber::db (
     #ipv4acls                  => ['hostssl all johndoe1 192.168.0.0/24 cert'],
     manage_firewall            => true,
     #postgres_password         => 'TPSrep0r234t!',
-    require                    => Postgresql::Server::Db['m13'],
   }
 }
