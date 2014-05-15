@@ -1,3 +1,9 @@
+# TODO: add in database user/password/dbname and write the 
+# production.conf file for ubersystem
+
+# TODO: probably rename this file from python to ubersystem
+# or, move the ubersystem-specific stuff out of here.
+
 class uber::python (
   # modify this if you want.
   $uber_path = '/usr/local/uber',
