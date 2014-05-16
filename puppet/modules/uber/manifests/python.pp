@@ -32,8 +32,6 @@ class uber::python (
     default => $hostname,
   }
 
-  $url_root = "http://${hostname_to_use}:${socket_port}/${ubersystem_url_prefix}"
-
   $python_cmd = $python_ver ? {
     '2'     => 'python2',
     '3'     => 'python3',
@@ -43,6 +41,9 @@ class uber::python (
   $venv_path = "${uber_path}/env"
   $venv_bin = "${venv_path}/bin"
   $venv_python = "${venv_bin}/python"
+
+  # TODO: would be awesome to not have to hardcode this 'python 3.4' in there
+  $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
   class { '::python':
     # ensure   => present,
@@ -78,27 +79,25 @@ class uber::python (
 
   # seems puppet's virtualenv support is broken for python3, so roll our own
   exec { 'uber_virtualenv':
-    command     => "${python_cmd} -m venv ${venv_path} --without-pip",
-    cwd         => $uber_path,
-    path        => '/usr/bin',
-    creates     => $venv_python,
-    notify      => Exec['uber_distribute_setup'],
+    command => "${python_cmd} -m venv ${venv_path} --without-pip",
+    cwd     => $uber_path,
+    path    => '/usr/bin',
+    creates => "${venv_path}",
+    notify  => Exec['uber_distribute_setup'],
   }
 
   exec { 'uber_distribute_setup' :
-    command     => "${venv_python} distribute_setup.py",
-    cwd         => "${uber_path}",
-    refreshonly => true,
-    creates     => "${uber_path}/env/lib/python3.4/site-packages/setuptools.pth",
-    notify      => Exec['uber_setup'],
+    command => "${venv_python} distribute_setup.py",
+    cwd     => "${uber_path}",
+    creates => "${venv_site_pkgs_path}/setuptools.pth",
+    notify  => Exec['uber_setup'],
   }
 
   exec { 'uber_setup' :
-    command     => "${venv_python} setup.py develop",
-    cwd         => "${uber_path}",
-    creates     => "${uber_path}/env/lib/python3.4/site-packages/uber.egg-link",
-    refreshonly => true,
-    notify      => Exec['uber_init_db'],
+    command => "${venv_python} setup.py develop",
+    cwd     => "${uber_path}",
+    creates => "${venv_site_pkgs_path}/uber.egg-link",
+    notify  => Exec['uber_init_db'],
   }
 
   exec { 'uber_init_db' :
