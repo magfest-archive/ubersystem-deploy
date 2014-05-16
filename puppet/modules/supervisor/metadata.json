@@ -1,0 +1,26 @@
+{
+  "license": "Apache License, Version 2.0",
+  "checksums": {
+    "Modulefile": "493eccd608ed1211235d9e5d74b92ba9",
+    "files/RedHat.supervisord": "939e49b6548ea48b0774162678e10c75",
+    "manifests/init.pp": "de82a16e1de3af453f925b7bdcc48f60",
+    "templates/supervisord.conf.erb": "c0e834b0b82451eaff982e32392f6448",
+    "README.md": "08981265f178c392eb935badf2874a3b",
+    "files/Debian.supervisord": "419351a9b299b8146ed7cd11ae07d4ee",
+    "manifests/program.pp": "bfb37714563675f07a8a49d7e3cfe9d6",
+    "templates/program.conf.erb": "e7cbef077d6795f85cde45d9f296ff2f"
+  },
+  "source": "UNKNOWN",
+  "summary": "supervisor v3.0 installation CentOS/AWS Linux/Debian/Ubuntu",
+  "project_page": "https://github.com/proletaryo/puppet-supervisor",
+  "name": "proletaryo-supervisor",
+  "version": "0.4.0",
+  "types": [
+
+  ],
+  "description": "supervisor (v3.0) installation & management module for CentOS/AWS Linux/Debian/Ubuntu",
+  "author": "proletaryo",
+  "dependencies": [
+
+  ]
+}
