@@ -3,6 +3,8 @@
 
 # TODO: hostname as a paramater
 
+# TODO: dependency chain in here is slightly busted.
+
 class uber::python (
   # modify this if you want.
   $uber_path = '/usr/local/uber',
@@ -25,29 +27,6 @@ class uber::python (
 
   $python_ver = '3'
 
-  class { '::python':
-    # ensure     => present,
-    version    => $python_ver,
-    dev        => true,
-    pip        => true,
-    virtualenv => true,
-    gunicorn   => false,
-  }
-
-  # TODO install UTF lcoale stuff from Eli's Vagrant script
-  package { "git": ensure => present }
-
-  vcsrepo { $uber_path:
-    ensure   => latest,
-    owner    => $uber_user,
-    group    => $uber_group,
-    provider => git,
-    source   => $ubersystem_git_repo,
-    revision => $ubersystem_git_branch,
-    require  => Package['git'],
-    notify   => Exec['uber_virtualenv'],
-  }
-
   $hostname_to_use = $hostname ? {
     ''      => $fqdn,
     default => $hostname,
@@ -63,14 +42,45 @@ class uber::python (
 
   $venv_path = "${uber_path}/env"
   $venv_bin = "${venv_path}/bin"
-  $venv_python = "${venv_path}/python"
+  $venv_python = "${venv_bin}/python"
+
+  class { '::python':
+    # ensure   => present,
+    version    => $python_ver,
+    dev        => true,
+    pip        => true,
+    virtualenv => true,
+    gunicorn   => false,
+    notify     => Vcsrepo[$uber_path],
+  }
+
+  # TODO install UTF lcoale stuff from Eli's Vagrant script
+  package { "git": ensure => present }
+
+  vcsrepo { $uber_path:
+    ensure   => latest,
+    owner    => $uber_user,
+    group    => $uber_group,
+    provider => git,
+    source   => $ubersystem_git_repo,
+    revision => $ubersystem_git_branch,
+    require  => Package['git'],
+    notify   => File['production.conf'],
+  }
+
+  file { 'production.conf':
+    path    => "${uber_path}/production.conf",
+    ensure  => present,
+    mode    => 660,
+    content => template('uber/production.conf.erb'),
+    notify  => Exec['uber_virtualenv']
+  }
 
   # seems puppet's virtualenv support is broken for python3, so roll our own
   exec { 'uber_virtualenv':
     command     => "${python_cmd} -m venv ${venv_path} --without-pip",
     cwd         => $uber_path,
     path        => '/usr/bin',
-    refreshonly => true,
     creates     => $venv_python,
     notify      => Exec['uber_distribute_setup'],
   }
@@ -79,26 +89,18 @@ class uber::python (
     command     => "${venv_python} distribute_setup.py",
     cwd         => "${uber_path}",
     refreshonly => true,
-    notify      => File["${uber_path}/production.conf"],
-  }
-
-  file { "${uber_path}/production.conf":
-    # TODO: add some stuff in here for db name/etc
-    ensure => present,
-    mode   => 660,
-    content => template('uber/production.conf.erb'),
+    creates     => "${uber_path}/env/lib/python3.4/site-packages/setuptools.pth",
     notify      => Exec['uber_setup'],
   }
 
   exec { 'uber_setup' :
     command     => "${venv_python} setup.py develop",
     cwd         => "${uber_path}",
+    creates     => "${uber_path}/env/lib/python3.4/site-packages/uber.egg-link",
     refreshonly => true,
-    creates     => "${venv_path}/lib/python3.4/site-packages/CherryPy-3.2.4-py3.4.egg/",
     notify      => Exec['uber_init_db'],
   }
 
-  # TODO: dont always do this
   exec { 'uber_init_db' :
     command     => "${venv_python} uber/init_db.py",
     cwd         => "${uber_path}",
