@@ -1,10 +1,7 @@
 # TODO: probably rename this file from python to ubersystem
 # or, move the ubersystem-specific stuff out of here.
 
-# TODO: hostname as a paramater
-
-# TODO: dependency chain in here is slightly busted.
-
+# TODO: dependency chain in here is maybe slightly busted.
 
 class uber::python (
   $uber_path = '/usr/local/uber',
@@ -25,30 +22,6 @@ class uber::python (
 
   $service_name = 'uber',
 ) {
-
-  # TODO: move to its own file
-  #include supervisor
-  define uber_daemon (
-    $user = 'uber',
-    $group = 'uber',
-    $ensure = present,
-    $python_cmd = undef,
-    $uber_path = undef,
-    $service_name = undef
-  ) {
-    supervisor::program { $service_name :
-      ensure        => $ensure,
-      enable        => true,
-      command       => "${python_cmd} uber/run_server.py",
-      directory     => $uber_path,
-      # environment => 'NODE_ENV=testing',
-      user          => $user,
-      group         => $group,
-      logdir_mode   => '0770',
-    }
-  }
-
-
   $python_ver = '3'
 
   $hostname_to_use = $hostname ? {
@@ -69,11 +42,9 @@ class uber::python (
   # TODO: would be awesome to not have to hardcode this 'python 3.4' in there
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
-  /*exec { "stop_${service_name}" :
-    command     => "supervisorctl stop ${service_name}",
-    cwd         => 
-    refreshonly => true,
-    subscribe   => Vcsrepo['$uber_path'],
+  /*service { "supervisor::${service_name}" :
+    ensure    => "stopped",
+    subscribe => Vcsrepo['$uber_path'], # TODO: more/better stuff.
   }*/
 
   class { '::python':
@@ -135,11 +106,11 @@ class uber::python (
     command     => "${venv_python} uber/init_db.py",
     cwd         => "${uber_path}",
     refreshonly => true,
-    notify      => Supervisor::Program[$service_name]
+    notify      => Uber::Daemon["${service_name}_daemon_start"],
   }
 
   # run as a daemon with supervisor
-  uber_daemon { "${service_name}_daemon_start" : 
+  uber::daemon { "${service_name}_daemon_start" : 
     user         => $uber_user,
     group        => $uber_group,
     python_cmd   => $venv_python,
@@ -147,5 +118,4 @@ class uber::python (
     service_name => $service_name,
     subscribe    => Exec['uber_init_db'],
   }
-
 }
