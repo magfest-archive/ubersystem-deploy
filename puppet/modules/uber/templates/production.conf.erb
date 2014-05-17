@@ -1,7 +1,7 @@
 # magfest ubersystem config file
 
 # this info is used by cherrypy to start its own internal webserver
-path = "/<%= @ubersystem_url_prefix %>"
+path = "/<%= @url_prefix %>"
 hostname = "<%= @hostname_to_use %>"
 
 # url_root is used to generate public clickable links (example: in emails)
@@ -10,7 +10,7 @@ hostname = "<%= @hostname_to_use %>"
 url_root = "http://<%= @hostname_to_use %>:<%= @socket_port %>"
 
 [cherrypy]
-path = "/<%= @ubersystem_url_prefix %>"  # work around a bug that makes us put this here.
+path = "/<%= @url_prefix %>"  # work around a bug that makes us put this here.
 server.socket_host = <%= @socket_host %>
 server.socket_port = <%= @socket_port %>
 

@@ -5,11 +5,11 @@
 
 # TODO: dependency chain in here is slightly busted.
 
+
 class uber::python (
-  # modify this if you want.
   $uber_path = '/usr/local/uber',
-  $ubersystem_git_repo = 'https://github.com/EliAndrewC/magfest',
-  $ubersystem_git_branch = 'master',
+  $git_repo = 'https://github.com/EliAndrewC/magfest',
+  $git_branch = 'master',
   $uber_user = 'uber',
   $uber_group = 'apps',
 
@@ -21,9 +21,33 @@ class uber::python (
   $socket_port = '4321',
   $socket_host = '0.0.0.0',
   $hostname = '', # defaults to hostname of the box
-  $ubersystem_url_prefix = '/magfest',
+  $url_prefix = 'magfest',
 
+  $service_name = 'uber',
 ) {
+
+  # TODO: move to its own file
+  #include supervisor
+  define uber_daemon (
+    $user = 'uber',
+    $group = 'uber',
+    $ensure = present,
+    $python_cmd = undef,
+    $uber_path = undef,
+    $service_name = undef
+  ) {
+    supervisor::program { $service_name :
+      ensure        => $ensure,
+      enable        => true,
+      command       => "${python_cmd} uber/run_server.py",
+      directory     => $uber_path,
+      # environment => 'NODE_ENV=testing',
+      user          => $user,
+      group         => $group,
+      logdir_mode   => '0770',
+    }
+  }
+
 
   $python_ver = '3'
 
@@ -45,6 +69,13 @@ class uber::python (
   # TODO: would be awesome to not have to hardcode this 'python 3.4' in there
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
+  /*exec { "stop_${service_name}" :
+    command     => "supervisorctl stop ${service_name}",
+    cwd         => 
+    refreshonly => true,
+    subscribe   => Vcsrepo['$uber_path'],
+  }*/
+
   class { '::python':
     # ensure   => present,
     version    => $python_ver,
@@ -63,8 +94,8 @@ class uber::python (
     owner    => $uber_user,
     group    => $uber_group,
     provider => git,
-    source   => $ubersystem_git_repo,
-    revision => $ubersystem_git_branch,
+    source   => $git_repo,
+    revision => $git_branch,
     require  => Package['git'],
     notify   => File['production.conf'],
   }
@@ -104,6 +135,17 @@ class uber::python (
     command     => "${venv_python} uber/init_db.py",
     cwd         => "${uber_path}",
     refreshonly => true,
+    notify      => Supervisor::Program[$service_name]
+  }
+
+  # run as a daemon with supervisor
+  uber_daemon { "${service_name}_daemon_start" : 
+    user         => $uber_user,
+    group        => $uber_group,
+    python_cmd   => $venv_python,
+    uber_path    => $uber_path,
+    service_name => $service_name,
+    subscribe    => Exec['uber_init_db'],
   }
 
 }
