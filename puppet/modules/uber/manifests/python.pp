@@ -54,11 +54,17 @@ class uber::python (
     pip        => true,
     virtualenv => true,
     gunicorn   => false,
-    notify     => Vcsrepo[$uber_path],
+    notify     => Exec["stop_${service_name}"],
   }
 
   # TODO install UTF lcoale stuff from Eli's Vagrant script
   package { "git": ensure => present }
+
+  exec { "stop_${service_name}" :
+    command     => "/usr/local/bin/supervisorctl stop ${service_name}",
+    notify   => [ Vcsrepo[$uber_path], 
+                  Uber::Daemon["${service_name}_daemon_start"] ]
+  }
 
   vcsrepo { $uber_path:
     ensure   => latest,
