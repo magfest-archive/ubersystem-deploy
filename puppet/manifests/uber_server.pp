@@ -1,10 +1,11 @@
 import 'firewall.pp'
+import 'ssh.pp'
 
 class uber_server {
   include firewall_webserver
   include firewall_sshserver
 
-  notify { 'sup': }
+  include ssh
 
   package { 'postgresql':
     ensure => present,
@@ -16,7 +17,6 @@ class uber_server {
     ensure => present,
   }
 
-  include postgresql
   class { 'postgresql::server':
     ip_mask_deny_postgres_user => '0.0.0.0/32',
     ip_mask_allow_all_users    => '0.0.0.0/0',
