@@ -1,40 +1,19 @@
-class uber::install 
-(
-  $db_user = $uber::globals::db_user,
-/*  $db_pass,
-  $db_name,
-  $uber_path,
-  $git_repo,
-  $git_branch,
-  $url_prefix,
-  $socket_port,
-  $uber_user,
-  $uber_group,*/
-) inherits uber::globals {
+class uber::install {
 
-  notify {"STUFF: ${db_user}": }
+  # TODO install UTF lcoale stuff from Eli's Vagrant script
 
-  /*(uber::user_group { "users and groups ${name}":
-    uber_user  => $uber_user,
-    uber_group => $uber_group,
-  }*/
-
-  /*uber::db { "ubersystem database ${name}":
-    user   => $db_user,
-    pass   => $db_pass,
-    dbname => $db_name,
+  package { "git": 
+    ensure => present 
+  }
+  package { 'postgresql':
+    ensure => present,
+  }
+  package { 'postgresql-contrib':
+    ensure => present,
+  }
+  package { 'libpq-dev':
+    ensure => present,
   }
 
-  uber::python { "ubersystem setup ${name}":
-    db_user      => $db_user,
-    db_pass      => $db_pass,
-    db_name      => $db_name,
-    uber_path    => $uber_path,
-    git_repo     => $git_repo,
-    git_branch   => $git_branch,
-    url_prefix   => $url_prefix,
-    socket_port  => $socket_port,
-    uber_user    => $uber_user,
-    uber_group   => $uber_group,
-  }*/
+  class {'uber::python': } -> Class['uber::install']
 }

@@ -1,17 +1,22 @@
-class uber::user_group(
-  $uber_user,
-  $uber_group, 
+define uber::user_group(
+  $user,
+  $group, 
 ){
-  group { $uber_group:
-    ensure => present,
+
+  if ! defined(Group[$group]) {
+    group { $group:
+     ensure => present,
+   }
   }
 
-  user { $uber_user:
-    ensure     => 'present',
-    groups     => [$uber_group],
-    home       => "/home/${uber_user}",
-    managehome => true,
-    shell      => '/bin/bash',
-    require    => Group[$uber_group],
+  if ! defined(User[$user]) {
+    user { $user:
+     ensure     => 'present',
+     groups     => [$group],
+     home       => "/home/${user}",
+     managehome => true,
+     shell      => '/bin/bash',
+     require    => Group[$group],
+   }
   }
 }
