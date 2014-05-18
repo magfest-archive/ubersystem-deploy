@@ -7,6 +7,9 @@ define uber::instance (
   $git_branch  = 'master',
   $url_prefix  = 'magfest',
   $socket_port = '4321',
+  $uber_user = 'uber',
+  $uber_group = 'apps',
+  $service_name = 'uber',
 )
 {
   class { 'uber::db':
@@ -16,13 +19,16 @@ define uber::instance (
   }
 
   class { 'uber::python':
-    db_user     => $db_user,
-    db_pass     => $db_pass,
-    db_name     => $db_name,
-    uber_path   => $uber_path,
-    git_repo    => $git_repo,
-    git_branch  => $git_branch,
-    url_prefix  => $url_prefix,
-    socket_port => $socket_port,
+    db_user      => $db_user,
+    db_pass      => $db_pass,
+    db_name      => $db_name,
+    uber_path    => $uber_path,
+    git_repo     => $git_repo,
+    git_branch   => $git_branch,
+    url_prefix   => $url_prefix,
+    socket_port  => $socket_port,
+    uber_user    => $uber_user,
+    uber_group   => $uber_group,
+    service_name => $service_name,
   }
 }
