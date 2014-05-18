@@ -5,6 +5,7 @@ class uber_server {
   include firewall_webserver
   include firewall_sshserver
   include ssh
+  include uber
 
   package { 'postgresql':
     ensure => present,

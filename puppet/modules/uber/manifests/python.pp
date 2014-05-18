@@ -3,7 +3,7 @@
 
 # TODO: dependency chain in here is maybe slightly busted.
 
-define uber::python (
+class uber::python (
   $uber_path = '/usr/local/uber',
   $git_repo = 'https://github.com/EliAndrewC/magfest',
   $git_branch = 'master',
@@ -19,8 +19,6 @@ define uber::python (
   $socket_host = '0.0.0.0',
   $hostname = '', # defaults to hostname of the box
   $url_prefix = 'magfest',
-
-  $service_name = 'uber',
 ) {
   $python_ver = '3'
 
@@ -42,7 +40,7 @@ define uber::python (
   # TODO: would be awesome to not have to hardcode this 'python 3.4' in there
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
-  /*service { "supervisor::${service_name}" :
+  /*service { "supervisor::${name}" :
     ensure    => "stopped",
     subscribe => Vcsrepo['$uber_path'], # TODO: more/better stuff.
   }*/
@@ -54,16 +52,16 @@ define uber::python (
     pip        => true,
     virtualenv => true,
     gunicorn   => false,
-    notify     => Exec["stop_${service_name}"],
+    notify     => Exec["stop_${name}"],
   }
 
   # TODO install UTF lcoale stuff from Eli's Vagrant script
   package { "git": ensure => present }
 
-  exec { "stop_${service_name}" :
-    command     => "/usr/local/bin/supervisorctl stop ${service_name}",
+  exec { "stop_${name}" :
+    command     => "/usr/local/bin/supervisorctl stop ${name}",
     notify   => [ Vcsrepo[$uber_path], 
-                  Uber::Daemon["${service_name}_daemon_start"] ]
+                  Uber::Daemon["${name}_daemon_start"] ]
   }
 
   vcsrepo { $uber_path:
@@ -112,16 +110,15 @@ define uber::python (
     command     => "${venv_python} uber/init_db.py",
     cwd         => "${uber_path}",
     refreshonly => true,
-    notify      => Uber::Daemon["${service_name}_daemon_start"],
+    notify      => Uber::Daemon["${name}_daemon_start"],
   }
 
   # run as a daemon with supervisor
-  uber::daemon { "${service_name}_daemon_start" : 
+  uber::daemon { "${name}_daemon_start" : 
     user         => $uber_user,
     group        => $uber_group,
     python_cmd   => $venv_python,
     uber_path    => $uber_path,
-    service_name => $service_name,
     subscribe    => Exec['uber_init_db'],
   }
 }

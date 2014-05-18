@@ -1,3 +1,3 @@
-class uber {
-  notify { 'STUFF FROM CLASS UBER': }
+class uber inherits uber::globals {
+  class {'uber::install': } -> Class['uber']
 }

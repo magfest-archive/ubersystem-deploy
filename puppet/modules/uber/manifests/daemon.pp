@@ -4,9 +4,8 @@ define uber::daemon (
   $ensure = present,
   $python_cmd = undef,
   $uber_path = undef,
-  $service_name = undef
 ) {
-  supervisor::program { $service_name :
+  supervisor::program { $name :
     ensure        => $ensure,
     enable        => true,
     command       => "${python_cmd} uber/run_server.py",
