@@ -12,6 +12,18 @@ define uber::instance (
   $service_name = 'uber',
 )
 {
+  group { $uber_group:
+    ensure => present
+  }
+
+  user { $uber_user:
+    ensure     => 'present',
+    groups     => [$uber_group],
+    home       => "/home/${uber_user}",
+    managehome => true,
+    shell      => '/bin/bash',
+  }
+
   uber::db { 'ubersystem database':
     user   => $db_user,
     pass   => $db_pass,
