@@ -1,34 +1,3 @@
-define uber::instance (
-  $db_name     = 'm_uber',
-  $db_pass     = 'm_uber',
-  $db_user     = 'm_uber',
-  $uber_path   = '/usr/local/uber',
-  $git_repo    = 'https://github.com/EliAndrewC/magfest',
-  $git_branch  = 'master',
-  $url_prefix  = 'magfest',
-  $socket_port = '4321',
-  $uber_user = 'uber',
-  $uber_group = 'apps',
-  $service_name = 'uber',
-)
-{
-  class { 'uber::db':
-    user   => $db_user,
-    pass   => $db_pass,
-    dbname => $db_name,
-  }
-
-  class { 'uber::python':
-    db_user      => $db_user,
-    db_pass      => $db_pass,
-    db_name      => $db_name,
-    uber_path    => $uber_path,
-    git_repo     => $git_repo,
-    git_branch   => $git_branch,
-    url_prefix   => $url_prefix,
-    socket_port  => $socket_port,
-    uber_user    => $uber_user,
-    uber_group   => $uber_group,
-    service_name => $service_name,
-  }
+class uber {
+  notify { 'STUFF FROM CLASS UBER': }
 }

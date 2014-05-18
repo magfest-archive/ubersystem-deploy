@@ -3,7 +3,7 @@
 
 # TODO: dependency chain in here is maybe slightly busted.
 
-class uber::python (
+define uber::python (
   $uber_path = '/usr/local/uber',
   $git_repo = 'https://github.com/EliAndrewC/magfest',
   $git_branch = 'master',
