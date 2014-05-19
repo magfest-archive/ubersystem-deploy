@@ -1,8 +1,12 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
 
-def apply():
+
+def sync():
     rsync_project(remote_dir='/usr/local/puppet', local_dir='.', extra_opts='--delete')
+
+def apply():
+    execute(sync)
     sudo('puppet apply --modulepath /usr/local/puppet/modules /usr/local/puppet/manifests/site.pp')
 
 def setup_client():
