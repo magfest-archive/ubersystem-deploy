@@ -30,21 +30,24 @@ define uber::instance
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
   uber::user_group { "users and groups ${name}":
-    user  => $uber_user,
-    group => $uber_group,
+    user   => $uber_user,
+    group  => $uber_group,
+    before => Uber::Db["stop_daemon_${name}"],
   }
 
   uber::db { "ubersystem database ${name}":
-    user   => $db_user,
-    pass   => $db_pass,
-    dbname => $db_name,
+    user       => $db_user,
+    pass       => $db_pass,
+    dbname     => $db_name,
+    subscribe => Exec["uber_init_db_${name}"]
   }
 
   # Uber::Instance[$name] -> Class['uber::install']
 
   exec { "stop_daemon_${name}" :
     command     => "/usr/local/bin/supervisorctl stop ${name}",
-    notify   => [ Vcsrepo[$uber_path], 
+    notify   => [ Class['uber::install'],
+                  Vcsrepo[$uber_path], 
                   Uber::Daemon["${name}_daemon_start"] ]
   }
 

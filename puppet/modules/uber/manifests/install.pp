@@ -1,7 +1,6 @@
 class uber::install {
 
   # TODO install UTF lcoale stuff from Eli's Vagrant script
-
   package { "git": 
     ensure => present 
   }
@@ -15,5 +14,5 @@ class uber::install {
     ensure => present,
   }
 
-  class {'uber::python': } -> Class['uber::install']
+  class {'uber::python': }
 }
