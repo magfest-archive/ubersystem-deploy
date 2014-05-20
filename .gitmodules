@@ -1,0 +1,3 @@
+[submodule "puppet/hiera/nodes"]
+	path = puppet/hiera/nodes
+	url = /home/dom/sysadmin/config/

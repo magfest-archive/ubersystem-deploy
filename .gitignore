@@ -5,3 +5,4 @@ magbot/node_modules
 .DS_Store*
 *.swp
 puppet/q
+puppet/puppet.conf

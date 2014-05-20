@@ -2,7 +2,7 @@
 :backends:
         - yaml
 :yaml:
-        :datadir: '/usr/local/puppet/hiera'
+        :datadir: '/usr/local/puppet/hiera/nodes'
 :hierarchy:
-        - %{::fqdn}
+        - nodes/%{::fqdn}
         - common
