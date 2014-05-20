@@ -1,0 +1,12 @@
+---
+uber_instances: 
+        magfest_prime:
+                db_user:        'm13'
+                db_pass:        'm13'
+                db_name:        'm13'
+                uber_path:      '/usr/local/uber'
+                git_repo:       'https://github.com/EliAndrewC/magfest'
+                socket_port:    '4321'
+                git_branch:     'master'
+                url_prefix:     'magfest'
+                uber_user:      'uber'
