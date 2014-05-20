@@ -14,6 +14,17 @@ class uber_server {
     manage_firewall            => true,
   }
 
+  class { 'apache':
+    default_mods        => true,
+    default_confd_files => true,
+  }
+
+  apache::mod { 'expires': }
+  apache::mod { 'headers': }
+  apache::mod { 'rewrite': }
+  # libxml2-dev
+  # TODO: rewrite
+
   # users in this group can sudo
   group { 'admin':
     ensure => present

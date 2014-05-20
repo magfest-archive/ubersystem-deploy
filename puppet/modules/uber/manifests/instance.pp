@@ -16,7 +16,7 @@ define uber::instance
   $hostname = '', # defaults to hostname of the box
   $url_prefix = 'magfest',
 
-  $open_firewall_port = true,
+  $open_firewall_port = false, # if using apache, you dont want this.
 ) {
 
   $hostname_to_use = $hostname ? {
@@ -103,7 +103,7 @@ define uber::instance
     command => "/bin/chown -R ${uber_user}:${uber_group} ${uber_path}",
     notify  => Exec[ "setup_perms_$name" ],
   }
- 
+
   # setup permissions
   $mode = 'o-rwx,g-w,u+rw'
   exec { "setup_perms_$name":
@@ -112,17 +112,61 @@ define uber::instance
   }   
 
   # run as a daemon with supervisor
-  uber::daemon { "${name}_daemon_start" : 
-   user       => $uber_user,
-   group      => $uber_group,
-   python_cmd => $venv_python,
-   uber_path  => $uber_path,
-   notify     => Ufw::Allow["firewall_${name}"],
+  uber::daemon { "${name}_daemon_start": 
+    user       => $uber_user,
+    group      => $uber_group,
+    python_cmd => $venv_python,
+    uber_path  => $uber_path,
+    notify     => Uber::Firewall["${name}_firewall"],
   }
 
+  uber::firewall { "${name}_firewall":
+    socket_port        => $socket_port,
+    open_firewall_port => $open_firewall_port,
+    notify             => Uber::Apache["${name}_apache"],
+  }
+
+  uber::apache { "${name}_apache":
+    hostname   => $hostname_to_use,
+    proxy_url  => "http://127.0.0.1:${socket_port}/${url_prefix}",
+    url_prefix => $url_prefix,
+  }
+}
+
+define uber::apache (
+  $hostname,
+  $proxy_url,
+  $url_prefix,
+) {
+  apache::vhost { "$hostname non-ssl":
+    servername => $hostname,
+    port       => '80',
+    docroot    => '/var/www/',
+    proxy_pass =>
+    [
+      { 'path' => $url_prefix, 'url' => $proxy_url },
+    ],
+  }
+  apache::vhost { "$hostname ssl":
+    servername => $hostname,
+    ssl        => true,
+    port       => '443',
+    docroot    => '/var/www/',
+    proxy_pass =>
+    [
+      { 'path' => $url_prefix, 'url' => $proxy_url },
+    ],
+  }
+
+}
+
+define uber::firewall (
+  $socket_port,
+  $open_firewall_port = false,
+) {
   if $open_firewall_port {
-    ufw::allow { "firewall_${name}": 
-      port => $socket_port,
-    }
+    ufw::allow { $title:
+     port => $socket_port,
+   }
   }
 }
