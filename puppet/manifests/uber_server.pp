@@ -18,4 +18,9 @@ class uber_server {
   group { 'admin':
     ensure => present
   }
+
+  # look up info for what ubersystems we should create (if any)
+  # in our hiera/nodes/{hostname}.yaml file
+  $ubersystem_instances = hiera('uber_instances', {})
+  create_resources('uber::instance', $ubersystem_instances)
 }
