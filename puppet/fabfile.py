@@ -30,4 +30,4 @@ def bootstrap_new_server():
     sudo('apt-get update')
     sudo('apt-get -y install puppet')
     sudo('mkdir -p ' + puppet_dir)
-    sudo('chown -R %s ' + puppet_dir + '' % env.user)
+    sudo('chown -R ' + env.user + ' ' + puppet_dir)
