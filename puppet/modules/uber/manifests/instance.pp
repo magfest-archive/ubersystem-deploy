@@ -15,6 +15,8 @@ define uber::instance
   $socket_host = '0.0.0.0',
   $hostname = '', # defaults to hostname of the box
   $url_prefix = 'magfest',
+
+  $open_firewall_port = true,
 ) {
 
   $hostname_to_use = $hostname ? {
@@ -32,22 +34,19 @@ define uber::instance
   uber::user_group { "users and groups ${name}":
     user   => $uber_user,
     group  => $uber_group,
-    before => Uber::Db["ubersystem database ${name}"],
+    notify => Uber::Db["uber_db_${name}"]
   }
 
-  uber::db { "ubersystem database ${name}":
-    user       => $db_user,
-    pass       => $db_pass,
-    dbname     => $db_name,
+  uber::db { "uber_db_${name}":
+    user   => $db_user,
+    pass   => $db_pass,
+    dbname => $db_name,
+    notify => Exec["stop_daemon_${name}"]
   }
-
-  # Uber::Instance[$name] -> Class['uber::install']
 
   exec { "stop_daemon_${name}" :
     command     => "/usr/local/bin/supervisorctl stop ${name}",
-    notify   => [ Class['uber::install'],
-    Vcsrepo[$uber_path], 
-    Uber::Daemon["${name}_daemon_start"] ]
+    notify   => [ Class['uber::install'], Vcsrepo[$uber_path] ]
   }
 
   vcsrepo { $uber_path:
@@ -96,19 +95,20 @@ define uber::instance
     command     => "${venv_python} uber/init_db.py",
     cwd         => "${uber_path}",
     refreshonly => true,
-    require     => Uber::Db["ubersystem database ${name}"],
     notify      => Exec["setup_owner_$name"],
   }
 
   # setup owner
   exec { "setup_owner_$name":
-    command     => "/bin/chown -R ${uber_user}:${uber_group} ${uber_path}",
+    command => "/bin/chown -R ${uber_user}:${uber_group} ${uber_path}",
+    notify  => Exec[ "setup_perms_$name" ],
   }
  
   # setup permissions
   $mode = 'o-rwx,g-w,u+rw'
   exec { "setup_perms_$name":
     command => "/bin/chmod -R $mode ${uber_path}",
+    notify  => Uber::Daemon["${name}_daemon_start"],
   }   
 
   # run as a daemon with supervisor
@@ -117,7 +117,12 @@ define uber::instance
    group      => $uber_group,
    python_cmd => $venv_python,
    uber_path  => $uber_path,
-   subscribe  => Exec["uber_init_db_${name}"],
-   require    => [ Exec["setup_perms_$name"], Exec["setup_owner_$name"] ]
+   notify     => Ufw::Allow["firewall_${name}"],
+  }
+
+  if $open_firewall_port {
+    ufw::allow { "firewall_${name}": 
+      port => $socket_port,
+    }
   }
 }
