@@ -1,13 +1,22 @@
 # magfest ubersystem config file
+# this file is managed by puppet DO NOT EDIT in production
 
 # this info is used by cherrypy to start its own internal webserver
 path = "/<%= @url_prefix %>"
 hostname = "<%= @hostname_to_use %>"
 
-# url_root is used to generate public clickable links (example: in emails)
+# url_root should be the public-facing root of what you type
+# to get to this instance.
+#
 # if you are behind a proxy like apache, this should be the PUBLIC
 # facing address and NOT the internal cherrypy server.
-url_root = "http://<%= @hostname_to_use %>:<%= @socket_port %>"
+# 
+# example if not behind apache/nginx proxy: 
+# url_root = "http://public.facing.domain.com:4321"
+#
+# example if behind apache/nginx proxy: 
+# url_root = "http://public.facing.domain.com"
+url_root = "http://<%= @hostname_to_use %>"
 
 [cherrypy]
 path = "/<%= @url_prefix %>"  # work around a bug that makes us put this here.

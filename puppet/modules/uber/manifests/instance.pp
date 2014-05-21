@@ -108,11 +108,11 @@ define uber::instance
   $mode = 'o-rwx,g-w,u+rw'
   exec { "setup_perms_$name":
     command => "/bin/chmod -R $mode ${uber_path}",
-    notify  => Uber::Daemon["${name}_daemon_start"],
+    notify  => Uber::Daemon["${name}_daemon"],
   }   
 
   # run as a daemon with supervisor
-  uber::daemon { "${name}_daemon_start": 
+  uber::daemon { "${name}_daemon": 
     user       => $uber_user,
     group      => $uber_group,
     python_cmd => $venv_python,
@@ -131,11 +131,11 @@ define uber::instance
     # notify   => Nginx::Resource::Location["${hostname}-${name}"],
   }
 
-  $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}"
+  $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}/"
   nginx::resource::location { "${hostname}-${name}":
     ensure              => present,
     proxy               => $proxy_url,
-    location            => "/${url_prefix}",
+    location            => "/${url_prefix}/",
     vhost               => $hostname,
   }
 }
