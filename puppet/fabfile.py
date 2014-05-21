@@ -10,6 +10,9 @@ modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
 
+def set_hostname():
+    sudo('hostname ' + env.host_string)
+
 def sync():
     # 1st sync everything but the nodes dir
     rsync_project(
@@ -17,7 +20,8 @@ def sync():
             local_dir='.', 
             extra_opts=rsync_opts + ' --exclude=hiera/nodes'
     )
-    
+
+    sudo('rm -rf ' + node_dir)
     sudo('mkdir -p ' +node_dir)
 
     # now sync just the hiera node we're looking at
@@ -29,6 +33,7 @@ def sync():
     )
 
 def apply():
+    execute(set_hostname)
     execute(sync)
 
     # copy a template of the puppet.conf file, add the line to it
@@ -45,7 +50,7 @@ def apply():
     # TODO: delete the node config since it contains secret info
 
 def bootstrap_new_server():
-    sudo('hostname ' + env.host_string)
+    execute(set_hostname)
     sudo('apt-get update')
     sudo('apt-get -y install puppet')
     sudo('mkdir -p ' + puppet_dir)
