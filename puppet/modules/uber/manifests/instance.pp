@@ -16,7 +16,7 @@ define uber::instance
   $hostname = '', # defaults to hostname of the box
   $url_prefix = 'magfest',
 
-  $open_firewall_port = false, # if using apache, you dont want this.
+  $open_firewall_port = false, # if using apache/nginx, you dont want this.
 ) {
 
   $hostname_to_use = $hostname ? {
@@ -123,41 +123,36 @@ define uber::instance
   uber::firewall { "${name}_firewall":
     socket_port        => $socket_port,
     open_firewall_port => $open_firewall_port,
-    notify             => Uber::Apache["${name}_apache"],
+    notify             => Uber::Vhost[$name],
   }
 
-  uber::apache { "${name}_apache":
-    hostname   => $hostname_to_use,
-    proxy_url  => "http://127.0.0.1:${socket_port}/${url_prefix}",
-    url_prefix => $url_prefix,
+  uber::vhost { $name:
+    hostname => $hostname,
+    # notify   => Nginx::Resource::Location["${hostname}-${name}"],
+  }
+
+  $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}"
+  nginx::resource::location { "${hostname}-${name}":
+    ensure              => present,
+    proxy               => $proxy_url,
+    location            => "/${url_prefix}",
+    vhost               => $hostname,
   }
 }
 
-define uber::apache (
+define uber::vhost (
   $hostname,
-  $proxy_url,
-  $url_prefix,
 ) {
-  apache::vhost { "$hostname non-ssl":
-    servername => $hostname,
-    port       => '80',
-    docroot    => '/var/www/',
-    proxy_pass =>
-    [
-      { 'path' => $url_prefix, 'url' => $proxy_url },
-    ],
-  }
-  apache::vhost { "$hostname ssl":
-    servername => $hostname,
-    ssl        => true,
-    port       => '443',
-    docroot    => '/var/www/',
-    proxy_pass =>
-    [
-      { 'path' => $url_prefix, 'url' => $proxy_url },
-    ],
-  }
+  if ! defined(Nginx::Resource::Vhost[$hostname]) {
+    nginx::resource::vhost { $hostname:
+      www_root => '/var/www/',
 
+      # TODO
+      # ssl      => true,
+      #ssl_cert => 'puppet:///modules/sslkey/wildcard_mydomain.crt',
+      #ssl_key  => 'puppet:///modules/sslkey/wildcard_mydomain.key',
+    }
+  }
 }
 
 define uber::firewall (
@@ -166,7 +161,7 @@ define uber::firewall (
 ) {
   if $open_firewall_port {
     ufw::allow { $title:
-     port => $socket_port,
-   }
+      port => $socket_port,
+    }
   }
 }
