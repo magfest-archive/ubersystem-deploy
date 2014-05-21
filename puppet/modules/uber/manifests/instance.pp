@@ -133,10 +133,11 @@ define uber::instance
 
   $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}/"
   nginx::resource::location { "${hostname}-${name}":
-    ensure              => present,
-    proxy               => $proxy_url,
-    location            => "/${url_prefix}/",
-    vhost               => $hostname,
+    ensure   => present,
+    proxy    => $proxy_url,
+    location => "/${url_prefix}/",
+    vhost    => $hostname,
+    ssl      => true,
   }
 }
 
@@ -147,10 +148,9 @@ define uber::vhost (
     nginx::resource::vhost { $hostname:
       www_root => '/var/www/',
 
-      # TODO
-      # ssl      => true,
-      #ssl_cert => 'puppet:///modules/sslkey/wildcard_mydomain.crt',
-      #ssl_key  => 'puppet:///modules/sslkey/wildcard_mydomain.key',
+      ssl      => true,
+      ssl_cert => 'puppet:///modules/uber/magfest.org.crt-bundle',
+      ssl_key  => 'puppet:///modules/uber/magfest.org.key',
     }
   }
 }

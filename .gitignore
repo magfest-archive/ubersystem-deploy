@@ -8,3 +8,5 @@ magbot/node_modules
 puppet/q
 puppet/puppet.conf
 puppet/hiera/nodes
+**/*.crt*
+**/*.key
