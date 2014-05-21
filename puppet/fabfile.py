@@ -18,7 +18,7 @@ def sync():
             extra_opts=rsync_opts + ' --exclude=hiera/nodes'
     )
     
-    sudo('mkdir ' +node_dir)
+    sudo('mkdir -p ' +node_dir)
 
     # now sync just the hiera node we're looking at
     # (we don't want to sync them all because these node files contain secrets)
