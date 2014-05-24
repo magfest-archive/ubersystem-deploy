@@ -10,7 +10,7 @@ modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
 
-def set_hostname():
+def set_remote_hostname():
     sudo('hostname ' + env.host_string)
 
 def sync():
@@ -33,7 +33,7 @@ def sync():
     )
 
 def apply():
-    execute(set_hostname)
+    execute(set_remote_hostname)
     execute(sync)
 
     # copy a template of the puppet.conf file, add the line to it
@@ -49,9 +49,30 @@ def apply():
 
     # TODO: delete the node config since it contains secret info
 
-def bootstrap_new_server():
-    execute(set_hostname)
+def do_security_updates():
+    sudo('apt-get update')
+    sudo('apt-get -y upgrade')
+
+def install_puppet():
     sudo('apt-get update')
     sudo('apt-get -y install puppet')
     sudo('mkdir -p ' + puppet_dir)
     sudo('chown -R ' + env.user + ' ' + puppet_dir)
+
+# somewhat optional, but if we don't do this, it will prompt us yes/no
+# for acceptin the key for a new server, which we don't want if we're
+# fully automated.  or if this is a rebuild, the keys will mismatch
+# and it will stop.  
+#
+# ONLY DO THIS ON SERVER INIT. DO NOT DO THIS EACH TIME WHICH WILL DEFEAT
+# THE SECURITY MEASURES.
+def register_remote_ssh_keys():
+    # remove and re-add the new server's SSH key
+    local('ssh-keygen -R ' + env.host_string)
+    local('ssh-keyscan -H ' + env.host_string + ' >> ~/.ssh/known_hosts')
+
+def bootstrap_new_server():
+    execute(register_remote_ssh_keys)
+    execute(set_remote_hostname)
+    execute(do_security_updates)
+    execute(install_puppet)
