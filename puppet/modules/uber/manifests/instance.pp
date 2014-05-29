@@ -17,6 +17,21 @@ define uber::instance
   $url_prefix = 'magfest',
 
   $open_firewall_port = false, # if using apache/nginx, you dont want this.
+
+  # config file settings only below
+  $theme = 'magfest',
+  $event_name = 'MAGFest',
+  $organization_name = 'MAGFest',
+  $year = 1,
+  $show_affiliates_and_extras = True,
+  $group_allow_registrations = True,
+  $group_reg_enabled = True,
+  $send_emails = False,
+  $aws_access_key = '',
+  $aws_secret_key = '',
+  $stripe_secret_key = '',
+  $stripe_public_key = '',
+  $dev_box = False,
 ) {
 
   $hostname_to_use = $hostname ? {
@@ -63,8 +78,16 @@ define uber::instance
     ensure  => present,
     mode    => 660,
     content => template('uber/production.conf.erb'),
+    notify   => File["${uber_path}/event.conf"],
+  }
+
+  file { "${uber_path}/event.conf":
+    ensure  => present,
+    mode    => 660,
+    content => template('uber/event.conf.erb'),
     notify  => Exec["uber_virtualenv_${name}"]
   }
+
 
   # seems puppet's virtualenv support is broken for python3, so roll our own
   exec { "uber_virtualenv_${name}":
