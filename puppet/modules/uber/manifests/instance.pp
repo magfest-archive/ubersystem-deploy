@@ -24,14 +24,20 @@ define uber::instance
   $organization_name = 'MAGFest',
   $year = 1,
   $show_affiliates_and_extras = True,
-  $group_allow_registrations = True,
-  $group_reg_enabled = True,
+  $group_reg_available = True,
+  $group_reg_open = True,
   $send_emails = False,
   $aws_access_key = '',
   $aws_secret_key = '',
   $stripe_secret_key = '',
   $stripe_public_key = '',
   $dev_box = False,
+  $supporter_badge_type_enabled = True,
+  $prereg_opening,
+  $prereg_takedown,
+  $uber_takedown,
+  $epoch,
+  $eschaton,
 ) {
 
   $hostname_to_use = $hostname ? {

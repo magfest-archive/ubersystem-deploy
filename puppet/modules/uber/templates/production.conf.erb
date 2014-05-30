@@ -26,9 +26,14 @@ stripe_public_key = "<%= @stripe_public_key %>"
 url_root = "http://<%= @hostname_to_use %>"
 
 [cherrypy]
-path = "/<%= @url_prefix %>"  # work around a bug that makes us put this here.
 server.socket_host = <%= @socket_host %>
 server.socket_port = <%= @socket_port %>
+
+# hack around a ubersystem+configobj bug.  
+# we need to define this here, or else tools.sessions.path won't read 
+# 'path' from parent config file section.
+# see issue https://github.com/EliAndrewC/magfest/issues/189
+path = "/<%= @url_prefix %>"  # HACK. REMOVE WHEN BUG IS FIXED
 
 [django]
 [[DATABASES]]
