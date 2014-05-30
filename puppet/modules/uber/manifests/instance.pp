@@ -38,6 +38,7 @@ define uber::instance
   $uber_takedown,
   $epoch,
   $eschaton,
+  $email_categories_allowed_to_send = [ 'all' ],
 ) {
 
   $hostname_to_use = $hostname ? {

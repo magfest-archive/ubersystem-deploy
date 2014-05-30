@@ -19,6 +19,8 @@ year = "<%= @year %>"
 
 supporter_badge_type_enabled = "<%= @supporter_badge_type_enabled %>"
 
+email_categories_allowed_to_send = <% @email_categories_allowed_to_send.each do |category| -%><%= category %>,<% end -%>
+
 # hack around a ubersystem+configobj bug.  
 # we need to define this here, or else TEMPLATE_DIRS won't read 
 # current_theme from parent section.
