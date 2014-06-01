@@ -39,6 +39,8 @@ define uber::instance
   $epoch,
   $eschaton,
   $email_categories_allowed_to_send = [ 'all' ],
+  $prereg_price = 45,
+  $at_door_price = 60,
 ) {
 
   $hostname_to_use = $hostname ? {

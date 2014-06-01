@@ -21,6 +21,12 @@ supporter_badge_type_enabled = "<%= @supporter_badge_type_enabled %>"
 
 email_categories_allowed_to_send = <% @email_categories_allowed_to_send.each do |category| -%><%= category %>,<% end -%>
 
+[badge_prices]
+initial_attendee = <%= @prereg_price %>
+# price_change = boolean(default=False)
+# = <%= @at_door_price %>
+
+
 # hack around a ubersystem+configobj bug.  
 # we need to define this here, or else TEMPLATE_DIRS won't read 
 # current_theme from parent section.
