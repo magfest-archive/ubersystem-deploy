@@ -1,0 +1,126 @@
+{
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "5",
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "5",
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11 SP1"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04"
+      ]
+    },
+    {
+      "operatingsystem": "AIX",
+      "operatingsystemrelease": [
+        "5.3",
+        "6.1",
+        "7.1"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.2.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "name": "puppetlabs-ntp",
+  "version": "3.0.3",
+  "source": "git://github.com/puppetlabs/puppetlabs-ntp",
+  "author": "Puppet Labs",
+  "license": "Apache Version 2.0",
+  "summary": "NTP Module",
+  "description": "NTP Module for Debian, Ubuntu, CentOS, RHEL, OEL, Fedora, FreeBSD, ArchLinux and Gentoo.",
+  "project_page": "http://github.com/puppetlabs/puppetlabs-ntp",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 0.1.6"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CHANGELOG.md": "8ec8a329edc904541fb66be43ec06ba2",
+    "CONTRIBUTING.md": "2ef1d6f4417dde9af6c7f46f5c8a864b",
+    "Gemfile": "bbc819d69940a071a13963659787748a",
+    "LICENSE": "f0b6fdc310531526f257378d7bad0044",
+    "Modulefile": "ca711a7dc7643ef2ba401b5b0ac54bb0",
+    "README.markdown": "3edb21c9434f7b562b335d68c7ef88c1",
+    "Rakefile": "0254db5d3fc38c67a2c160d7296a24f8",
+    "manifests/config.pp": "f3ffed42bbdbf0d7eab16b55af479872",
+    "manifests/init.pp": "ae9da639adaea106a2b581256ee14626",
+    "manifests/install.pp": "ac33c5733f4321a9af7a4735265c1986",
+    "manifests/params.pp": "c45f8e67ac00ddd773618f20b9db73e9",
+    "manifests/service.pp": "350238b50e9cb896d270a2c76a64334f",
+    "spec/acceptance/class_spec.rb": "a7acad9e020807ce71625cf7d91a3b0b",
+    "spec/acceptance/nodesets/centos-64-x64-pe.yml": "ec075d95760df3d4702abea1ce0a829b",
+    "spec/acceptance/nodesets/centos-64-x64.yml": "092dd2c588a9f87fa1fb12997c0723ef",
+    "spec/acceptance/nodesets/centos-65-x64.yml": "3e5c36e6aa5a690229e720f4048bb8af",
+    "spec/acceptance/nodesets/default.yml": "092dd2c588a9f87fa1fb12997c0723ef",
+    "spec/acceptance/nodesets/fedora-18-x64.yml": "80e41b1ee16ea489f53164bfdae58855",
+    "spec/acceptance/nodesets/sles-11-x64.yml": "44e4c6c15c018333bfa9840a5e702f66",
+    "spec/acceptance/nodesets/ubuntu-server-10044-x64.yml": "75e86400b7889888dc0781c0ae1a1297",
+    "spec/acceptance/nodesets/ubuntu-server-12042-x64.yml": "d30d73e34cd50b043c7d14e305955269",
+    "spec/acceptance/ntp_config_spec.rb": "3f8cac3f5ed32aab916567125f758bea",
+    "spec/acceptance/ntp_install_spec.rb": "dd2d6705eb13303fdcf84044bc36fd7c",
+    "spec/acceptance/ntp_parameters_spec.rb": "54859e9353503489e4fb98b093debd2f",
+    "spec/acceptance/ntp_service_spec.rb": "8dc705e7e0cdc97d6f7f0c2735a74ffa",
+    "spec/acceptance/preferred_servers_spec.rb": "dde228e65752e949f5763d96fe99a8dd",
+    "spec/acceptance/restrict_spec.rb": "f54259830e9a89748c893fd283e6c572",
+    "spec/acceptance/unsupported_spec.rb": "46473b42539794169b7d5c6a0b10f089",
+    "spec/classes/ntp_spec.rb": "f8ac7807b2beafc5fdbad42e0c04326e",
+    "spec/fixtures/modules/my_ntp/templates/ntp.conf.erb": "566e373728e9b13eda516115ff0a9fb0",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+    "spec/spec_helper_acceptance.rb": "0ffd011b78119f9ab1f35c166d7edb2d",
+    "spec/unit/puppet/provider/README.markdown": "e52668944ee6af2fb5d5b9e798342645",
+    "spec/unit/puppet/type/README.markdown": "de26a7643813abd6c2e7e28071b1ef94",
+    "templates/ntp.conf.erb": "178afa2b9fa1f25851cb4d7eb7a957a9",
+    "tests/init.pp": "d398e7687ec1d893ef23d1b7d2afc094"
+  }
+}

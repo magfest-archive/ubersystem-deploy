@@ -2,6 +2,13 @@ import 'firewall.pp'
 import 'ssh.pp'
 
 class uber_server {
+
+  include '::ntp'
+
+  class { 'timezone':
+    timezone => 'America/New_York',
+  }
+
   include firewall_webserver
   include firewall_sshserver
   include ssh
