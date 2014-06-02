@@ -76,8 +76,12 @@ def register_remote_ssh_keys():
     local('ssh-keyscan -H ' + env.host_string + ' >> ~/.ssh/known_hosts')
     local('ssh-keyscan -H ' + ip_of_host + ' >> ~/.ssh/known_hosts')
 
+def reboot_if_updates_needed():
+    sudo('if [ -f /var/run/reboot-required ]; then reboot; fi')
+
 def bootstrap_new_server():
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
     execute(do_security_updates)
     execute(install_puppet)
+    execute(reboot_if_updates_needed)
