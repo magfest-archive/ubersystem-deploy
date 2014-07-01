@@ -41,6 +41,7 @@ define uber::instance
   $email_categories_allowed_to_send = [ 'all' ],
   $prereg_price = 45,
   $at_door_price = 60,
+  $at_the_con = False,
 ) {
 
   $hostname_to_use = $hostname ? {
