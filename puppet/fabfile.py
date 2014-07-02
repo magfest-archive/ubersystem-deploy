@@ -1,5 +1,6 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
+from fabric.contrib.files import exists
 from os.path import expanduser
 import subprocess
 
@@ -82,7 +83,8 @@ def register_remote_ssh_keys():
     local('ssh-keyscan -H ' + ip_of_host + ' >> ' + known_hosts)
 
 def reboot_if_updates_needed():
-    sudo('if [ -f /var/run/reboot-required ]; then reboot; fi')
+    if exists('/var/run/reboot-required'):
+        reboot(120) # waits for 2 minutes for it to reboot
 
 def bootstrap_new_server():
     execute(register_remote_ssh_keys)
