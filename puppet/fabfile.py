@@ -1,6 +1,9 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
+from os.path import expanduser
 import subprocess
+
+home_dir = expanduser("~")
 
 puppet_dir = '/usr/local/puppet'
 puppet_conf = puppet_dir+'/puppet.conf'
@@ -68,13 +71,15 @@ def install_puppet():
 # ONLY DO THIS ON SERVER INIT. DO NOT DO THIS EACH TIME WHICH WILL DEFEAT
 # THE SECURITY MEASURES.
 def register_remote_ssh_keys():
+    ssh_dir = home_dir + "/.ssh/"
+    known_hosts = ssh_dir + "known_hosts"
     # remove and re-add the new server's SSH key
     ip_of_host = subprocess.check_output(['/usr/bin/dig', '+short', env.host_string])
     print("ip is " + ip_of_host)
     local('ssh-keygen -R ' + env.host_string)
     local('ssh-keygen -R ' + ip_of_host)
-    local('ssh-keyscan -H ' + env.host_string + ' >> ~/.ssh/known_hosts')
-    local('ssh-keyscan -H ' + ip_of_host + ' >> ~/.ssh/known_hosts')
+    local('ssh-keyscan -H ' + env.host_string + ' >> ' + known_hosts)
+    local('ssh-keyscan -H ' + ip_of_host + ' >> ' + known_hosts)
 
 def reboot_if_updates_needed():
     sudo('if [ -f /var/run/reboot-required ]; then reboot; fi')
