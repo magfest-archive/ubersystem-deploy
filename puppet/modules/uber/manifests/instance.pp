@@ -42,6 +42,7 @@ define uber::instance
   $prereg_price = 45,
   $at_door_price = 60,
   $at_the_con = False,
+  $max_badge_sales = 9999999,
 ) {
 
   $hostname_to_use = $hostname ? {
