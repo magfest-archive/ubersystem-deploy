@@ -1,0 +1,44 @@
+# magfest ubersystem config file
+# this file is managed by puppet DO NOT EDIT in production
+
+# this info is used by cherrypy to start its own internal webserver
+path = "/<%= @url_prefix %>"
+hostname = "<%= @hostname_to_use %>"
+
+dev_box = <%= @dev_box %>
+send_emails = <%= @send_emails %>
+aws_access_key = "<%= @aws_access_key %>"
+aws_secret_key = "<%= @aws_secret_key %>"
+stripe_secret_key = "<%= @stripe_secret_key %>"
+stripe_public_key = "<%= @stripe_public_key %>"
+
+# url_root should be the public-facing root of what you type
+# to get to this instance.
+#
+# if you are behind a proxy like apache, this should be the PUBLIC
+# facing address and NOT the internal cherrypy server.
+# 
+# example if not behind apache/nginx proxy: 
+# url_root = "http://public.facing.domain.com:4321"
+#
+# example if behind apache/nginx proxy: 
+# url_root = "http://public.facing.domain.com"
+url_root = "https://<%= @hostname_to_use %>"
+
+[cherrypy]
+server.socket_host = <%= @socket_host %>
+server.socket_port = <%= @socket_port %>
+
+# hack around a ubersystem+configobj bug.  
+# we need to define this here, or else tools.sessions.path won't read 
+# 'path' from parent config file section.
+# see issue https://github.com/EliAndrewC/magfest/issues/189
+path = "/<%= @url_prefix %>"  # HACK. REMOVE WHEN BUG IS FIXED
+
+[django]
+[[DATABASES]]
+[[[default]]]
+HOST = "<%= @db_host %>"
+NAME = "<%= @db_name %>"
+USER = "<%= @db_user %>"
+PASSWORD = "<%= @db_pass %>"
