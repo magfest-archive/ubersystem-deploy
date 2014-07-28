@@ -36,8 +36,13 @@ def sync():
             local_dir='./hiera/nodes/' + env.host_string + '.yaml',
             extra_opts=rsync_opts
     )
+    rsync_project(
+            remote_dir=node_dir+'/secret/',
+            local_dir='./hiera/nodes/secret/' + env.host_string + '.yaml',
+            extra_opts=rsync_opts
+    )
 
-def apply():
+def apply(dry_run='no'):
     execute(set_remote_hostname)
     execute(sync)
 
@@ -46,9 +51,14 @@ def apply():
     sudo('cp -f '+puppet_dir+'/puppet.conf.template '+puppet_conf)
     sudo('echo -en "[main]\nhiera_config='+hiera_conf+'" >> '+puppet_conf)
 
+    dry_run_cmdline=""
+    if dry_run == 'yes':
+        dry_run_cmdline=" --noop --verbose --debug "
+
     sudo(   "puppet apply "
-            "--config "+puppet_conf+" "
-            "--modulepath "+modules_path+" "
+            " --config "+puppet_conf+" "
+            " --modulepath "+modules_path+" "
+            " "+dry_run_cmdline+" "
             " "+manifest_to_run+" "
             )
 
@@ -60,7 +70,8 @@ def do_security_updates():
 
 def install_puppet():
     sudo('apt-get update')
-    sudo('apt-get -y install puppet')
+    sudo('apt-get -y install puppet ruby')
+    sudo('gem install deep_merge')
     sudo('mkdir -p ' + puppet_dir)
     sudo('chown -R ' + env.user + ' ' + puppet_dir)
 

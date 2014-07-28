@@ -1,4 +1,4 @@
-class uber::globals (
+class uber85::globals (
   $db_user = 'mag',
   /*$db_pass = 'mag',
   $db_name = 'mag',

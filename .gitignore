@@ -7,6 +7,6 @@ magbot/node_modules
 *.swp
 puppet/q
 puppet/puppet.conf
-puppet/hiera/nodes
+puppet/hiera/nodes/secret
 **/*.crt*
 **/*.key

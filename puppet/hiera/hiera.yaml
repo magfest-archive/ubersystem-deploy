@@ -4,5 +4,7 @@
 :yaml:
         :datadir: '/usr/local/puppet/hiera/'
 :hierarchy:
+        - nodes/secret/%{::fqdn}
         - nodes/%{::fqdn}
         - common
+:merge_behavior: deeper

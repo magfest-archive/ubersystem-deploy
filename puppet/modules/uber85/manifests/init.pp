@@ -1,4 +1,4 @@
-class uber {
+class uber85 {
   $python_ver = '3'
 
   $python_cmd = $python_ver ? {
@@ -7,5 +7,5 @@ class uber {
     default => fail("Bad python version: ${python_ver}"),
   }
 
-  class {'uber::install': } -> Class['uber']
+  class {'uber85::install': } -> Class['uber85']
 }

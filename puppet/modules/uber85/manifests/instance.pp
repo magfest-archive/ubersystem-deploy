@@ -1,4 +1,4 @@
-define uber::instance
+define uber85::instance
 (
   $uber_path = '/usr/local/uber',
   $git_repo = 'https://github.com/EliAndrewC/magfest',
@@ -57,13 +57,13 @@ define uber::instance
   # TODO: don't hardcode 'python 3.4' in here, set it up in ::uber
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
 
-  uber::user_group { "users and groups ${name}":
+  uber85::user_group { "users and groups ${name}":
     user   => $uber_user,
     group  => $uber_group,
-    notify => Uber::Db["uber_db_${name}"]
+    notify => Uber85::Db["uber_db_${name}"]
   }
 
-  uber::db { "uber_db_${name}":
+  uber85::db { "uber_db_${name}":
     user   => $db_user,
     pass   => $db_pass,
     dbname => $db_name,
@@ -72,7 +72,7 @@ define uber::instance
 
   exec { "stop_daemon_${name}" :
     command     => "/usr/local/bin/supervisorctl stop ${name}",
-    notify   => [ Class['uber::install'], Vcsrepo[$uber_path] ]
+    notify   => [ Class['uber85::install'], Vcsrepo[$uber_path] ]
   }
 
   vcsrepo { $uber_path:
@@ -102,7 +102,7 @@ define uber::instance
 
   # seems puppet's virtualenv support is broken for python3, so roll our own
   exec { "uber_virtualenv_${name}":
-    command => "${uber::python_cmd} -m venv ${venv_path} --without-pip",
+    command => "${uber85::python_cmd} -m venv ${venv_path} --without-pip",
     cwd     => $uber_path,
     path    => '/usr/bin',
     creates => "${venv_path}",
@@ -142,25 +142,25 @@ define uber::instance
   $mode = 'o-rwx,g-w,u+rw'
   exec { "setup_perms_$name":
     command => "/bin/chmod -R $mode ${uber_path}",
-    notify  => Uber::Daemon["${name}_daemon"],
+    notify  => Uber85::Daemon["${name}_daemon"],
   }   
 
   # run as a daemon with supervisor
-  uber::daemon { "${name}_daemon": 
+  uber85::daemon { "${name}_daemon": 
     user       => $uber_user,
     group      => $uber_group,
     python_cmd => $venv_python,
     uber_path  => $uber_path,
-    notify     => Uber::Firewall["${name}_firewall"],
+    notify     => Uber85::Firewall["${name}_firewall"],
   }
 
-  uber::firewall { "${name}_firewall":
+  uber85::firewall { "${name}_firewall":
     socket_port        => $socket_port,
     open_firewall_port => $open_firewall_port,
-    notify             => Uber::Vhost[$name],
+    notify             => Uber85::Vhost[$name],
   }
 
-  uber::vhost { $name:
+  uber85::vhost { $name:
     hostname => $hostname,
     # notify   => Nginx::Resource::Location["${hostname}-${name}"],
   }
@@ -176,7 +176,7 @@ define uber::instance
   }
 }
 
-define uber::vhost (
+define uber85::vhost (
   $hostname,
 ) {
   if ! defined(Nginx::Resource::Vhost[$hostname]) {
@@ -184,13 +184,13 @@ define uber::vhost (
       www_root    => '/var/www/',
       rewrite_to_https => true,
       ssl              => true,
-      ssl_cert         => 'puppet:///modules/uber/magfest.org.crt-bundle',
-      ssl_key          => 'puppet:///modules/uber/magfest.org.key',
+      ssl_cert         => 'puppet:///modules/uber85/magfest.org.crt-bundle',
+      ssl_key          => 'puppet:///modules/uber85/magfest.org.key',
     }
   }
 }
 
-define uber::firewall (
+define uber85::firewall (
   $socket_port,
   $open_firewall_port = false,
 ) {
