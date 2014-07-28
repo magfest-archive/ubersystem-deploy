@@ -6,7 +6,10 @@ define uber::instance
   $uber_user = 'uber',
   $uber_group = 'apps',
 
+  $sideboard_debug_enabled = false,
+
   $db_host = 'localhost',
+  $db_port = '5432',
   $db_user = 'm13',
   $db_pass = 'm13',
   $db_name = 'm13',
