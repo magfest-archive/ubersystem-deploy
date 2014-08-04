@@ -1,9 +1,9 @@
 define uber::plugins
 (
   $plugins,
+  $plugins_dir,
   $user,
   $group,
-  $plugins_dir,
 )
 {
   $plugin_defaults = {
@@ -67,6 +67,8 @@ define uber::instance
   $db_user = 'm13',
   $db_pass = 'm13',
   $db_name = 'm13',
+  
+  $sideboard_plugins = {},
 
   $socket_port = '4321',
   $socket_host = '0.0.0.0',
@@ -76,28 +78,26 @@ define uber::instance
   $open_firewall_port = false, # if using apache/nginx, you dont want this.
 
   # config file settings only below
-  $theme = 'magfest',
-  $event_name = 'MAGFest',
-  $organization_name = 'MAGFest',
-  $year = 1,
-  $show_affiliates_and_extras = True,
-  $group_reg_available = True,
-  $group_reg_open = True,
+  #$event_name = 'MAGFest',
+  #$organization_name = 'MAGFest',
+  # $year = 1,
+  #$show_affiliates_and_extras = True,
+  #$group_reg_available = True,
+  #$group_reg_open = True,
   $send_emails = False,
   $aws_access_key = '',
   $aws_secret_key = '',
   $stripe_secret_key = '',
   $stripe_public_key = '',
   $dev_box = False,
-  $supporter_badge_type_enabled = True,
-  $prereg_opening,
-  $prereg_takedown,
-  $uber_takedown,
-  $epoch,
-  $eschaton,
-  $email_categories_allowed_to_send = [ 'all' ],
-  $prereg_price = 45,
-  $at_door_price = 60,
+  #$supporter_badge_type_enabled = True,
+  #$prereg_opening,
+  #$prereg_takedown,
+  #$uber_takedown,
+  #$epoch,
+  #$eschaton,
+  #$prereg_price = 45,
+  #$at_door_price = 60,
   $at_the_con = False,
   $max_badge_sales = 9999999,
 ) {
@@ -153,10 +153,13 @@ define uber::instance
     notify      => File["${uber_path}/production.conf"],
   }
 
+  # sideboard's development.ini
+  # note: plugins can also have their own development.ini,
+  # we need to take that into account.
   file { "${uber_path}/development.ini":
     ensure  => present,
     mode    => 660,
-    content => template('uber/development.ini.erb'),
+    content => template('uber/sb-development.ini.erb'),
     notify  => Exec["uber_virtualenv_${name}"]
   }
 

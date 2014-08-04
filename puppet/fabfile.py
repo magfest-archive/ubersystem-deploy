@@ -51,14 +51,14 @@ def apply(dry_run='no'):
     sudo('cp -f '+puppet_dir+'/puppet.conf.template '+puppet_conf)
     sudo('echo -en "[main]\nhiera_config='+hiera_conf+'" >> '+puppet_conf)
 
-    dry_run_cmdline=""
+    cmdline = " --verbose --debug "
     if dry_run == 'yes':
-        dry_run_cmdline=" --noop --verbose --debug "
+        cmdline += " --noop "
 
     sudo(   "puppet apply "
             " --config "+puppet_conf+" "
             " --modulepath "+modules_path+" "
-            " "+dry_run_cmdline+" "
+            " "+cmdline+" "
             " "+manifest_to_run+" "
             )
 
