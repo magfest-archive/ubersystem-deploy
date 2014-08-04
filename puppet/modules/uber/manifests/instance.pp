@@ -1,3 +1,57 @@
+define uber::plugins
+(
+  $plugins,
+  $user,
+  $group,
+  $plugins_dir,
+)
+{
+  $plugin_defaults = {
+    'user'        => $user,
+    'group'       => $group,
+    'plugins_dir' => $plugins_dir,
+  }
+  create_resources(uber::plugin, $plugins, $plugin_defaults)
+}
+
+# sideboard can install a bunch of plugins which each pull their own
+# git repos
+define uber::plugin 
+(
+  # $repo_install_path = $name,
+  $plugins_dir,
+  $user,
+  $group,
+  $repo_info,
+)
+{
+  uber::plugin_repo { "${plugins_dir}/${name}":
+    user       => $user,
+    group      => $group,
+    git_repo   => $repo_info['git_repo'],
+    git_branch => $repo_info['git_branch'],
+  }
+}
+
+define uber::plugin_repo
+(
+  # path = $name
+  $user,
+  $group,
+  $git_repo,
+  $git_branch = 'master',
+)
+{
+  vcsrepo { $name:
+    ensure   => latest,
+    owner    => $user,
+    group    => $group,
+    provider => git,
+    source   => $git_repo,
+    revision => $git_branch
+  }
+}
+
 define uber::instance
 (
   $uber_path = '/usr/local/uber',
@@ -78,30 +132,33 @@ define uber::instance
     notify   => [ Class['uber::install'], Vcsrepo[$uber_path] ]
   }
 
+  # sideboard
   vcsrepo { $uber_path:
     ensure   => latest,
     owner    => $uber_user,
     group    => $uber_group,
     provider => git,
-    source   => $git_repo,
-    revision => $git_branch,
-    notify   => File["${uber_path}/production.conf"],
+    source   => $sideboard_repo,
+    revision => $sideboard_branch,
+    notify  => Uber::Plugins["${name}_plugins"],
   }
 
-  file { "${uber_path}/production.conf":
-    ensure  => present,
-    mode    => 660,
-    content => template('uber/production.conf.erb'),
-    notify   => File["${uber_path}/event.conf"],
+  # TODO development.ini for each plugin
+
+  uber::plugins { "${name}_plugins":
+    plugins     => $sideboard_plugins,
+    plugins_dir => "${uber_path}/plugins",
+    user        => $uber_user,
+    group       => $uber_group,
+    notify      => File["${uber_path}/production.conf"],
   }
 
-  file { "${uber_path}/event.conf":
+  file { "${uber_path}/development.ini":
     ensure  => present,
     mode    => 660,
-    content => template('uber/event.conf.erb'),
+    content => template('uber/development.ini.erb'),
     notify  => Exec["uber_virtualenv_${name}"]
   }
-
 
   # seems puppet's virtualenv support is broken for python3, so roll our own
   exec { "uber_virtualenv_${name}":
@@ -123,16 +180,7 @@ define uber::instance
     command => "${venv_python} setup.py develop",
     cwd     => "${uber_path}",
     creates => "${venv_site_pkgs_path}/uber.egg-link",
-    notify  => Exec["uber_init_db_${name}"],
-  }
-
-  # note: init_db.py will only init the DB if it doesn't already exist
-  # i.e. there's no chance we'll clobber production data accidentally.
-  exec { "uber_init_db_${name}" :
-    command     => "${venv_python} uber/init_db.py",
-    cwd         => "${uber_path}",
-    refreshonly => true,
-    notify      => Exec["setup_owner_$name"],
+    notify  => Exec["setup_owner_$name"],
   }
 
   # setup owner
