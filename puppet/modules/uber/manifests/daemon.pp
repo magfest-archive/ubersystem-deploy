@@ -8,7 +8,7 @@ define uber::daemon (
   supervisor::program { $name :
     ensure        => $ensure,
     enable        => true,
-    command       => "${python_cmd} uber/run_server.py",
+    command       => "${python_cmd} sideboard/run_server.py",
     directory     => $uber_path,
     # environment => 'NODE_ENV=testing',
     user          => $user,

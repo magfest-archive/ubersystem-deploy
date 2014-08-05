@@ -88,14 +88,14 @@ define uber85::instance
   file { "${uber_path}/production.conf":
     ensure  => present,
     mode    => 660,
-    content => template('uber/production.conf.erb'),
+    content => template('uber85/production.conf.erb'),
     notify   => File["${uber_path}/event.conf"],
   }
 
   file { "${uber_path}/event.conf":
     ensure  => present,
     mode    => 660,
-    content => template('uber/event.conf.erb'),
+    content => template('uber85/event.conf.erb'),
     notify  => Exec["uber_virtualenv_${name}"]
   }
 
