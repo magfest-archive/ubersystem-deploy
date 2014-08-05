@@ -12,7 +12,6 @@ define uber::plugins
     'plugins_dir' => $plugins_dir,
   }
   create_resources(uber::plugin, $plugins, $plugin_defaults)
-  # notify { "SUPGIRL2 ${plugins}": }
 }
 
 # sideboard can install a bunch of plugins which each pull their own
@@ -27,7 +26,6 @@ define uber::plugin
   $git_branch,
 )
 {
-  # notify { "SUPGIRL3 plugins_dir = ${plugins_dir}, name = ${name}, repo_info = ${git_repo}": }
   uber::plugin_repo { "${plugins_dir}/${name}":
     user       => $user,
     group      => $group,
@@ -169,6 +167,16 @@ define uber::instance
     ensure  => present,
     mode    => 660,
     content => template('uber/sb-development.ini.erb'),
+    notify  => File["${uber_path}/plugins/uber/development.ini"],
+  }
+
+  # uber's development.ini
+  # TODO: this is being hardcoded here.  it should instead install
+  # with the plugins stuff.  each plugin might have an INI
+  file { "${uber_path}/plugins/uber/development.ini":
+    ensure  => present,
+    mode    => 660,
+    content => template('uber/uber-development.ini.erb'),
     notify  => Exec["uber_virtualenv_${name}"]
   }
 
