@@ -30,6 +30,6 @@ class uber_server {
 
   # look up info for what ubersystems we should create (if any)
   # in our hiera/nodes/{hostname}.yaml file
-  $ubersystem_instances = hiera('uber_instances', {})
+  $ubersystem_instances = hiera_hash('uber_instances', {}) notify { "SUPGIRL ${ubersystem_instances}": }
   create_resources('uber::instance', $ubersystem_instances)
 }

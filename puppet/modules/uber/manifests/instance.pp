@@ -12,6 +12,7 @@ define uber::plugins
     'plugins_dir' => $plugins_dir,
   }
   create_resources(uber::plugin, $plugins, $plugin_defaults)
+  # notify { "SUPGIRL2 ${plugins}": }
 }
 
 # sideboard can install a bunch of plugins which each pull their own
@@ -22,14 +23,16 @@ define uber::plugin
   $plugins_dir,
   $user,
   $group,
-  $repo_info,
+  $git_repo,
+  $git_branch,
 )
 {
+  # notify { "SUPGIRL3 plugins_dir = ${plugins_dir}, name = ${name}, repo_info = ${git_repo}": }
   uber::plugin_repo { "${plugins_dir}/${name}":
     user       => $user,
     group      => $group,
-    git_repo   => $repo_info['git_repo'],
-    git_branch => $repo_info['git_branch'],
+    git_repo   => $git_repo,
+    git_branch => $git_branch,
   }
 }
 
@@ -39,7 +42,7 @@ define uber::plugin_repo
   $user,
   $group,
   $git_repo,
-  $git_branch = 'master',
+  $git_branch,
 )
 {
   vcsrepo { $name:
@@ -55,8 +58,8 @@ define uber::plugin_repo
 define uber::instance
 (
   $uber_path = '/usr/local/uber',
-  $git_repo = 'https://github.com/EliAndrewC/magfest',
-  $git_branch = 'master',
+  $sideboard_repo,
+  $sideboard_branch = 'master',
   $uber_user = 'uber',
   $uber_group = 'apps',
 
@@ -78,9 +81,9 @@ define uber::instance
   $open_firewall_port = false, # if using apache/nginx, you dont want this.
 
   # config file settings only below
-  #$event_name = 'MAGFest',
-  #$organization_name = 'MAGFest',
-  # $year = 1,
+  $event_name = 'MAGFest',
+  $organization_name = 'MAGFest',
+  $year = 1,
   #$show_affiliates_and_extras = True,
   #$group_reg_available = True,
   #$group_reg_open = True,
@@ -140,7 +143,12 @@ define uber::instance
     provider => git,
     source   => $sideboard_repo,
     revision => $sideboard_branch,
-    notify  => Uber::Plugins["${name}_plugins"],
+    notify  => File["${uber_path}/plugins/"],
+  }
+
+  file { [ "${uber_path}/plugins/" ]:
+    ensure => "directory",
+    notify => Uber::Plugins["${name}_plugins"],
   }
 
   # TODO development.ini for each plugin
@@ -150,7 +158,7 @@ define uber::instance
     plugins_dir => "${uber_path}/plugins",
     user        => $uber_user,
     group       => $uber_group,
-    notify      => File["${uber_path}/production.conf"],
+    notify      => File["${uber_path}/development.ini"],
   }
 
   # sideboard's development.ini
@@ -215,17 +223,17 @@ define uber::instance
   }
 
   uber::vhost { $name:
-    hostname => $hostname,
+    hostname => $hostname_to_use,
     # notify   => Nginx::Resource::Location["${hostname}-${name}"],
   }
 
   $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}/"
 
-  nginx::resource::location { "${hostname}-${name}":
+  nginx::resource::location { "${hostname_to_use}-${name}":
     ensure   => present,
     proxy    => $proxy_url,
     location => "/${url_prefix}/",
-    vhost    => $hostname,
+    vhost    => $hostname_to_use,
     ssl      => true,
   }
 }
