@@ -113,6 +113,7 @@ define uber::instance
   $venv_path = "${uber_path}/env"
   $venv_bin = "${venv_path}/bin"
   $venv_python = "${venv_bin}/python"
+  $venv_paver = "${venv_bin}/paver"
 
   # TODO: don't hardcode 'python 3.4' in here, set it up in ::uber
   $venv_site_pkgs_path = "${venv_path}/lib/python3.4/site-packages"
@@ -177,6 +178,12 @@ define uber::instance
     cwd     => $uber_path,
     path    => '/usr/bin',
     creates => "${venv_path}",
+    notify  => File["${uber_path}/distribute_setup.py"],
+  }
+
+  file { "${uber_path}/distribute_setup.py":
+    ensure => present,
+    source => "${uber_path}/plugins/uber/distribute_setup.py",
     notify  => Exec["uber_distribute_setup_${name}"],
   }
 
@@ -190,7 +197,14 @@ define uber::instance
   exec { "uber_setup_${name}" :
     command => "${venv_python} setup.py develop",
     cwd     => "${uber_path}",
-    creates => "${venv_site_pkgs_path}/uber.egg-link",
+    creates => "${venv_site_pkgs_path}/sideboard.egg-link",
+    notify  => Exec["uber_paver_$name"],
+  }
+
+  exec { "uber_paver_${name}":
+    command => "${venv_paver} install_deps",
+    cwd     => "${uber_path}",
+    # creates => "TODO",
     notify  => Exec["setup_owner_$name"],
   }
 
