@@ -15,6 +15,15 @@ modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
 
+def restart_uber_service():
+    sudo('supervisorctl restart all')
+
+def stop_uber_service():
+    sudo('supervisorctl stop all')
+
+def start_uber_service():
+    sudo('supervisorctl start all')
+
 def set_remote_hostname():
     sudo('hostname ' + env.host_string)
 
@@ -96,6 +105,10 @@ def register_remote_ssh_keys():
 def reboot_if_updates_needed():
     if exists('/var/run/reboot-required'):
         reboot(120) # waits for 2 minutes for it to reboot
+
+def apply_new_server():
+    execute(bootstrap_new_server)
+    execute(apply)
 
 def bootstrap_new_server():
     execute(register_remote_ssh_keys)
