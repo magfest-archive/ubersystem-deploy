@@ -92,7 +92,7 @@ define uber::instance
   $stripe_public_key = '',
   $dev_box = False,
   #$supporter_badge_type_enabled = True,
-  #$prereg_opening,
+  $prereg_open,
   #$prereg_takedown,
   #$uber_takedown,
   #$epoch,

@@ -3,7 +3,14 @@
 
 # defaults to 'False'
 debug = <%= @sideboard_debug_enabled %>
+priority_plugins = uber,
 
 [cherrypy]
 server.socket_host = <%= @socket_host %>
 server.socket_port = <%= @socket_port %>
+tools.sessions.timeout = 4320  # 30 days (in minutes)
+
+[handlers]
+[[syslog]]
+class = "logging.handlers.SysLogHandler"
+address = "/dev/log"
