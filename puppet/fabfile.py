@@ -25,7 +25,7 @@ def start_uber_service():
     sudo('supervisorctl start all')
 
 def set_remote_hostname():
-    sudo('hostname ' + env.host_string)
+    sudo('hostname ' + env.host)
 
 def sync():
     # 1st sync everything but the nodes dir
@@ -42,12 +42,12 @@ def sync():
     # (we don't want to sync them all because these node files contain secrets)
     rsync_project(
             remote_dir=node_dir,
-            local_dir='./hiera/nodes/' + env.host_string + '.yaml',
+            local_dir='./hiera/nodes/' + env.host + '.yaml',
             extra_opts=rsync_opts
     )
     rsync_project(
             remote_dir=node_dir+'/secret/',
-            local_dir='./hiera/nodes/secret/' + env.host_string + '.yaml',
+            local_dir='./hiera/nodes/secret/' + env.host + '.yaml',
             extra_opts=rsync_opts
     )
 
@@ -84,6 +84,17 @@ def install_puppet():
     sudo('mkdir -p ' + puppet_dir)
     sudo('chown -R ' + env.user + ' ' + puppet_dir)
 
+def get_host_ip(hostname):
+    # this ONLY uses DNS. no /etc/hosts
+    # ip = subprocess.check_output(['/usr/bin/dig', '+short', hostname])
+
+    # this uses /etc/hosts first then DNS
+    ip = ""
+    output = subprocess.check_output(['/usr/bin/getent', 'hosts', hostname])
+    if len(output) > 0:
+        ip = output.split(" ")[0]
+    return ip
+
 # somewhat optional, but if we don't do this, it will prompt us yes/no
 # for acceptin the key for a new server, which we don't want if we're
 # fully automated.  or if this is a rebuild, the keys will mismatch
@@ -95,11 +106,11 @@ def register_remote_ssh_keys():
     ssh_dir = home_dir + "/.ssh/"
     known_hosts = ssh_dir + "known_hosts"
     # remove and re-add the new server's SSH key
-    ip_of_host = subprocess.check_output(['/usr/bin/dig', '+short', env.host_string])
+    ip_of_host = get_host_ip(env.host)
     print("ip is " + ip_of_host)
-    local('ssh-keygen -R ' + env.host_string)
+    local('ssh-keygen -R ' + env.host)
     local('ssh-keygen -R ' + ip_of_host)
-    local('ssh-keyscan -H ' + env.host_string + ' >> ' + known_hosts)
+    local('ssh-keyscan -H ' + env.host + ' >> ' + known_hosts)
     local('ssh-keyscan -H ' + ip_of_host + ' >> ' + known_hosts)
 
 def reboot_if_updates_needed():
@@ -116,3 +127,12 @@ def bootstrap_new_server():
     execute(do_security_updates)
     execute(install_puppet)
     execute(reboot_if_updates_needed)
+
+def test():
+    print("TEST")
+    print("full hoststring = "+env.host_string)
+    print("Executing on %(host)s as %(user)s" % env)
+    print("port = " + env.port)
+    print("ip_of_host = "+get_host_ip(env.host))
+    print("remotely exec'ing: 'uname -a'")
+    sudo("uname -a")
