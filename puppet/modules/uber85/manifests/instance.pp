@@ -43,6 +43,7 @@ define uber85::instance
   $at_door_price = 60,
   $at_the_con = False,
   $max_badge_sales = 9999999,
+  $hide_schedule = True,
 ) {
 
   $hostname_to_use = $hostname ? {
