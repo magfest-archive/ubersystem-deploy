@@ -6,6 +6,9 @@ define uber85::instance
   $uber_user = 'uber',
   $uber_group = 'apps',
 
+  $ssl_crt_bundle = 'puppet:///modules/uber85/magfest.org.crt-bundle',
+  $ssl_crt_key = 'puppet:///modules/uber85/magfest.org.key',
+
   $db_host = 'localhost',
   $db_user = 'm13',
   $db_pass = 'm13',
@@ -162,8 +165,10 @@ define uber85::instance
   }
 
   uber85::vhost { $name:
-    hostname => $hostname,
-    # notify   => Nginx::Resource::Location["${hostname}-${name}"],
+    hostname       => $hostname,
+    ssl_crt_bundle => $ssl_crt_bundle,
+    ssl_crt_key    => $ssl_crt_key,
+    # notify       => Nginx::Resource::Location["${hostname}-${name}"],
   }
 
   $proxy_url = "http://127.0.0.1:${socket_port}/${url_prefix}/"
@@ -179,14 +184,16 @@ define uber85::instance
 
 define uber85::vhost (
   $hostname,
+  $ssl_crt_bundle,
+  $ssl_crt_key,
 ) {
   if ! defined(Nginx::Resource::Vhost[$hostname]) {
     nginx::resource::vhost { $hostname:
       www_root    => '/var/www/',
       rewrite_to_https => true,
       ssl              => true,
-      ssl_cert         => 'puppet:///modules/uber85/magfest.org.crt-bundle',
-      ssl_key          => 'puppet:///modules/uber85/magfest.org.key',
+      ssl_cert         => $ssl_crt_bundle,
+      ssl_key          => $ssl_crt_key,
     }
   }
 }
