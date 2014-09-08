@@ -14,6 +14,8 @@ define uber85::instance
   $db_pass = 'm13',
   $db_name = 'm13',
 
+  $django_debug = False,
+
   $socket_port = '4321',
   $socket_host = '0.0.0.0',
   $hostname = '', # defaults to hostname of the box

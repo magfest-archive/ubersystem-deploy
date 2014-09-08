@@ -36,6 +36,8 @@ server.socket_port = <%= @socket_port %>
 path = "/<%= @url_prefix %>"  # HACK. REMOVE WHEN BUG IS FIXED
 
 [django]
+DEBUG = "<%= @django_debug %>"
+
 [[DATABASES]]
 [[[default]]]
 HOST = "<%= @db_host %>"
