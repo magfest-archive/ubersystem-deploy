@@ -49,6 +49,7 @@ define uber85::instance
   $at_the_con = False,
   $max_badge_sales = 9999999,
   $hide_schedule = True,
+  $custom_badges_really_ordered = False,
 ) {
 
   $hostname_to_use = $hostname ? {
