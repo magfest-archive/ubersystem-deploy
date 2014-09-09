@@ -14,6 +14,18 @@ define uber85::instance
   $db_pass = 'm13',
   $db_name = 'm13',
 
+  # DB replication common mode settings
+  $db_replication_mode = 'none', # none, master, or slave
+  $db_replication_user = 'replicator',
+  $db_replication_password = '',
+
+  # DB replication slave settings ONLY
+  $db_replication_master_ip = '', # IP of the master server
+  $uber_db_util_path = '/usr/local/uberdbutil',
+
+  # DB replication master settings ONLY
+  $slave_ips = [],
+
   $django_debug = False,
 
   $socket_port = '4321',
@@ -149,8 +161,19 @@ define uber85::instance
   $mode = 'o-rwx,g-w,u+rw'
   exec { "setup_perms_$name":
     command => "/bin/chmod -R $mode ${uber_path}",
+    notify  => Uber85::Replication["${name}_replication"],
+  }
+
+  uber85::replication { "${name}_replication":
+    db_name                   => $db_name,
+    db_replication_mode      => $db_replication_mode,
+    db_replication_user      => $db_replication_user,
+    db_replication_password  => $db_replication_password,
+    db_replication_master_ip => $db_replication_master_ip,
+    uber_db_util_path        => $uber_db_util_path,
+    slave_ips                => $slave_ips,
     notify  => Uber85::Daemon["${name}_daemon"],
-  }   
+  }
 
   # run as a daemon with supervisor
   uber85::daemon { "${name}_daemon": 
@@ -184,6 +207,55 @@ define uber85::instance
     ssl      => true,
   }
 }
+
+define uber85::replication (
+  # DB replication common settings
+  $db_name,
+  $db_replication_mode, # none, master, or slave
+  $db_replication_user,
+  $db_replication_password,
+
+  # DB replication slave settings ONLY
+  $db_replication_master_ip, # IP of the master server
+  $uber_db_util_path,
+
+  # DB replication master settings ONLY
+  $slave_ips,
+) {
+  # setup replication
+  if $replication_mode == 'master'
+  {
+    if $replication_password == '' {
+      fail("can't do database replication without setting a replication passwd")
+    }
+
+    uber85::db-replication-master { "${db_name}_replication_master":
+      dbname               => $dbname,
+      replication_user     => $db_replication_user,
+      replication_password => $db_replication_password,
+      slave_ips            => $slave_ips,
+    }
+  }
+  if $replication_mode == 'slave'
+  {
+    if $replication_password == '' {
+      fail("can't do database replication without setting a replication passwd")
+    }
+
+    if $db_replication_master_ip == '' {
+      fail("can't do DB slave replication without a master IP address")
+    }
+
+    uber85::db-replication-slave { "${db_name}_replication_slave":
+      dbname               => $dbname,
+      replication_user     => $db_replication_user,
+      replication_password => $db_replication_password,
+      master_ip            => $db_replication_master_ip,
+      uber_db_util_path    => $uber_db_util_path,
+    }
+  }
+}
+
 
 define uber85::vhost (
   $hostname,
