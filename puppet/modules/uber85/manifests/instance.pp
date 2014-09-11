@@ -397,6 +397,15 @@ define uber85::db-replication-slave (
     group    => "postgres",
     mode     => 700,
     content  => template('uber85/pg-start-replication.sh.erb'),
+    notify => File["${uber_db_util_path}/sync-to-master.sh"],
+  }
+
+  file { "${uber_db_util_path}/sync-to-master.sh":
+    ensure   => present,
+    owner    => "postgres",
+    group    => "postgres",
+    mode     => 700,
+    content  => template('uber85/pg-sync.sh.erb'),
     # notify => File["${uber_path}/event.conf"],
   }
 }

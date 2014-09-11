@@ -1,0 +1,28 @@
+#!/bin/bash
+
+current_user="$(whoami)"
+codeword="YES.ERASE.THE.ENTIRE.DATABASE"
+if [ "$1" != "$codeword" ]
+then
+        echo "WARNING: running this script will erase ALL local postgres databases"
+        echo "and replace it with the master database's replicated data."
+        echo "To use this script please type:"
+        echo "$0 $codeword"
+        exit -1
+fi
+
+if [ $current_user != 'root' ]
+then
+echo "This script must be run as the postgres user"
+        exit -1
+fi
+
+
+supervisorctl stop all
+service postgresql stop
+
+su postgres -c "./pg-start-replication.sh YES.ERASE.THE.ENTIRE.DATABASE"
+
+service postgresql start
+supervisorctl start all
+

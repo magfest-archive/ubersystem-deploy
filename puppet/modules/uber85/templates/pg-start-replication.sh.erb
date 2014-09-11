@@ -34,6 +34,6 @@ echo "erasing local database cluster and starting replication"
 rm -rf $postgres_dir
 
 echo "starting pg_basebackup for initial master database copy"
-echo -en "$replicator_password\n" | pg_basebackup -h $master_ip -D $postgres_dir -U $replicator_user -v --password -P
+echo -en "$replicator_password\n" | pg_basebackup -h $master_ip -D $postgres_dir -U $replicator_user -v --password -P --xlog-method=stream
 
 cp -f $recovery_file_path $postgres_dir
