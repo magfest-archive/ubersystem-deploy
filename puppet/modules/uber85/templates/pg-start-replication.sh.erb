@@ -7,8 +7,8 @@
 # this script must be run as the 'postgres' user
 
 master_ip="<%= @master_ip %>"
-replicator_user="<%= @replicator_user %>"
-replicator_password="<%= @replicator_password %>"
+replicator_user="<%= @replication_user %>"
+replicator_password="<%= @replication_password %>"
 recovery_file_path="<%= @uber_db_util_path %>/recovery.conf"
 
 postgres_dir="/var/lib/postgresql/9.3/main"
@@ -36,4 +36,4 @@ rm -rf $postgres_dir
 echo "starting pg_basebackup for initial master database copy"
 echo -en "$replicator_password\n" | pg_basebackup -h $master_ip -D $postgres_dir -U $replicator_user -v --password -P
 
-cp -f $recover_file_path $postgres_dir
+cp -f $recovery_file_path $postgres_dir

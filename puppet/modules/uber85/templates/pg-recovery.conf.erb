@@ -9,4 +9,4 @@ primary_conninfo = 'host=<%= @master_ip %> port=5432 user=<%= @replication_user 
 # if anyone touches this file, postgres will switch from being the slave
 # to being the master.  touch this file if things go bad on the master
 # and you need to turn the slave into the master.
-trigger_file = '/tmp/postgresql.trigger'
+trigger_file = '<%= @uber_db_util_path %>/convert-to-master.trigger'
