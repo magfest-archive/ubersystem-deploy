@@ -1,0 +1,39 @@
+#!/bin/bash
+# GENERATE BY PUPPET DO NOT MODIFY
+#
+# WARNING! THIS SCRIPT WILL ERASE ANY DATA IN THE DATABASE
+# This script begins replication to this slave DB from a master's DB
+#
+# this script must be run as the 'postgres' user
+
+master_ip="<%= @master_ip %>"
+replicator_user="<%= @replication_user %>"
+replicator_password="<%= @replication_password %>"
+recovery_file_path="<%= @uber_db_util_path %>/recovery.conf"
+
+postgres_dir="/var/lib/postgresql/9.3/main"
+current_user="$(whoami)"
+
+codeword="YES.ERASE.THE.ENTIRE.DATABASE"
+if [ "$1" != "$codeword" ]
+then
+        echo "WARNING: running this script will erase ALL local postgres databases"
+        echo "and replace it with the master database's replicated data."
+        echo "To use this script please type:"
+        echo "$0 $codeword"
+        exit -1
+fi
+
+if [ $current_user != 'postgres' ]
+then
+echo "This script must be run as the postgres user"
+        exit -1
+fi
+
+echo "erasing local database cluster and starting replication"
+rm -rf $postgres_dir
+
+echo "starting pg_basebackup for initial master database copy"
+echo -en "$replicator_password\n" | pg_basebackup -h $master_ip -D $postgres_dir -U $replicator_user -v --password -P --xlog-method=stream
+
+cp -f $recovery_file_path $postgres_dir
