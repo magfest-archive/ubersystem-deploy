@@ -1,8 +1,5 @@
-puppet/init-keys.sh
 *.pyc
-magbot/secret.sh
 nohup.out
-magbot/node_modules
 .DS_Store*
 *.swp
 puppet/q
