@@ -1,3 +1,0 @@
-the final SSL .crt is the following files cat'd together IN THIS ORDER
-
-cat 14550383.crt COMODORSADomainValidationSecureServerCA.crt COMODORSAAddTrustCA.crt AddTrustExternalCARoot.crt > magfest.org.crt-bundle
