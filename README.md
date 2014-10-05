@@ -10,4 +10,3 @@ Getting started
 
 For more info, see the README.md in each of these dirs:
 Puppet - puppet configs for ubersystem installations/servers
-Hubot - Magfest bot source code (automated chatbot based on Hubot)
