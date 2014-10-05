@@ -10,3 +10,4 @@ puppet/puppet.conf
 puppet/hiera/nodes/secret
 **/*.crt*
 **/*.key
+.idea
