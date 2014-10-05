@@ -71,13 +71,14 @@ def apply(dry_run='no'):
             " "+manifest_to_run+" "
             )
 
-    # TODO: delete the node config since it contains secret info
+    # TODO: after 'puppet apply', delete the node config since it contains secret info
 
 def do_security_updates():
     sudo('apt-get update')
     sudo('apt-get -y upgrade')
 
-def install_puppet():
+# install just enough to get puppet going
+def install_initial_packages():
     sudo('apt-get update')
     sudo('apt-get -y install puppet ruby')
     sudo('gem install deep_merge')
@@ -125,7 +126,7 @@ def bootstrap_new_server():
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
     execute(do_security_updates)
-    execute(install_puppet)
+    execute(install_initial_packages)
     execute(reboot_if_updates_needed)
 
 def test():
