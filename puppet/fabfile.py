@@ -61,19 +61,22 @@ def sync_puppet_related_files_to_node():
 
     # now sync just the hiera node we're looking at
     # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    rsync_project(
-            remote_dir=node_dir,
-            local_dir='./hiera/nodes/' + env.host + '.yaml',
-            extra_opts=rsync_opts
-    )
+    local_node_file = './hiera/nodes/' + env.host + '.yaml'
+    if os.path.exists(local_node_file):
+        rsync_project(
+                remote_dir=node_dir,
+                local_dir=local_node_file,
+                extra_opts=rsync_opts
+        )
 
     # now sync just the secret hiera node we're looking at
     # (we don't want to sync them all because there's no need to have all of them on the remote node)
     secret_node_dir = node_dir + '/secret/'
-    if os.path.exists(secret_node_dir):
+    local_secret_node_file = './hiera/nodes/secret/' + env.host + '.yaml'
+    if os.path.exists(local_secret_node_file):
         rsync_project(
                 remote_dir=secret_node_dir,
-                local_dir='./hiera/nodes/secret/' + env.host + '.yaml',
+                local_dir=local_secret_node_file,
                 extra_opts=rsync_opts
         )
 
@@ -124,7 +127,7 @@ def get_host_ip(hostname):
     return ip
 
 # somewhat optional, but if we don't do this, it will prompt us yes/no
-# for acceptin the key for a new server, which we don't want if we're
+# for accepting the key for a new server, which we don't want if we're
 # fully automated.  or if this is a rebuild, the keys will mismatch
 # and it will stop.  
 #
@@ -147,28 +150,52 @@ def reboot_if_updates_needed():
 
 # one command to rule them all.  take a brand new newly provisioned virgin box and do everything needed
 # to have a full ubersystem deploy applied with puppet
-def puppet_apply_new_node():
-    execute(bootstrap_new_node)
+def puppet_apply_new_node(auto_update = True):
+    execute(bootstrap_new_node, auto_update)
     execute(puppet_apply)
 
 # do all setup tasks to get a node (a server which runs ubersystem) ready to do a 'puppet apply'
-def bootstrap_new_node():
+def bootstrap_new_node(auto_update = True):
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
-    execute(do_security_updates)
+
+    if auto_update:
+        execute(do_security_updates)
+
     execute(install_initial_packages)
-    execute(reboot_if_updates_needed)
+
+    if auto_update:
+        execute(reboot_if_updates_needed)
 
 def local_git_clone(repo_url, checkout_path):
     if repo_url and not os.path.exists(checkout_path):
         local("git clone " + repo_url + " " + checkout_path)
 
 # get a control server (NOT a node) ready to go. a control server runs fabric and puppet, and controls deployment
-# of several unrelated ubersystem nodes
+# of several (usually separate) nodes
 def bootstrap_control_server():
     local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber")
     local_git_clone(fabricconfig.git_regular_nodes_repo, "nodes")
     local_git_clone(fabricconfig.git_secret_nodes_repo, "nodes/secret")
+
+def bootstrap_vagrant_control_server():
+    generate_ssh_key_control_server_if_non_exists()
+
+    # make it so we can SSH into root@localhost as though it was another node
+    print("copying SSH key to local root user")
+    local("sudo mkdir -p /root/.ssh/")
+    local("sudo cp -f ~/.ssh/id_rsa.pub /root/.ssh/authorized_keys")
+
+    bootstrap_control_server()
+    puppet_apply_new_node(auto_update = False)
+
+
+# generate an ssh key
+def generate_ssh_key_control_server_if_non_exists():
+    if os.path.exists("~/.ssh/id_rsa.pub"):
+        return
+
+    local("ssh-keygen -f ~/.ssh/id_rsa -t rsa -C 'root@magfest-vagrant.com' -N '' ")
 
 def test():
     print("TEST")

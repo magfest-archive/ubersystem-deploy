@@ -1,0 +1,51 @@
+---
+uber_instances:
+        ubersystem_vagrant:
+                # path where ubersystem is installed
+                uber_path:      '/home/vagrant/uber/sideboard'
+
+                # a system user created for this instance.
+                # all files will be created as this user and the
+                # process runs as this user
+                uber_user:      'uber13'
+
+                sideboard_repo:       'https://github.com/magfest/sideboard'
+                sideboard_branch:     'master'
+
+                # each of these repos will be cloned and put in %uber_path%/plugins/%name%
+                sideboard_plugins:
+                        uber:
+                                git_repo: 'https://github.com/magfest/ubersystem'
+                                git_branch: 'master'
+                        magprime_emails:
+                                git_repo: 'https://github.com/magfest/magprime_emails'
+                                git_branch: 'master'
+
+                # network settings
+                # note: this port number is an internal port number.
+                # it is proxied by NGINX to 443 via virtualhost
+                # this port number is never publicly accessible
+                socket_port:    '8213'
+                url_prefix:     'm13'
+                # hostname:       'staging2.uber.magfest.org'
+
+                # event-specific settings
+                #theme:          'magfest'
+                event_name:     'MAGFest 139'
+                year: 139
+                #show_affiliates_and_extras: 'True'
+                #group_reg_available: 'True'
+                #group_reg_open: 'True'
+                #supporter_badge_type_enabled: 'True'
+                dev_box: 'True'
+                send_emails: 'False'
+                #prereg_opening:         '2014-06-29'
+                #prereg_takedown:        '2014-09-08'
+                #uber_takedown:          '2014-09-10'
+                #epoch:                  '2014-09-12 08'
+                #eschaton:               '2014-09-14 18'
+                #prereg_price: 50
+                #at_door_price: 60
+                #max_badge_sales: 2000
+                #at_the_con: 'False'
+                prereg_open: '2014-08-06'
