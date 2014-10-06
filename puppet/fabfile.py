@@ -1,8 +1,29 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists
+import os
 from os.path import expanduser
 import subprocess
+from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
+
+class FabricConfig:
+    def __init__(self):
+        self.parser = SafeConfigParser()
+        self.parser.read('fabric_settings.ini')
+
+        self.git_ubersystem_module_repo = self.read_config('repositories', 'git_ubersystem_module_repo', "https://github.com/magfest/ubersystem-puppet")
+        self.git_regular_nodes_repo = self.read_config('repositories', 'git_regular_nodes_repo')
+        self.git_secret_nodes_repo = self.read_config('repositories', 'git_secret_nodes_repo')
+
+    def read_config(self, section_name, option, default=None):
+        try:
+            return self.parser.get(section_name, option)
+        except NoOptionError:
+            return default
+        except NoSectionError:
+            return default
+
+fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
 
@@ -139,18 +160,15 @@ def bootstrap_new_node():
     execute(reboot_if_updates_needed)
 
 def local_git_clone(repo_url, checkout_path):
-    local("git clone " + repo_url + " " + checkout_path)
+    if repo_url and not os.path.exists(checkout_path):
+        local("git clone " + repo_url + " " + checkout_path)
 
 # get a control server (NOT a node) ready to go. a control server runs fabric and puppet, and controls deployment
 # of several unrelated ubersystem nodes
 def bootstrap_control_server():
-    local_git_clone("https://github.com/magfest/ubersystem-puppet", "modules/uber")
-    local_git_clone("https://github.com/magfest/magfest-hiera-nodes", "nodes")
-    local_git_clone("https://github.com/magfest/magfest-secret-nodes", "nodes/secret") # TODO: probably just 'git init'
-
-    # puppet will do this part:
-    # /home/magfest/uber/sideboard - magfest sideboard repo
-    # /home/magfest/uber/sideboard/plugins/uber - uber repo
+    local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber")
+    local_git_clone(fabricconfig.git_regular_nodes_repo, "nodes")
+    local_git_clone(fabricconfig.git_secret_nodes_repo, "nodes/secret")
 
 def test():
     print("TEST")

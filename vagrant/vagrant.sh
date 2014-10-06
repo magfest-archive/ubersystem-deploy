@@ -1,3 +1,3 @@
 #!/bin/bash
 
-. puppet/setup_control_server.sh
+# . puppet/setup_control_server.sh
