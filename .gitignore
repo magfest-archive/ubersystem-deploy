@@ -8,3 +8,4 @@ puppet/hiera/nodes/secret
 **/*.crt*
 **/*.key
 .idea
+fabric_settings.ini
