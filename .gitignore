@@ -12,3 +12,4 @@ puppet/fabric_settings.ini
 puppet/fabric_settingsDONTUSE.ini
 .vagrant/
 puppet/modules/uber/
+sideboard/
