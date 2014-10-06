@@ -9,3 +9,4 @@ puppet/hiera/nodes/secret
 **/*.key
 .idea
 fabric_settings.ini
+fabric_settingsDONTUSE.ini
