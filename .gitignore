@@ -10,3 +10,5 @@ puppet/hiera/nodes/secret
 .idea
 fabric_settings.ini
 fabric_settingsDONTUSE.ini
+.vagrant/
+puppet/modules/uber/
