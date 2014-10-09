@@ -5,7 +5,6 @@ nohup.out
 puppet/q
 puppet/puppet.conf
 puppet/hiera/nodes/secret
-.idea
 puppet/fabric_settings.ini
 puppet/fabric_settingsDONTUSE.ini
 .vagrant/
