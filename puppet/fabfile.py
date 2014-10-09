@@ -12,8 +12,14 @@ class FabricConfig:
         self.parser.read('fabric_settings.ini')
 
         self.git_ubersystem_module_repo = self.read_config('repositories', 'git_ubersystem_module_repo', "https://github.com/magfest/ubersystem-puppet")
+        self.git_ubersystem_module_repo_branch = self.read_config('repositories', 'git_ubersystem_module_repo_branch', None)
+
         self.git_regular_nodes_repo = self.read_config('repositories', 'git_regular_nodes_repo')
+        self.git_regular_nodes_repo_branch = self.read_config('repositories', 'git_regular_nodes_repo_branch', None)
+
         self.git_secret_nodes_repo = self.read_config('repositories', 'git_secret_nodes_repo')
+        self.git_secret_nodes_repo_branch = self.read_config('repositories', 'git_secret_nodes_repo_branch', None)
+
 
     def read_config(self, section_name, option, default=None):
         try:
@@ -167,16 +173,21 @@ def bootstrap_new_node(auto_update = True):
     if auto_update:
         execute(reboot_if_updates_needed)
 
-def local_git_clone(repo_url, checkout_path):
+
+def local_git_clone(repo_url, checkout_path, branch=None):
     if repo_url and not os.path.exists(checkout_path):
-        local("git clone " + repo_url + " " + checkout_path)
+        branch_args = ""
+        if branch:
+            branch_args = " -b " + branch + " "
+        local("git clone " + repo_url + " " + checkout_path + branch_args)
+
 
 # get a control server (NOT a node) ready to go. a control server runs fabric and puppet, and controls deployment
 # of several (usually separate) nodes
 def bootstrap_control_server():
-    local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber")
-    local_git_clone(fabricconfig.git_regular_nodes_repo, "nodes")
-    local_git_clone(fabricconfig.git_secret_nodes_repo, "nodes/secret")
+    local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber", branch = fabricconfig.git_ubersystem_module_repo_branch)
+    local_git_clone(fabricconfig.git_regular_nodes_repo, "nodes", branch = fabricconfig.git_regular_nodes_repo_branch)
+    local_git_clone(fabricconfig.git_secret_nodes_repo, "nodes/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
 
 def bootstrap_vagrant_control_server():
     generate_ssh_key_control_server_if_non_exists()
