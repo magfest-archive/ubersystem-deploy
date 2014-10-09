@@ -145,8 +145,11 @@ def register_remote_ssh_keys():
     # remove and re-add the new server's SSH key
     ip_of_host = get_host_ip(env.host)
     print("ip is " + ip_of_host)
-    local('ssh-keygen -R ' + env.host)
-    local('ssh-keygen -R ' + ip_of_host)
+	
+    if os.path.exists("~/.ssh/known_hosts"):
+        local('ssh-keygen -R ' + env.host)
+        local('ssh-keygen -R ' + ip_of_host)
+		
     local('ssh-keyscan -H ' + env.host + ' >> ' + known_hosts)
     local('ssh-keyscan -H ' + ip_of_host + ' >> ' + known_hosts)
 
