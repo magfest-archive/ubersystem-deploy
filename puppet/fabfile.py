@@ -186,8 +186,8 @@ def local_git_clone(repo_url, checkout_path, branch=None):
 # of several (usually separate) nodes
 def bootstrap_control_server():
     local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber", branch = fabricconfig.git_ubersystem_module_repo_branch)
-    local_git_clone(fabricconfig.git_regular_nodes_repo, "nodes", branch = fabricconfig.git_regular_nodes_repo_branch)
-    local_git_clone(fabricconfig.git_secret_nodes_repo, "nodes/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
+    local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes", branch = fabricconfig.git_regular_nodes_repo_branch)
+    local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
 
 def bootstrap_vagrant_control_server():
     generate_ssh_key_control_server_if_non_exists()
