@@ -10,9 +10,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 80, host: 80
     config.vm.network :forwarded_port, guest: 443, host: 443
 
-    if Vagrant::Util::Platform.windows?
+    # uncomment to enable SMB filesharing which is WAY faster than
+    # Virtualbox's shared folders which are SLOOOOOOOOOOOOOOOOW
+    #
+    # if Vagrant::Util::Platform.windows?
+    #    config.vm.synced_folder ".", "/home/vagrant/uber", type: "smb"
+    # else
         config.vm.synced_folder ".", "/home/vagrant/uber"
-    end
+    # end
 
     #
     # No good can come from updating plugins.
@@ -33,7 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |v|
-        v.memory = 512
+        v.memory = 1024
         v.cpus = 2
     end
 
