@@ -11,15 +11,25 @@ More documentation is coming soon.
 Getting started with Vagrant
 ===============
 
-Short version that is pretty likely to work right now.
+(Windows instructions, though linux/mac should be identical)
 
-Clone this repository.
+Clone this repository somewhere.
 
-AS AN ADMINISTRATOR
+AS AN ADMINISTRATOR, open a command prompt
 ```
 cd ubersystem-deploy
 vagrant up
 ```
 
-In about 15 minutes you should have a fully functional ubersystem deployment accessible at http://localhost/
+then, SSH into vagrant by running
+```
+vagrant ssh
+```
 
+once in via SSH,
+```
+cd ~/uber/puppet/
+./setup_vagrant_control_server.sh
+```
+
+Then, in about 15 minutes you should have a fully functional ubersystem deployment accessible at http://localhost/
