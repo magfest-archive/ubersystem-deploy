@@ -6,6 +6,6 @@
 :hierarchy:
         - nodes/secret/%{::fqdn}
         - nodes/%{::fqdn}
-        - vagrant-%{::hostname}
+        - "vagrant-%{::hostname}"
         - common
 :merge_behavior: deeper

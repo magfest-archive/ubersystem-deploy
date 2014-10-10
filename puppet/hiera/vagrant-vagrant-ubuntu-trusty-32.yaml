@@ -7,14 +7,16 @@ uber_instances:
                 # /home/vagrant/uber/ is being hosted on the HOST os and shared.
                 # this is extremely convenient for development, but, disk IO is far slower
                 # in shared folders.
-                uber_path:      '/home/vagrant/uber/sideboard'
+                # uber_path:      '/home/vagrant/uber/sideboard'
 
                 # ALTERNATIVELY, use this path instead for faster deploys/IO,
                 # but it will move the repo out of the HOST os's shared folder
                 # which will result in not being able to edit these directly on the shared host.
                 # it also means that you have to have the GUEST machine powered up in order to access the files,
                 # and if you destroy the machine you will lose uncommited changes.
-                # uber_path:      '/usr/local/sideboard'
+                # 
+                # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
+                uber_path:      '/usr/local/sideboard'
 
                 # a system user created for this instance.
                 # all files will be created as this user and the
