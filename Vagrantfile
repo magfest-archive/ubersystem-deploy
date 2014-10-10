@@ -9,6 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 8282, host: 8282
     config.vm.network :forwarded_port, guest: 80, host: 80
     config.vm.network :forwarded_port, guest: 443, host: 443
+	config.vm.network "private_network", type: "dhcp"
 
     # uncomment to enable SMB filesharing which is WAY faster than
     # Virtualbox's shared folders which are SLOOOOOOOOOOOOOOOOW.
