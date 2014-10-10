@@ -16,12 +16,15 @@ uber_instances:
                 # and if you destroy the machine you will lose uncommited changes.
                 # 
                 # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
-                uber_path:      '/usr/local/sideboard'
+                uber_path:      '/usr/local/uber/sideboard'
 
                 # a system user created for this instance.
                 # all files will be created as this user and the
                 # process runs as this user
-                uber_user:      'uber'
+                uber_user:  'vagrant'
+                uber_group: 'vagrant'
+
+                organization_name: 'CoolCon'
 
                 sideboard_repo:       'https://github.com/magfest/sideboard'
                 sideboard_branch:     'master'
