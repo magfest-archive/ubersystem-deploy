@@ -4,6 +4,7 @@ nohup.out
 *.swp
 puppet/q
 puppet/puppet.conf
+puppet/hiera/nodes
 puppet/hiera/nodes/secret
 puppet/fabric_settings.ini
 puppet/fabric_settingsDONTUSE.ini
