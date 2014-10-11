@@ -4,8 +4,8 @@
 :yaml:
         :datadir: '/usr/local/puppet/hiera/'
 :hierarchy:
-        - "nodes/secret/%{::fqdn}"
-        - "nodes/%{::fqdn}"
+        - "nodes/external/secret/%{::fqdn}"
+        - "nodes/external/%{::fqdn}"
         - "nodes/vagrant-%{::is_vagrant}"
         - "nodes/common"
         - "vagrant-%{::is_vagrant}"

@@ -36,7 +36,7 @@ home_dir = expanduser("~")
 puppet_dir = '/usr/local/puppet'
 puppet_conf = puppet_dir+'/puppet.conf'
 hiera_conf = puppet_dir+'/hiera/hiera.yaml'
-node_dir = puppet_dir+'/hiera/nodes'
+node_dir = puppet_dir+'/hiera/nodes/external'
 manifest_to_run = puppet_dir+'/manifests/site.pp'
 modules_path = puppet_dir+'/modules'
 
@@ -55,11 +55,11 @@ def set_remote_hostname():
     sudo('hostname ' + env.host)
 
 def sync_puppet_related_files_to_node():
-    # 1st sync everything but the nodes dir
+    # 1st sync everything but hiera/nodes/external dir
     rsync_project(
             remote_dir=puppet_dir, 
             local_dir='.', 
-            extra_opts=rsync_opts + ' --exclude=hiera/nodes'
+            extra_opts=rsync_opts + ' --exclude=hiera/nodes/external'
     )
 
     sudo('rm -rf ' + node_dir)
@@ -67,7 +67,7 @@ def sync_puppet_related_files_to_node():
 
     # now sync just the hiera node we're looking at
     # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    local_node_file = './hiera/nodes/' + env.host + '.yaml'
+    local_node_file = './hiera/nodes/external/' + env.host + '.yaml'
     if os.path.exists(local_node_file):
         rsync_project(
                 remote_dir=node_dir,
@@ -78,7 +78,7 @@ def sync_puppet_related_files_to_node():
     # now sync just the secret hiera node we're looking at
     # (we don't want to sync them all because there's no need to have all of them on the remote node)
     secret_node_dir = node_dir + '/secret/'
-    local_secret_node_file = './hiera/nodes/secret/' + env.host + '.yaml'
+    local_secret_node_file = './hiera/nodes/external/secret/' + env.host + '.yaml'
     if os.path.exists(local_secret_node_file):
         rsync_project(
                 remote_dir=secret_node_dir,
@@ -189,8 +189,8 @@ def local_git_clone(repo_url, checkout_path, branch=None):
 # of several (usually separate) nodes
 def bootstrap_control_server():
     local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber", branch = fabricconfig.git_ubersystem_module_repo_branch)
-    local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes", branch = fabricconfig.git_regular_nodes_repo_branch)
-    local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
+    local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes/", branch = fabricconfig.git_regular_nodes_repo_branch)
+    local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/external/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
 
 def bootstrap_vagrant_control_server():
     generate_ssh_key_control_server_if_non_exists()
