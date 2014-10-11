@@ -12,4 +12,4 @@ hostn=$1
 # which can then be used to do stuff. only run this script once, and once
 # it's successful, use apply instead
 
-fab -u root -H $hostn apply_new_node
+fab -u root -H $hostn puppet_apply_new_node
