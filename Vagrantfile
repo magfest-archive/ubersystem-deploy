@@ -9,16 +9,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 8282, host: 8282
     config.vm.network :forwarded_port, guest: 80, host: 80
     config.vm.network :forwarded_port, guest: 443, host: 443
-	config.vm.network "private_network", type: "dhcp"
+
+    # uncomment for private network 
+    # (useful if doing SMB or NFS shares FROM the guest OS -to- host OS
+    # config.vm.network "private_network", type: "dhcp"
 
     # uncomment to enable SMB filesharing which is WAY faster than
     # Virtualbox's shared folders which are SLOOOOOOOOOOOOOOOOW.
-	# note: symlinks don't work then.
+    # note: symlinks don't work then.
     #
     # if Vagrant::Util::Platform.windows?
     #    config.vm.synced_folder ".", "/home/vagrant/uber", type: "smb"
     # else
-       config.vm.synced_folder ".", "/home/vagrant/uber"
+    config.vm.synced_folder ".", "/home/vagrant/uber"
     # end
 
     #
