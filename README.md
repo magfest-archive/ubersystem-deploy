@@ -13,23 +13,34 @@ Getting started with Vagrant
 
 (Windows instructions, though linux/mac should be identical)
 
-Clone this repository somewhere.
-
-AS AN ADMINISTRATOR, open a command prompt
+1) Clone this repository somewhere like so:
 ```
-cd ubersystem-deploy
+cd somewhere
+git clone https://github.com/magfest/ubersystem-deploy/ 
+```
+
+2) Setup the config file.  This step is optional if you're just doing Vagrant, but necessary for production.
+```
+cd ubersystem-deploy/puppet/
+cp fabric_settings.example.ini fabric_settings.ini
+```
+
+edit fabric_settings.ini to your liking.
+
+3) AS AN ADMINISTRATOR, open a command prompt
+```
 vagrant up
 ```
 
-then, SSH into vagrant by running
+4) then, SSH into vagrant by running
 ```
 vagrant ssh
 ```
 
-once in via SSH,
+5) once in via SSH,
 ```
 cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
 
-Then, in about 15 minutes you should have a fully functional ubersystem deployment accessible at http://localhost/
+6) Then, in about 15 minutes you should have a fully functional ubersystem deployment accessible at http://localhost/uber/
