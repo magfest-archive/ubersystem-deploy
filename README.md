@@ -43,7 +43,7 @@ cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
 
-6) Then, in about 15 minutes you should have a fully functional ubersystem deployment accessible at http://localhost/uber/
+6) Then, in about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at http://localhost/uber/
 
 
 Getting started with a real control server
