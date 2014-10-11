@@ -89,7 +89,16 @@ example: if the target node is named uber.mydomain.com, you want to do the follo
 cp puppet/hiera/nodes/vagrant-1.yaml puppet/hiera/nodes/external/uber.mydomain.com.yaml
 ```
 
-3) Do the deploy
+3) Do the first-time deploy
+
+```
+cd puppet/
+./init_node.sh uber.mydomain.com
+```
+
+That's it, you are done!
+
+4) from this point on, whenever you want to do a deploy just do the following:
 
 ```
 cd puppet/
