@@ -1,6 +1,9 @@
 # hiera file that is used for Vagrant installs only, never for production
 
 ---
+classes:
+        - uber_server
+
 uber_instances:
         ubersystem_vagrant:
                 # the path where sideboard+ubersystem is installed on the guest OS

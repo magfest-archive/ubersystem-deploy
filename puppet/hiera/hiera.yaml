@@ -4,8 +4,9 @@
 :yaml:
         :datadir: '/usr/local/puppet/hiera/'
 :hierarchy:
-        - nodes/secret/%{::fqdn}
-        - nodes/%{::fqdn}
-        - "vagrant-%{::hostname}"
-        - common
+        - "nodes/secret/%{::fqdn}"
+        - "nodes/%{::fqdn}"
+        - "nodes/common"
+        - "vagrant-%{::is_vagrant}"
+        - "common"
 :merge_behavior: deeper
