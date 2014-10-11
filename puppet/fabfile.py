@@ -146,7 +146,8 @@ def register_remote_ssh_keys():
     ip_of_host = get_host_ip(env.host)
     print("ip is " + ip_of_host)
 	
-    if os.path.exists("~/.ssh/known_hosts"):
+    if os.path.exists(known_hosts):
+        print('removing existing keys')
         local('ssh-keygen -R ' + env.host)
         local('ssh-keygen -R ' + ip_of_host)
 		
