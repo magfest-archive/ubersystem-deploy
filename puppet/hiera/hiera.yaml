@@ -6,6 +6,7 @@
 :hierarchy:
         - "nodes/secret/%{::fqdn}"
         - "nodes/%{::fqdn}"
+        - "nodes/vagrant-%{::is_vagrant}"
         - "nodes/common"
         - "vagrant-%{::is_vagrant}"
         - "common"
