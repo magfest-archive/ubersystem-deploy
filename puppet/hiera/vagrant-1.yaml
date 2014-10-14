@@ -55,4 +55,4 @@ uber_instances:
                 send_emails: 'False'
                 prereg_open: '2014-08-06'
 
-                hostname: 'vagrant-ubuntu-trusty-32'
+                hostname: 'localhost'
