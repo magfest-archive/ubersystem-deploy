@@ -1,0 +1,11 @@
+#!/bin/bash
+# Someday, this should be a real template, but for now...
+# UBERDIR=<%= @uber_path %>/plugins
+UBERDIR=/usr/local/anthrocon/plugins/
+cd $UBERDIR
+for PULLIT in $(ls); do 
+    cd $PULLIT
+    sudo -u uber git pull
+    cd $UBERDIR
+done
+/usr/local/bin/supervisorctl restart anthrocon_daemon

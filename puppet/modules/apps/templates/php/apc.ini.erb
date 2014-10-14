@@ -1,0 +1,12 @@
+
+extension=apc.so
+
+apc.shm_size=<%= @shm_size %>
+
+;
+; This is no longer needed. More details at:
+; https://drupal.org/node/1831218
+; and http://www.php.net/manual/en/apc.configuration.php#ini.apc.slam-defense
+;
+apc.slam_defense = 0
+

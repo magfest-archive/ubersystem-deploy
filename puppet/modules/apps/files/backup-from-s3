@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# Our main cron script. This is used as an entry point for cronjobs.
+#
+# - Backs up files from S3
+# - Prunes old backups
+#
+
+# Errors are fatal
+set -e
+
+if test ! "$1"
+then
+	echo "Syntax: $0 s3_bucket_to_backup"
+	exit 1
+fi
+
+S3_BUCKET=$1
+DIR="$HOME/backups/${S3_BUCKET}/"
+
+#
+# First, back up from S3
+#
+OPTIONS=""
+OPTIONS="$OPTIONS -v "
+
+#
+# Potentially dangerous. This does not compare checksums of exsting files.
+#
+OPTIONS="$OPTIONS --skip-existing "
+
+#OPTIONS="$OPTIONS --dry-run " # For testing/debugging
+
+#
+# Do NOT delete removed files.  This keeps accidental deletion 
+# of our S3 buckets from wiping out the copies of data here.
+#
+OPTIONS="$OPTIONS --no-delete-removed "
+
+nice -n 20 s3cmd ${OPTIONS} sync s3://${S3_BUCKET} ${DIR}
+
+
+#
+# Now expire old backups
+#
+#MAX_DAYS=45
+MAX_DAYS=30
+#MAX_DAYS=22 # Debugging
+
+
+echo ""
+echo "Expiring old backups from directory '${DIR}'..."
+echo ""
+
+FILES=`find ${DIR} -type f -mtime +${MAX_DAYS}`
+for FILE in $FILES
+do
+        echo "File '${FILE}' is over '${MAX_DAYS}' old. Removing it..."
+        rm -f ${FILE}
+done
+
+echo ""
+echo "Done with '${DIR}'!"
+echo ""
+
+
+
+echo ""
+echo "Disk space report"
+echo ""
+df -h
+
+
+

@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# This script is used to get the current IP address, and update DNS with it.
+#
+# Syntax: $0 interface domain hostname
+#
+
+set -e # Errors are fatal
+
+INTERFACE=$1
+DOMAIN=$2
+HOSTNAME=$3
+
+if test $INTERFACE && test $DOMAIN && test $HOSTNAME
+then
+	true
+else
+	echo "Syntax: $0 interface domain hostname"
+	exit 1
+fi
+
+IP=`ifconfig $INTERFACE |grep inet | sed -e "s/\(.*\)\(addr:\)\([0-9\.]\+\)\(.*\)/\\3/"`
+
+#
+# TODO: I'm abandoning this for now, since the results I'm getting some AWS are in JSON
+# format, and jq doesn't exist here.
+# I could do an "npm install -g json" but the I'd have to install Node first.
+# It sounds like a lot of work, and I don't think that justifies the results at this point.
+# I *may* revisit this later.
+#
+
+# dns get zone
+# dns delete || true
+# dns update
+

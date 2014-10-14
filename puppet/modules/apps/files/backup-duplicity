@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Make local backups with Duplicity
+#
+# Command line options are directories to exclude
+
+#
+# Errors are fatal
+#
+set -e
+
+#
+# Our options
+#
+SRC_DIR="/var/www"
+TARGET_DIR="file:///backups/"
+VOLSIZE=1024
+DUPLICITY_NUM_FULL_KEEP=4
+
+
+#
+# Options for Duplicity
+#
+DUPLICITY_OPTIONS=""
+DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --no-encryption -v1 "
+DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --full-if-older-than 1W "
+DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --volsize ${VOLSIZE} "
+DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --allow-source-mismatch "
+DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --exclude /var/www/backups-mysql-history "
+
+while true 
+do
+
+	if test $# -eq 0
+	then
+		break
+	fi
+
+	DIR=$1
+	shift
+
+	DUPLICITY_OPTIONS="${DUPLICITY_OPTIONS} --exclude ${DIR}"
+
+done
+
+nice -n20 duplicity ${DUPLICITY_OPTIONS} ${SRC_DIR} ${TARGET_DIR}
+nice -n20 duplicity remove-all-but-n-full ${DUPLICITY_NUM_FULL_KEEP} --force ${DUPLICITY_OPTIONS} ${TARGET_DIR}
+nice -n20 duplicity collection-status ${DUPLICITY_OPTIONS} ${TARGET_DIR}
+#duplicity list-current-files ${OPTIONS} ${TARGET}
+
+

@@ -1,0 +1,12 @@
+#
+# This is .bashrc, executed when a login OR non-login shell is spawned
+#
+
+#
+# Make ls be in color
+#
+alias ls="ls --color=auto"
+
+export EDITOR=vim
+
+

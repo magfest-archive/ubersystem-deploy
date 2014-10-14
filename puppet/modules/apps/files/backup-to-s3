@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# Back up our data to S3
+#
+
+#
+# Errors are fatal
+#
+set -e
+
+if test ! "$2"
+then
+	echo "Syntax: $0 s3_bucket prefix "
+	exit 1
+fi
+
+S3_BUCKET=$1
+PREFIX=$2
+shift 2
+
+#
+# What directory are we backing up?
+#
+SRC="/backups/"
+TARGET="s3://${S3_BUCKET}/${PREFIX}/"
+
+OPTIONS=""
+OPTIONS="$OPTIONS -v "
+
+#
+# Not my favorite way of solving this problem, I'll probably revisit it in the future
+#
+OPTIONS="$OPTIONS -c /home/ubuntu/.s3cfg"
+
+#
+# Potentially dangerous. This does not compare checksums of exsting files.
+#
+OPTIONS="$OPTIONS --skip-existing "
+
+
+OPTIONS="$OPTIONS --delete-removed "
+#OPTIONS="$OPTIONS --dry-run " # For testing/debugging
+
+#nice -n 20 s3cmd ${OPTIONS} sync ${SRC} ${TARGET}
+nice -n 20 s3cmd ${OPTIONS} $@ sync ${SRC} ${TARGET}
+
