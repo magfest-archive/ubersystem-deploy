@@ -115,7 +115,7 @@ def do_security_updates():
 # install just enough initial packages to get puppet going.
 def install_initial_packages():
     sudo('apt-get update')
-    sudo('apt-get -y install puppet ruby')
+    sudo('apt-get -y install puppet ruby tofrodos')
     sudo('gem install deep_merge')
     sudo('mkdir -p ' + puppet_dir)
     sudo('chown -R ' + env.user + ' ' + puppet_dir)
