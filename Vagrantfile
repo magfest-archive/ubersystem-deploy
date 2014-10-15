@@ -7,8 +7,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box"
 
     config.vm.network :forwarded_port, guest: 8282, host: 8282
-    config.vm.network :forwarded_port, guest: 80, host: 80
-    config.vm.network :forwarded_port, guest: 443, host: 443
+    config.vm.network :forwarded_port, guest: 80, host: 8000
+    config.vm.network :forwarded_port, guest: 4443, host: 4443
 
     # uncomment for private network 
     # (useful if doing SMB or NFS shares FROM the guest OS -to- host OS
