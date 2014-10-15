@@ -6,6 +6,7 @@ classes:
 uber_instances: 
         anthrocon:
                 uber_path:      '/usr/local/anthrocon'
+                organization_name: 'Anthrocon'
                 sideboard_repo:       'https://github.com/magfest/sideboard'
                 sideboard_branch:     'master'
 # each of these repos will be cloned and put in %uber_path%/plugins/%name%
