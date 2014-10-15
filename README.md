@@ -7,6 +7,17 @@ It will check out a bunch of git repos and is the basis for both Vagrant setups 
 
 Docs are WIP, more a coming soon. If you need any help here, email code at magfest dot net.
 
+Windows instructions
+=====================
+
+If you're on Linux/etc the process will be similar.
+
+## What you'll need
+* [Git](http://git-scm.com/) to check out this repo and to provide SSH.
+* [TortoiseGit](https://code.google.com/p/tortoisegit/) or [GitHub for Windows](https://windows.github.com/) to use as an interface for Git. You can also use any other git tool you like, or simply use the command line.
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads) for running your development VM.
+* [Vagrant](http://www.vagrantup.com/downloads.html) itself.
+
 
 Getting started with Vagrant
 ===============
@@ -43,13 +54,16 @@ cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
 
-6) Then, in about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at http://localhost/uber/
+6) Then, in about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at: 
+```
+http://localhost:8000/uber/
+```
 
 
 Getting started with a real control server
 ====================
 
-Use this for production.  A control server controls the puppet deploys on OTHER NODES, not the one it's running on.
+Use this for production.  A control server controls the puppet deploys on OTHER NODES, not the one it's running on.  Don't use this for Vagrant
 
 1) get this repo on the control server box
 ```
