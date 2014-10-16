@@ -61,7 +61,7 @@ http://localhost:8000/uber/
 
 7) logout of your SSH session and log back in again (for some bash login scripts to take effect)
 
-8) For more info on how to actually code and make changes, see: [Developer Docs](DEVELOP.md)
+8) For more info on how to actually code and make changes, see: [Developer Docs](DEVELOPING.md)
 
 Getting started with a real control server
 ====================
