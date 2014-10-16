@@ -1,0 +1,25 @@
+
+#
+# Automatic garbage collection
+#
+[gc]
+	auto = 1
+
+[core]
+
+[user]
+	name = Douglas Muth
+	email = dmuth@dmuth.org
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+
+[alias]
+	st = status
+	ci = commit
+
+[receive]
+	denyCurrentBranch = warn
+

@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Wrapper for executing ses-send-email.pl
+#
+
+set -e # Errors are fatal
+
+#
+# Where are our Perl libraries
+#
+export PERL5LIB=/opt/puppet-bin/ses
+
+#
+# Our AWS credentials
+#
+CREDENTIALS=$HOME/.aws-ses-credentials
+
+#
+# Actually execute the script
+#
+/opt/puppet-bin/ses/ses-send-email.pl -k ${CREDENTIALS} $@ 
+
+
