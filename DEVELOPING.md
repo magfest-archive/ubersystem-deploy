@@ -42,18 +42,18 @@ Directory structure
 Once everything is fully deployed, the folder structure that you can access from the Host OS 
 (i.e. your Windows machine or whatever host OS you are using) will look like this:
 
-ubersystem-deploy/ - this repository
-ubersystem-deploy/sideboard - a repository containing sideboard, 
-ubersystem-deploy/plugins - a folder which contains other repositories which are ubersystem plugins, which includes....
-ubersystem-deploy/plugins/uber - the main ubersystem repository itself, where most of the important code is
+- ubersystem-deploy/ - this repository
+- ubersystem-deploy/sideboard - a repository containing sideboard, 
+- ubersystem-deploy/plugins - a folder which contains other repositories which are ubersystem plugins, which includes....
+- ubersystem-deploy/plugins/uber - the main ubersystem repository itself, where most of the important code is
 
-ubersystem-deploy/hiera/nodes - an optional repository containing your organization's specific hiera overrides
-ubersystem-deploy/hiera/nodes/external/secret - an optional repository containing your organization's specific SECRET hiera overrides
+- ubersystem-deploy/hiera/nodes - an optional repository containing your organization's specific hiera overrides
+- ubersystem-deploy/hiera/nodes/external/secret - an optional repository containing your organization's specific SECRET hiera overrides
 
 
 TODO
 ====
-add info about setting up test data in the DB
-add info about resetting the db with 'sep reset_db'
-add info about re-deploying config changes with 'puppet/apply_node.sh'
-add info about fabric_settings.ini and the recommended way to setup production environments for other organizations
+- add info about setting up test data in the DB
+- add info about resetting the db with 'sep reset_db'
+- add info about re-deploying config changes with 'puppet/apply_node.sh'
+- add info about fabric_settings.ini and the recommended way to setup production environments for other organizations
