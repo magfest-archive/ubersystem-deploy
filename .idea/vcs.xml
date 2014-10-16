@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/puppet/hiera/nodes" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/puppet/modules/uber" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/magprime_emails" vcs="Git" />

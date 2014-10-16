@@ -1,4 +1,3 @@
-import 'firewall.pp'
 import 'ssh.pp'
 
 class uber_server {
@@ -9,8 +8,6 @@ class uber_server {
     timezone => 'America/New_York',
   }
 
-  include firewall_webserver
-  include firewall_sshserver
   include ssh
   include uber
 

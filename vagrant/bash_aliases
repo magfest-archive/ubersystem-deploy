@@ -1,0 +1,5 @@
+alias python='/home/vagrant/uber/sideboard/env/bin/python'
+export PYTHONSTARTUP='/home/vagrant/uber/vagrant/pythonstartup.py'
+alias run_server='/home/vagrant/uber/sideboard/env/bin/python /home/vagrant/uber/sideboard/sideboard/run_server.py'
+
+source /home/vagrant/uber/sideboard/env/bin/activate
