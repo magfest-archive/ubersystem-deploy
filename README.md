@@ -54,10 +54,12 @@ cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
 
-6) Then, in about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at: 
+6) In about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at: 
 ```
 http://localhost:8000/uber/
 ```
+
+7) logout of your SSH session and log back in again (for some bash login scripts to take effect)
 
 
 Getting started with a real control server
