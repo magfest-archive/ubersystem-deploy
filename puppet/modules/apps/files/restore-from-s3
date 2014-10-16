@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# This script restores backups from S3, and then uses Duplicity 
+# to extract everything into a local directory
+#
+
+set -e # Errors are fatal
+#set -x # Debugging
+
+if test $UID != 0
+then
+	echo "$0: You must run me as root!"
+	exit 1
+fi
+
+#
+# Check our arguments
+#
+if test ! "$2"
+then
+	echo "Syntax $0 target_s3_resource target_dir"
+	exit 1
+fi
+
+#
+# Grab our arguments
+#
+SRC=$1
+TARGET=$2
+shift 2
+
+#
+# If the last character is not a slash, s3cmd won't download the 
+# files to our target, but instea put them in a child. 
+# So we need to catch that.
+#
+LAST_CHAR=`echo $SRC | sed -re 's/.*(.)$/\1/'`
+if test "$LAST_CHAR" != "/"
+then
+	echo "$0: Last character of ${SRC} is '${LAST_CHAR}'. It must be a slash!"
+	exit 1
+fi
+
+
+#
+# Drop into our directory for all future work
+#
+pushd ${TARGET} >/dev/null
+
+OPTIONS=""
+OPTIONS="${OPTIONS} -v "
+
+#
+# Not my favorite way of solving this problem, I'll probably revisit it in the future
+#
+OPTIONS="${OPTIONS} -c /home/ubuntu/.s3cfg"
+
+#
+# Potentially dangerous. This does not compare checksums of exsting files.
+#
+OPTIONS="${OPTIONS} --skip-existing "
+OPTIONS="${OPTIONS} --no-delete-removed "
+#OPTIONS="${OPTIONS} --dry-run " # For testing/debugging
+
+nice -n 20 s3cmd ${OPTIONS} $@ sync ${SRC} .
+
+#
+# Now restore our files with duplicity
+#
+mkdir -p restored-files
+duplicity --no-encryption restore file://. restored-files/
+

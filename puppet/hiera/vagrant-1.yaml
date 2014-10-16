@@ -1,58 +1,64 @@
-# hiera file that is used for Vagrant installs only, never for production
-
 ---
 classes:
         - uber_server
-
-uber_instances:
-        ubersystem_vagrant:
-                # the path where sideboard+ubersystem is installed on the guest OS
-                # /home/vagrant/uber/ is being hosted on the HOST os and shared.
-                # this is extremely convenient for development, but, disk IO is far slower
-                # in shared folders.
-                uber_path:      '/home/vagrant/uber/sideboard'
-
-                # ALTERNATIVELY, use this path instead for faster deploys/IO,
-                # but it will move the repo out of the HOST os's shared folder
-                # which will result in not being able to edit these directly on the shared host.
-                # it also means that you have to have the GUEST machine powered up in order to access the files,
-                # and if you destroy the machine you will lose uncommited changes.
-                # 
-                # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
-                # uber_path:      '/usr/local/uber/sideboard'
-
-                # a system user created for this instance.
-                # all files will be created as this user and the
-                # process runs as this user
-                uber_user:  'vagrant'
-                uber_group: 'vagrant'
-
-                organization_name: 'CoolCon'
-
+        - software
+        - nginx
+uber_instances: 
+        anthrocon:
+                uber_path:      '/usr/local/anthrocon'
+                organization_name: 'Anthrocon'
                 sideboard_repo:       'https://github.com/magfest/sideboard'
                 sideboard_branch:     'master'
-
-                # each of these repos will be cloned and put in %uber_path%/plugins/%name%
+# each of these repos will be cloned and put in %uber_path%/plugins/%name%
                 sideboard_plugins:
-                        uber:
-                                git_repo: 'https://github.com/magfest/ubersystem'
-                                git_branch: 'master'
-                        magprime_emails:
-                                git_repo: 'https://github.com/magfest/magprime_emails'
-                                git_branch: 'master'
-
-                # network settings
-                # note: this port number is an internal port number.
-                # it is proxied by NGINX to 443 via virtualhost
-                # this port number is never publicly accessible
-                socket_port:    '8282'
-                url_prefix:     'uber'
-
-                # event-specific settings
-                event_name:     'CoolCon'
-                year: 13
+                    uber:
+                           git_repo: 'https://github.com/magfest/ubersystem'
+                           git_branch: 'ac-staging'
+                    anthrocon_plugin:
+                           git_repo: 'https://github.com/Anthrocon-Reg/anthrocon_plugin'
+                           git_branch: 'master'
+                socket_port:    '4304'
+                url_prefix:     'anthrocon'
+                uber_user:      'uber'
+                hostname:       '%{hostname}'
+                event_name:     'Anthrocon'
+                year: 2015
                 dev_box: 'True'
                 send_emails: 'False'
-                prereg_open: '2014-08-06'
-
-                hostname: 'vagrant-ubuntu-trusty-32'
+                collect_exact_birthdate: 'True'
+                groups_enabled: 'False'
+                prereg_open:  '2014-09-30'
+                stripe_public_key: 'pk_test_sPIOYrr26T7YeSJ8lUGKYwpS'
+                stripe_secret_key: 'sk_test_aZUo9nidH2Pun2CQ4Bp0nFzU'
+nginx::nginx_vhosts:
+        '%{hostname}':
+                listen_options: 'default'
+                www_root: '/var/www'
+                rewrite_to_https: true
+                ssl: true
+                ssl_cert: 'puppet:///modules/uber/magfest.org.crt-bundle'
+                ssl_key: 'puppet:///modules/uber/magfest.org.key'
+                location_cfg_append:
+                        rewrite: '/ /anthrocon/ permanent'
+        'localhost':
+                listen_ip: '127.0.0.1'
+                www_root: '/var/www'
+                location_cfg_append:
+                        rewrite: '/ https://%{hostname}/anthrocon/ permanent'
+nginx::nginx_locations:
+        'munin':
+                vhost: '%{hostname}' 
+                ssl_only: true
+                ssl: true
+                location: '/munin/'
+                location_alias: '/var/cache/munin/www/'
+                auth_basic: 'Restricted'
+                auth_basic_user_file: '/etc/munin/munin-htpasswd'
+        'nginx_status':
+                vhost: 'localhost'
+                location: '/nginx_status'
+                stub_status: true
+                location_allow:
+                        - '127.0.0.1'
+                location_deny:
+                        - 'all'

@@ -3,6 +3,8 @@ import 'ssh.pp'
 
 class uber_server {
 
+  include software::apt-get-wrapper
+  software::bash{"bash":}
   include '::ntp'
 
   class { 'timezone':

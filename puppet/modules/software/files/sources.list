@@ -1,0 +1,14 @@
+deb http://archive.ubuntu.com/ubuntu precise main
+deb http://archive.ubuntu.com/ubuntu precise-updates main
+deb http://security.ubuntu.com/ubuntu precise-security main
+deb http://archive.ubuntu.com/ubuntu precise universe
+deb http://archive.ubuntu.com/ubuntu precise-updates universe
+
+#
+# For things like EC2 tools
+#
+deb http://us.archive.ubuntu.com/ubuntu/ precise multiverse
+deb-src http://us.archive.ubuntu.com/ubuntu/ precise multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ precise-updates multiverse
+deb-src http://us.archive.ubuntu.com/ubuntu/ precise-updates multiverse
+

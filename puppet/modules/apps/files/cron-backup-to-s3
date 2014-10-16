@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# This script is the main entry point from cron to do backups
+#
+
+set -e # Errors are fatal
+
+if test ! "$2"
+then
+	echo "Syntax: $0 bucket backup-prefix list_of_directories_to_exclude_in_single_quotes"
+	exit 1
+fi
+
+S3_BUCKET=$1
+PREFIX=$2
+DIRS=$3
+
+#
+# First, backup with MySQL
+#
+/opt/puppet-bin/backup-mysql
+
+#
+# Now, backup with Duplicity (this includes MySQL dumps)
+#
+/opt/puppet-bin/backup-duplicity ${DIRS}
+
+#
+# Finally, copy the local backups to S3
+#
+/opt/puppet-bin/backup-to-s3 ${S3_BUCKET} ${PREFIX}
+
+
+

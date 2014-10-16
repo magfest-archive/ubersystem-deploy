@@ -1,0 +1,34 @@
+
+
+#
+# Set up a useful caption
+#
+caption always "%{= kG} [%Y%m%d %c]: %-Lw%{= bW}%50<%%n%f* %t%{-}%+Lw%>"
+
+shelltitle <%= @shelltitle %>
+
+#
+# Open some terminals right away
+#
+screen -t puppet-edit 0
+screen -t puppet-run 1
+screen 2
+screen 3
+screen 4
+screen 5
+
+#
+# Change our meta key
+#
+escape ^x^x
+
+#
+# Don't show the startup message
+#
+startup_message off
+
+#
+# I hate the visual bell
+#
+vbell off
+

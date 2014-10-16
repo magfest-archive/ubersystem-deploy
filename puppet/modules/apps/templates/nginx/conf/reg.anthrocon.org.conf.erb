@@ -1,0 +1,121 @@
+
+server {
+
+	listen 80;
+
+	server_name reg.anthrocon.org reg.localdomain reg.anthrocon.org.localdomain;
+
+	log_format log_anthrocon_reg '$remote_addr - $remote_user [$time_local] '
+		'anthrocon.org "$request" $status $body_bytes_sent '
+		'"$http_referer" "$http_user_agent" $request_time sec';
+	access_log  /var/log/nginx/all.access.log log_anthrocon_reg;
+	error_log  /var/log/nginx/all.error.log;
+
+	location / {
+		root    /var/www/reg.anthrocon.org;
+		#root    /var/www/temp.reg.anthrocon.org;
+		index   index.html index.htm;
+		#index   index.html index.htm index.php;
+		#include /etc/nginx/lib/php.conf;
+		include /etc/nginx/lib/munin.conf;
+	}
+
+	#
+	# Keep people out of revision control
+	#
+	location ~ (\.git|\.svn|CVS|RCS) {
+		deny all;
+	}
+
+	#
+	# redirect server error pages to the static page /50x.html
+	#
+	error_page   500 502 503 504  /50x.html;
+	location = /50x.html {
+		root   /var/www/nginx-default;
+	}
+
+	#
+	# Temporary while the reg system is read only
+	#
+	#location ~ ^/reg/verify {
+	#	rewrite ^/reg/verify /node/12991 permanent;
+	#}
+
+	#
+	# Since I can't have a full URL on the registration software link (oops!),
+	# I'll do the redirection here
+	#
+	location ~ ^/rules-conduct {
+		rewrite ^ http://www.anthrocon.org/rules-conduct redirect;
+	}
+
+}
+
+
+#
+# The same thing, but in SSL
+#
+server {
+
+	listen 443 ssl; # IP v4 only
+
+	server_name reg.anthrocon.org reg.localdomain reg.anthrocon.org.localdomain;
+
+	log_format log_anthrocon_reg_ssl '$remote_addr - $remote_user [$time_local] '
+		'SSL-anthrocon.org "$request" $status $body_bytes_sent '
+		'"$http_referer" "$http_user_agent" $request_time sec';
+	access_log  /var/log/nginx/all.access.log log_anthrocon_reg_ssl;
+	error_log  /var/log/nginx/all.error.log;
+
+	location / {
+		root    /var/www/reg.anthrocon.org;
+		#root    /var/www/temp.dmuth.org;
+
+		#index   index.html index.htm index.php;
+		index   index.html index.htm;
+		#include /etc/nginx/lib/php.conf;
+		include /etc/nginx/lib/munin.conf;
+	}
+
+	#
+	# redirect server error pages to the static page /50x.html
+	#
+	error_page   500 502 503 504  /50x.html;
+	location = /50x.html {
+		root   /var/www/nginx-default;
+	}
+
+	#
+	# SSL
+	#
+	ssl on;
+	ssl_session_timeout  5m;
+	#ssl_certificate /etc/nginx/ssl/reg.anthrocon.org/cert.crt; # Self-signed
+	#
+	# Post-heartbleed certificates from Comodo
+	#
+	# To create this cert, combine the constituent certificates in reverse order
+	# e.g. cat reg.anthrocon.org.cert intermediate.cert root.cert > cert.crt
+	#
+	#
+	ssl_certificate /etc/nginx/ssl/reg.anthrocon.org/current/unified.crt; # Signed by Comodo
+	ssl_certificate_key /etc/nginx/ssl/reg.anthrocon.org/current/reg.anthrocon.org.key;
+
+	#
+	# Temporary while the reg system is read only
+	#
+	#location ~ ^/reg/verify {
+	#	rewrite ^/reg/verify /node/12991 permanent;
+	#}
+
+	#
+	# Since I can't have a full URL on the registration software link (oops!),
+	# I'll do the redirection here
+	#
+	location ~ ^/rules-conduct {
+		rewrite ^ http://www.anthrocon.org/rules-conduct redirect;
+	}
+
+}
+

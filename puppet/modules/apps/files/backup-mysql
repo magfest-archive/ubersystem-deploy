@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Backup our MySQL databases
+#
+
+#
+# Errors are fatal
+#
+set -e
+
+#set -x # Debugging
+
+MYSQL="mysql --defaults-extra-file=/etc/mysql/debian.cnf"
+MYSQLDUMP="mysqldump --defaults-extra-file=/etc/mysql/debian.cnf"
+
+BASENAME=`date +%Y%m%d-%H%M%S`
+
+TARGET="/var/www/backups-mysql"
+TARGET_HISTORY="/var/backups-mysql-history"
+
+for DB in `echo "show databases" | $MYSQL`
+do
+
+	if test "$DB" = "Database" \
+		-o "$DB" = "information_schema" \
+		-o "$DB" = "mysql"
+	then
+		continue
+	fi
+
+	#
+	# Dump the current database
+	#
+	DB_TARGET=${TARGET}/${DB}.sql.gz
+	nice -n20 $MYSQLDUMP ${DB} |gzip > ${DB_TARGET}
+
+	#
+	# Copy it to a separate directory with the current date
+	#
+	TARGET_OLD=$DB_TARGET
+	DB_TARGET=${TARGET_HISTORY}/${BASENAME}-${DB}.sql.gz
+	cp $TARGET_OLD $DB_TARGET
+	echo "Database ${DB} backed up!"
+
+done
+
+#
+# Delete backups older than 7 days
+# Note that we don't have the delete part yet.  I want this crontab to run
+# for a week first and make sure the right files come up for deletion. :-)
+#
+nice -n20 find ${TARGET_HISTORY} -type f -mtime +7 -exec rm -f {} \;
+
