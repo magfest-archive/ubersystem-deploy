@@ -11,6 +11,7 @@ sep insert_admin
 
 ('sep' stands for Sideboard Entry Point and is a utility that comes with ubersystem to help manage it)
 
+Now you can login with user: magfest@example.com, password magfest
 
 Supervisord
 =============
