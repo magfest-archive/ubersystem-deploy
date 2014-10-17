@@ -36,6 +36,8 @@ cd ubersystem-deploy/puppet/
 cp fabric_settings.example.ini fabric_settings.ini
 ```
 
+(you can do this step in your host OS, i.e. windows, or in any text editor)
+
 edit fabric_settings.ini to your liking.
 
 3) AS AN ADMINISTRATOR, open a command prompt
