@@ -3,6 +3,7 @@ classes:
         - uber_server
         - software
         - nginx
+        - munin
 uber_instances: 
         anthrocon:
                 uber_path:      '/usr/local/anthrocon'
