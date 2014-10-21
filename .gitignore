@@ -11,3 +11,4 @@ puppet/fabric_settingsDONTUSE.ini
 .vagrant/
 puppet/modules/uber/
 sideboard/
+.idea/workspace.xml
