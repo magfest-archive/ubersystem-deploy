@@ -56,6 +56,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		# Make sure the facts directory exists
 		shell_cmd << "mkdir -p /etc/facter/facts.d/; "
 
+		# make this work for non-root users (they don't look in /etc/facter)
+		# more info here: https://projects.puppetlabs.com/issues/17875#change-82554
+		shell_cmd << "ln -s /etc/facter/ /home/vagrant/.facter; "
+
 		# add any facts we want (copy+paste this line)
 		shell_cmd << "echo 'is_vagrant=1' > /etc/facter/facts.d/is_vagrant.txt; "
 		
