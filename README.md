@@ -5,7 +5,7 @@ This module is your starting point for setting up ubersystem and working on it.
 
 It will check out a bunch of git repos and is the basis for both Vagrant setups and also production deployments.
 
-Docs are WIP, more a coming soon. If you need any help here, email code at magfest dot net.
+Docs are WIP, more a coming soon. If you need any help here, email code at magfest dot org.
 
 Windows instructions
 =====================
@@ -35,6 +35,8 @@ git clone https://github.com/magfest/ubersystem-deploy/
 cd ubersystem-deploy/puppet/
 cp fabric_settings.example.ini fabric_settings.ini
 ```
+
+(you can do this step in your host OS, i.e. windows, or in any text editor)
 
 edit fabric_settings.ini to your liking.
 
