@@ -7,7 +7,7 @@ class apps::ufw {
 	#
 	# Documentation: https://forge.puppetlabs.com/attachmentgenie/ufw
 	#
-	include ::ufw
+  	include ::ufw
 
 	exec {"ufw enable":
 		command => "ufw --force enable"
