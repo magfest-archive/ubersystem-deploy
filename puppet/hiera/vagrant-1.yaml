@@ -3,7 +3,8 @@ classes:
         - uber_server
         - software
         - nginx
-        - munin
+        # - munin::client
+        # - munin::host
 uber_instances: 
         anthrocon:
                 uber_path:      '/usr/local/anthrocon'
@@ -49,6 +50,8 @@ nginx::nginx_vhosts:
                 www_root: '/var/www'
                 location_cfg_append:
                         rewrite: '/ https://%{hostname}/anthrocon/ permanent'
+# munin::client:
+#        allow: 127.0.0.1
 nginx::nginx_locations:
         'munin':
                 vhost: '%{hostname}' 
