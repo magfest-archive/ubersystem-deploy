@@ -11,3 +11,10 @@ sudo dpkg-reconfigure locales
 sudo patch /usr/lib/python3.4/venv/__init__.py < /home/vagrant/uber/vagrant/venv-symlink-fix.patch
 
 cp /home/vagrant/uber/vagrant/bash_aliases /home/vagrant/.bash_aliases
+
+
+# setup the puppet module dir so it symlinks to our repository.
+# this is purely a convenience thing so you can type 'puppet module install' without
+# having to specify --modulepath
+mkdir -p /home/vagrant/.puppet
+ln -s /home/vagrant/uber/puppet/modules/ /home/vagrant/.puppet

@@ -2,7 +2,15 @@
 
 ---
 classes:
-        - uber_server
+        # - uber_server
+        - logging_node
+        - logging_server
+
+logstash_servers:
+  server:
+    test: test
+
+
 
 uber_instances:
         ubersystem_vagrant:

@@ -1,7 +1,7 @@
+# this runs on each node and transmits log information to the central server
+
 class logging_node {
-  class { 'logstash':
-    install_contrib => true,
-    manage_repo => true,
-    repo_version => '1.4',
+  class { 'logstashforwarder':
+    manage_repo  => true
   }
 }
