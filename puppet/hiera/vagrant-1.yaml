@@ -30,6 +30,7 @@ uber_instances:
                 prereg_open: '2014-08-06'
                 hostname: 'vagrant-ubuntu-trusty-32'
                 collect_exact_birthdate: 'True'
+                collect_full_address: 'True'
                 groups_enabled: 'False'
                 prereg_open:  '2014-09-30'
                 stripe_public_key: 'pk_test_sPIOYrr26T7YeSJ8lUGKYwpS'
