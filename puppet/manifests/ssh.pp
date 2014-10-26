@@ -19,8 +19,9 @@ class ssh {
     enable     => true,
     require    => File['/etc/ssh/sshd_config'],
   }
-
-  include ufw
+  if defined(Class['ufw']) == false {
+    include ufw
+  }
   
   ufw::allow { 'allow-ssh-from-all':
     port => 22,
