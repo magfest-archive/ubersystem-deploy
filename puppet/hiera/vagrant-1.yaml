@@ -3,6 +3,8 @@ classes:
         - uber_server
         - software
         - nginx
+        # - munin::client
+        # - munin::host
 uber_instances: 
         anthrocon:
                 uber_path:      '/usr/local/anthrocon'
@@ -25,6 +27,8 @@ uber_instances:
                 year: 2015
                 dev_box: 'True'
                 send_emails: 'False'
+                prereg_open: '2014-08-06'
+                hostname: 'vagrant-ubuntu-trusty-32'
                 collect_exact_birthdate: 'True'
                 groups_enabled: 'False'
                 prereg_open:  '2014-09-30'
@@ -45,6 +49,8 @@ nginx::nginx_vhosts:
                 www_root: '/var/www'
                 location_cfg_append:
                         rewrite: '/ https://%{hostname}/anthrocon/ permanent'
+# munin::client:
+#        allow: 127.0.0.1
 nginx::nginx_locations:
         'munin':
                 vhost: '%{hostname}' 

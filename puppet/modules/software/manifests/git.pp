@@ -1,11 +1,11 @@
 
 
 class software::git() {
-
-	package{"git":
-		ensure => installed,
+	if defined(Package['git']) == false {
+		package{"git":
+			ensure => installed,
+		}
 	}
-
 }
 
 

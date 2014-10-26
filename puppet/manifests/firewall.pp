@@ -1,12 +1,14 @@
 class firewall_webserver {
-  include ufw 
+  if defined(Class['ufw']) == false {
+    include ufw 
 
-  ufw::allow { "http":
-    port => 80
-  }
+    #ufw::allow { "http":
+    #   port => 80
+    #}
 
-  ufw::allow { "https":
-    port => 443
+    #ufw::allow { "https":
+    #  port => 443
+    #}
   }
 }
 
