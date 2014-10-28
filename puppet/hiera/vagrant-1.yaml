@@ -2,15 +2,23 @@
 
 ---
 classes:
-        # - uber_server
-        - logging_node
-        - logging_server
+  # - uber_server
+  - logstashforwarder
+  - logstashforwarders
 
-logstash_servers:
-  server:
-    test: test
+logstashforwarder::ssl_key:         'puppet:///modules/uber/selfsigned-host.key'
+logstashforwarder::ssl_ca:          'puppet:///modules/uber/selfsigned-rootCA.crt'
+logstashforwarder::ssl_cert:        'puppet:///modules/uber/selfsigned-host.crt'
+logstashforwarder::manage_repo:     true
+logstashforwarder::servers:
+  - 'localhost'
 
-
+logstashforwarder_files:
+  syslog:
+    paths:
+    - '/var/log/syslog'
+    fields:
+      type: 'syslog'
 
 uber_instances:
         ubersystem_vagrant:
