@@ -1,0 +1,10 @@
+{
+    "network": {
+                "servers": [ <% if @servers.kind_of?(Array) %>"<%= servers.join("\", \"") %>"<% else -%>"<%= @servers %>"<% end -%> ],
+                "ssl ca": "<%= @ssl_ca %>" 
+                <% if @ssl_certificate -%>, "ssl certificate": "<%= @ssl_certificate %>" <% end -%>
+                <% if @ssl_key -%> ,"ssl key": "<%= @ssl_key %>"<% end -%>
+        },
+    
+    "files": [
+                {
