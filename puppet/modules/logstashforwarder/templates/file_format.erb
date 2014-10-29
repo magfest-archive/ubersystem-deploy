@@ -1,6 +1,0 @@
-                    "paths": [ <% @paths.each do |path| -%><% if path != @paths.last -%>"<%= path %>", <% else -%>"<%= path %>"<% end -%><% end -%> ],
-                <% i = 0 -%>
-                    "fields": { <% @fields_to_template.each_pair do |key, val| -%><% i = i + 1 -%>"<%= key %>": <% if i != @fields_to_template.keys.size -%><% if val.kind_of?(Array) -%>"<%= val.join(", ") %>", <% else -%>"<%= val %>", <% end -%><% else -%><% if val.kind_of?(Array) -%>"<%= val.join(", ") %>"<% else -%>"<%= val -%>"<% end -%> <% end -%><% end -%> }<% if deadtime -%>,
-                    "dead time":"<%= @deadtime %>"<% end -%>
-                },
-                {
