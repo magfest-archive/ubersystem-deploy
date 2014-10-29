@@ -9,7 +9,7 @@ logstashforwarder::ssl_ca:          'puppet:///modules/uber/selfsigned-rootCA.cr
 logstashforwarder::ssl_cert:        'puppet:///modules/uber/selfsigned-host.crt'
 logstashforwarder::manage_repo:     true
 logstashforwarder::servers:
-  - 'localhost'
+  - 'localhost:5678'
 
 logstashforwarder_files:
   syslog:
