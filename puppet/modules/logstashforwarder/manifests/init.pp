@@ -1,7 +1,9 @@
 # == Class: logstashforwarder
 #
-# This class is able to install or remove logstashforwarder on a node.
+# This class is able to install or remove logstash-forwarder on a node.
 # It manages the status of the related service.
+#
+# [Add description - What does this module do on a node?] FIXME/TODO
 #
 #
 # === Parameters
@@ -50,38 +52,41 @@
 #   String to set the specific version you want to install.
 #   Defaults to <tt>false</tt>.
 #
-# [*restart_on_change*]
-#   Boolean that determines if the application should be automatically restarted
-#   whenever the configuration changes. Disabling automatic restarts on config
-#   changes may be desired in an environment where you need to ensure restarts
-#   occur in a controlled/rolling manner rather than during a Puppet run.
+# [*configdir*]
+#   Path where the configuration files will be placed.
+#   Defaults to <tt>/etc/logstash-forwarder</tt>
 #
-#   Defaults to <tt>true</tt>, which will restart the application on any config
-#   change. Setting to <tt>false</tt> disables the automatic restart.
+# [*config*]
+#   The name of the config file to create
+#   Defaults to <tt>logstash-forwarder.conf</tt>
+#
+# [*cpuprofile*]
+#   write cpu profile to file
+#
+# [*idle_flush_time*]
+#   Maximum time to wait for a full spool before flushing anyway
+#
+# [*log_to_syslog*]
+#   Log to syslog instead of stdout
+#
+# [*spool_size*]
+#   Maximum number of events to spool before a flush is forced.
 #
 # [*servers*]
-#   A list of downstream servers listening for our messages.
-#   logstash-forwarder will pick one at random and only switch if
-#   the selected one appears to be dead or unresponsive
+#   List of Host names or IP addresses of Logstash instances to connect to
 #
-# [*ssl_cert*]
-#   The path to your client ssl certificate
+# [*ssl_ca_file*]
+#   File to use for the SSL CA
 #
 # [*ssl_key*]
-#   The path to your client ssl key
+#   File to use for your host's SSL key
 #
-# [*ssl_ca*]
-#   The path to your trusted ssl CA file. This is used
-#   to authenticate your downstream server.
+# [*ssl_certificate*]
+#   File to use for your host's SSL cert
 #
-# [*timeout*]
-#   Network timeout in seconds. This is most important for
-#   logstash-forwarder determining whether to stop waiting for an
-#   acknowledgement from the downstream server. If an timeout is reached,
-#   logstash-forwarder will assume the connection or server is bad and
-#   will connect to a server chosen at random from the servers list.
 #
-# The default values for the parameters are set in logstashforwarder::params. Have
+#
+# The default values for the parameters are set in logstash-forwarder::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
 #
@@ -104,44 +109,59 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-#
+# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# Editor: Kayla Green <mailto:kaylagreen@gmail.com>
+# Editor: Ryan O'Keeeffe
+
 class logstashforwarder(
-  $ensure                  = $logstashforwarder::params::ensure,
-  $servers                 = undef,
-  $ssl_cert                = undef,
-  $ssl_key                 = undef,
-  $ssl_ca                  = undef,
-  $timeout                 = 15,
-  $status                  = $logstashforwarder::params::status,
-  $restart_on_change       = $logstashforwarder::params::restart_on_change,
-  $autoupgrade             = $logstashforwarder::params::autoupgrade,
-  $version                 = false,
-  $package_provider        = 'package',
-  $package_url             = undef,
-  $package_dir             = $logstashforwarder::params::package_dir,
-  $purge_package_dir       = $logstashforwarder::params::purge_package_dir,
-  $package_dl_timeout      = $logstashforwarder::params::package_dl_timeout,
-  $logstashforwarder_user  = $logstashforwarder::params::logstashforwarder_user,
-  $logstashforwarder_group = $logstashforwarder::params::logstashforwarder_group,
-  $configdir               = $logstashforwarder::params::configdir,
-  $purge_configdir         = $logstashforwarder::params::purge_configdir,
-  $service_provider        = 'init',
-  $init_defaults           = $logstashforwarder::params::init_defaults,
-  $init_defaults_file      = undef,
-  $init_template           = undef,
-  $manage_repo             = false
+  $config = $logstashforwarder::params::config,
+  $configdir = $logstashforwarder::params::configdir,
+  $ensure            = $logstashforwarder::params::ensure,
+  $autoupgrade       = $logstashforwarder::params::autoupgrade,
+  $status            = $logstashforwarder::params::status,
+  $restart_on_change = $logstashforwarder::params::restart_on_change,
+  $version           = false,
+  $run_as_service     = true,
+  $servers,
+  $ssl_ca_path,
+  $ssl_certificate         = undef,
+  $ssl_key          = undef,
+  $cpuprofile       = undef,
+  $idle_flush_time  = undef,
+  $spool_size       = 1024,
+  $log_to_syslog    = true,
 ) inherits logstashforwarder::params {
-
-  anchor {'logstashforwarder::begin': }
-  anchor {'logstashforwarder::end': }
-
 
   #### Validate parameters
 
   # ensure
   if ! ($ensure in [ 'present', 'absent' ]) {
     fail("\"${ensure}\" is not a valid ensure parameter value")
+  }
+
+  validate_array($servers)
+  validate_string($ssl_ca_path)
+
+  if ($ssl_key != undef){
+        validate_string($ssl_key)
+  }
+  if ($ssl_certificate != undef){
+        validate_string($ssl_certificate)
+  }
+  if ($cpuprofile != undef) {
+        validate_string($cpuprofile)
+  }
+
+  if ($log_to_syslog != '') {
+        validate_bool($log_to_syslog)
+  }
+
+  if ($idle_flush_time != '') {
+        validate_string($idle_flush_time)
+  }
+
+  if ! is_numeric($spool_size) {
+      fail("\"${spool_size}\" is not a valid spool-size parameter value")
   }
 
   # autoupgrade
@@ -152,70 +172,43 @@ class logstashforwarder(
     fail("\"${status}\" is not a valid status parameter value")
   }
 
-  # restart on change
-  validate_bool($restart_on_change)
-
-  # purge conf dir
-  validate_bool($purge_configdir)
-
-  if ! ($service_provider in $logstashforwarder::params::service_providers) {
-    fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
+  #### Manage Actions
+  if ($ensure == 'present') {
+        anchor {'logstashforwarder::begin':
+            before  => Class['logstashforwarder::config'],
+            notify  => Class['logstashforwarder::service'],
+        }
+        class {'logstashforwarder::config':
+            notify  => Class['logstashforwarder::service'],
+        }
+        class {'logstashforwarder::package':
+            require => Class['logstashforwarder::config'],
+            notify  => Class['logstashforwarder::service'],
+        }
+        class {'logstashforwarder::service':
+            require => Class['logstashforwarder::config'],
+        }
+        anchor { 'logstashforwarder::end': 
+            require => Class['logstashforwarder::service']
+        }
   }
-
-  validate_bool($manage_repo)
-
-  validate_array($servers)
-  validate_string($ssl_key, $ssl_ca, $ssl_cert)
-
-  if (!is_integer($timeout)) {
-    fail("\"${timeout}\" is not a valid timeout value")
+  else {
+        anchor { 'logstashforwarder::begin': 
+            before  => Class['logstashforwarder::service'],
+            notify  => Class['logstashforwarder::config'],
+        }
+        class {'logstashforwarder::service':
+            notify  => Class['logstashforwarder::package'],
+        }
+        class {'logstashforwarder::package':
+            require => Class['logstashforwarder::service'],
+            notify  => Class['logstashforwarder::config'],
+        }
+        class {'logstashforwarder::config':
+            require => Class['logstashforwarder::package'],
+        }
+        anchor {'logstashforwarder::end': 
+            require => Class['logstashforwarder::config'],
+        }
   }
-
-  #### Manage actions
-
-  # package(s)
-  class { 'logstashforwarder::package': }
-
-  # configuration
-  class { 'logstashforwarder::config': }
-
-  # service(s)
-  class { 'logstashforwarder::service': }
-
-  if ($manage_repo == true) {
-    # Set up repositories
-    class { 'logstashforwarder::repo': }
-
-    # Ensure that we set up the repositories before trying to install
-    # the packages
-    Anchor['logstashforwarder::begin']
-    -> Class['logstashforwarder::repo']
-    -> Class['logstashforwarder::package']
-  }
-
-  #### Manage relationships
-
-  if $ensure == 'present' {
-
-    # we need the software before configuring it
-    Anchor['logstashforwarder::begin']
-    -> Class['logstashforwarder::package']
-    -> Class['logstashforwarder::config']
-
-    # we need the software and a working configuration before running a service
-    Class['logstashforwarder::package'] -> Class['logstashforwarder::service']
-    Class['logstashforwarder::config']  -> Class['logstashforwarder::service']
-
-    Class['logstashforwarder::service'] -> Anchor['logstashforwarder::end']
-
-  } else {
-
-    # make sure all services are getting stopped before software removal
-    Anchor['logstashforwarder::begin']
-    -> Class['logstashforwarder::service']
-    -> Class['logstashforwarder::package']
-    -> Anchor['logstashforwarder::end']
-
-  }
-
 }

@@ -25,8 +25,9 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-#
+# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# Editor: Ryan O'Keeffe
+
 class logstashforwarder::params {
 
   #### Default values for the parameters of the main module class, init.pp
@@ -40,73 +41,23 @@ class logstashforwarder::params {
   # service status
   $status = 'enabled'
 
-  # restart on configuration change?
-  $restart_on_change = true
+  # Config Directory
+  $configdir = '/etc/logstash-forwarder'
 
-  # Purge configuration directory
-  $purge_configdir = true
+  # Config File
+  $config = 'logstash-forwarder.conf'
+  
+  # Install Directory
+  $installdir = '/opt/logstash-forwarder'
 
-  # init defaults
-  $init_defaults = undef
-
-  $purge_package_dir = false
-
-  # Exec timeout
-  $package_dl_timeout = 300  # 300 seconds is default of Puppet
+  # Restart service on change
+  $restart_on_change = false
 
   #### Internal module values
 
-  # User and Group for the files and user to run the service as.
-  case $::kernel {
-    'Linux': {
-      $logstashforwarder_user  = 'root'
-      $logstashforwarder_group = 'root'
-    }
-    'Darwin': {
-      $logstashforwarder_user  = 'root'
-      $logstashforwarder_group = 'wheel'
-    }
-    default: {
-      fail("\"${module_name}\" provides no user/group default value
-           for \"${::kernel}\"")
-    }
-  }
-
-  # Download tool
-  case $::kernel {
-    'Linux': {
-      $download_tool = 'wget -O'
-    }
-    'Darwin': {
-      $download_tool = 'curl -o'
-    }
-    default: {
-      fail("\"${module_name}\" provides no download tool default value
-           for \"${::kernel}\"")
-    }
-  }
-
-  # Different path definitions
-  case $::kernel {
-    'Linux': {
-      $configdir = '/etc/logstashforwarder'
-      $package_dir = '/opt/logstashforwarder/swdl'
-      $installpath = '/opt/logstashforwarder'
-    }
-    'Darwin': {
-      $configdir = '/Library/Application Support/Logstashforwarder'
-      $package_dir = '/Library/Logstashforwarder/swdl'
-      $installpath = '/Library/Logstashforwarder'
-    }
-    default: {
-      fail("\"${module_name}\" provides no config directory default value
-           for \"${::kernel}\"")
-    }
-  }
-
   # packages
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
+    'CentOS', 'Fedora', 'Scientific', 'OracleLinux', 'Amazon', 'RedHat', 'OEL': {
       # main application
       $package = [ 'logstash-forwarder' ]
     }
@@ -122,29 +73,17 @@ class logstashforwarder::params {
 
   # service parameters
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
+    'CentOS', 'Fedora', 'Scientific', 'OracleLinux', 'Amazon', 'RedHat', 'OEL': {
       $service_name       = 'logstash-forwarder'
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
-      $service_providers  = [ 'init' ]
-      $defaults_location  = '/etc/sysconfig'
     }
     'Debian', 'Ubuntu': {
       $service_name       = 'logstash-forwarder'
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
-      $service_providers  = [ 'init' ]
-      $defaults_location  = '/etc/default'
-    }
-    'Darwin': {
-      $service_name       = 'net.logstash.forwarder'
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_pattern    = $service_name
-      $service_providers  = [ 'launchd' ]
-      $defaults_location  = false
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

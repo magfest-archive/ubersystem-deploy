@@ -1,45 +1,45 @@
-# == Define: logstashforwarder::file
-#
-#  This define allows you to define files to be processed with logstash-forwarder
-#
-# === Parameters
-#
-# [*path*]
-#   File path(s) to files you want to process
-#   Value type is Array
-#   This variable is required
-#
-# [*fields*]
-#   Fields you want to add to the event
-#   Value type is Hash
-#   Default value: undef
-#   This variable is optional
-#
-# === Authors
-#
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-#
-define logstashforwarder::file(
-  $paths,
-  $fields = ''
-) {
+define logstashforwarder::file (
+    $paths,
+    $fields,
+    $deadtime = undef,
+){
+    
+    File {
+        owner => 'root',
+        group => 'root',
+    }
 
-  validate_array($paths)
+    if ($paths != '') {
+        validate_array($paths)
+    }
 
-  $arr_paths = inline_template('<%= "[ "+@paths.sort.collect { |k| "\"#{k}\""}.join(", ")+" ]" %>')
-  $opt_paths = "  \"paths\": ${arr_paths}"
+    # Let's have the option of using an array OR a hash.  Arrays are nice
+    # because they shouldn't be randomly re-ordered.
+    # requies stdlib
+    # The validate step may or may not be silly depending on if it's more
+    # comprehensive than the is_hash/is_array functions.
+    if is_hash($fields) {
+      validate_hash($fields)
+      $fields_to_template = $fields
+    }
+    
+    elsif is_array($fields) {
+      validate_array($fields)
+      # Here we convert the array to a hash.  Puppet doesn't SEEM to
+      # munge hashes when it passes them to templates... maybe.
+      # Note that sub-arrays are not supported.
+      $fields_to_template = hash($fields)
+    }
+    
+    else {
+      fail('fields must be either an array or a hash!')
+    }
 
-  if ($fields != '') {
-    validate_hash($fields)
-    $arr_fields = inline_template('<%= @fields.sort.collect { |k,v| "\"#{k}\": \"#{v}\"" }.join(", ") %>')
-    $opt_fields = ",\n      \"fields\": { ${arr_fields} }\n    "
-  }
-
-  $content = "    {\n    ${opt_paths}${opt_fields}}"
-
-  logstashforwarder_fragment { $name:
-    tag     => "LSF_CONFIG_${::fqdn}",
-    content => $content,
-    before  => Logstashforwarder_config['lsf-config']
-  }
+    if ($logstashforwarder::ensure == 'present' ) { 
+        concat::fragment{"${name}":
+            target  => "${logstashforwarder::configdir}/${logstashforwarder::config}",
+            content => template("${module_name}/file_format.erb"),
+            order   => 010,
+        }
+    }
 }

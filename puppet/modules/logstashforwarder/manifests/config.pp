@@ -1,9 +1,4 @@
-# == Class: logstashforwarder::config
-#
-# FIXME/TODO Please check if you want to remove this class because it may be
-#            unnecessary for your module. Don't forget to update the class
-#            declarations and relationships at init.pp afterwards (the relevant
-#            parts are marked with "FIXME/TODO" comments).
+# Class: logstashforwarder::config
 #
 # This class exists to coordinate all configuration related actions,
 # functionality and logical units in a central place.
@@ -25,119 +20,61 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-#
+# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# Edit: Kayla Green <mailto:kaylagreen771@gmail.com>
+# Edit: Ryan O'Keeffe
 class logstashforwarder::config {
-
-  #### Configuration
-
-  File {
-    owner => $logstashforwarder::logstashforwarder_user,
-    group => $logstashforwarder::logstashforwarder_group
-  }
-
-  Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd  => '/',
-  }
-
-  if ( $logstashforwarder::ensure == 'present' ) {
-
-    $ssldir = "${logstashforwarder::configdir}/ssl"
-
-    $notify_service = $logstashforwarder::restart_on_change ? {
-      true  => Class['logstashforwarder::service'],
-      false => undef,
+    File {
+        owner => root,
+        group => root
     }
+  
+    $configdir = $logstashforwarder::configdir
+    $config = $logstashforwarder::config
 
-    file { $logstashforwarder::configdir:
-      ensure => directory,
-      mode   => '0644',
-      purge  => $logstashforwarder::purge_configdir,
-      force  => $logstashforwarder::purge_configdir
-    }
+    if ($logstashforwarder::ensure == 'present') {
+        # Manage the config dir
+        file { $configdir:
+            ensure  => directory,
+            mode    => '0640',
+            purge   => true,
+            recurse => true,
+        }
+        
+        #Create network portion of config file
+        $servers = $logstashforwarder::servers
+        $ssl_ca = $logstashforwarder::ssl_ca_path
+        $ssl_certificate = $logstashforwarder::ssl_certificate
+        $ssl_key = $logstashforwarder::ssl_key
+        
+        #### Setup configuration files
+        include concat::setup
+        concat{ "${configdir}/${config}":
+            require => File[$configdir],
+        }
 
-    file { $ssldir:
-      ensure  => directory,
-      require => File[$logstashforwarder::configdir]
-    }
+        # Add network portion of the config file
+        concat::fragment{"default-start":
+            target  => "${configdir}/${config}",
+            content => template("${module_name}/network_format.erb"),
+            order   => 001,
+        }  
 
-    # SSL Files
-    $ssl_cert = $logstashforwarder::ssl_cert
-    $ssl_ca = $logstashforwarder::ssl_ca
-    $ssl_key = $logstashforwarder::ssl_key
-
-    if $ssl_cert =~ /^puppet\:\/\// {
-
-      $filenameArray_ssl_cert = split($ssl_cert, '/')
-      $basefilename_ssl_cert = $filenameArray_ssl_cert[-1]
-
-      file { "${ssldir}/${basefilename_ssl_cert}":
-        source  => $ssl_cert,
-        mode    => '0440',
-        require => File[$ssldir]
-      }
-      $opt_ssl_cert = "${ssldir}/${basefilename_ssl_cert}"
+        # Add the ending brackets and additional set of {} brackets needed to fix comma/json parsing issue
+        concat::fragment{"default-end":
+            target  => "${configdir}/${config}",
+            content => "\n\t\t}\n\t]\n}\n",
+            order   => 999,
+        }
+        
     } else {
-      $opt_ssl_cert = $ssl_cert
+        # Remove the logstash-forwarder directory and all of its configs. 
+        file {$configdir : 
+            ensure  => 'absent',
+            purge   => true,
+            recurse => true,
+            force   => true,
+        }
+        
     }
-
-    if $ssl_ca =~ /^puppet\:\/\// {
-
-      $filenameArray_ssl_ca = split($ssl_ca, '/')
-      $basefilename_ssl_ca = $filenameArray_ssl_ca[-1]
-
-      file { "${ssldir}/${basefilename_ssl_ca}":
-        source  => $ssl_ca,
-        mode    => '0440',
-        require => File[$ssldir]
-      }
-      $opt_ssl_ca = "${ssldir}/${basefilename_ssl_ca}"
-    } else {
-      $opt_ssl_ca = $ssl_ca
-    }
-
-    if $ssl_key =~ /^puppet\:\/\// {
-
-      $filenameArray_ssl_key = split($ssl_key, '/')
-      $basefilename_ssl_key = $filenameArray_ssl_key[-1]
-
-      file { "${ssldir}/${basefilename_ssl_key}":
-        source  => $ssl_key,
-        mode    => '0440',
-        require => File[$ssldir]
-      }
-      $opt_ssl_key = "${ssldir}/${basefilename_ssl_key}"
-    } else {
-      $opt_ssl_key = $ssl_key
-    }
-
-    $server_list = $logstashforwarder::servers
-    # Server list
-    $opt_servers = inline_template('<%= "[ "+@server_list.sort.collect { |k| "\"#{k}\""}.join(", ")+" ]" %>')
-
-    $opt_timeout = $logstashforwarder::timeout
-
-    $main_config = "{\n  \"network\": {\n    \"servers\": ${opt_servers},\n    \"ssl certificate\": \"${opt_ssl_cert}\",\n    \"ssl ca\": \"${opt_ssl_ca}\",\n    \"ssl key\": \"${opt_ssl_key}\",\n    \"timeout\": ${opt_timeout}\n  },"
-
-    logstashforwarder_config { 'lsf-config':
-      ensure => 'present',
-      config => $main_config,
-      path   => "${logstashforwarder::configdir}/config.json",
-      tag    => "LSF_CONFIG_${::fqdn}",
-      owner  => $logstashforwarder::logstashforwarder_user,
-      group  => $logstashforwarder::logstashforwarder_group,
-      notify => $notify_service
-    }
-
-  } elsif ( $logstashforwarder::ensure == 'absent' ) {
-
-    file { $logstashforwarder::configdir:
-      ensure  => 'absent',
-      recurse => true,
-      force   => true
-    }
-
-  }
-
 }
