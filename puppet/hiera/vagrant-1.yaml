@@ -2,9 +2,8 @@
 classes:
         - uber_server
         - software
+        - software::munin
         - nginx
-        # - munin::client
-        # - munin::host
 uber_instances: 
         anthrocon:
                 uber_path:      '/usr/local/anthrocon'
@@ -50,17 +49,13 @@ nginx::nginx_vhosts:
                 www_root: '/var/www'
                 location_cfg_append:
                         rewrite: '/ https://%{hostname}/anthrocon/ permanent'
-# munin::client:
-#        allow: 127.0.0.1
 nginx::nginx_locations:
         'munin':
-                vhost: '%{hostname}' 
-                ssl_only: true
-                ssl: true
+                vhost: 'localhost' 
                 location: '/munin/'
                 location_alias: '/var/cache/munin/www/'
-                #auth_basic: 'Restricted'
-                #auth_basic_user_file: '/etc/munin/munin-htpasswd'
+                auth_basic: 'Restricted'
+                auth_basic_user_file: '/etc/munin/munin-htpasswd'
         'nginx_status':
                 vhost: 'localhost'
                 location: '/nginx_status'

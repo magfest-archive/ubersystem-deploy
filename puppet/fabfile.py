@@ -95,7 +95,7 @@ def puppet_apply(dry_run='no'):
     sudo('cp -f '+puppet_dir+'/puppet.conf.template '+puppet_conf)
     sudo('echo -en "[main]\nhiera_config='+hiera_conf+'" >> '+puppet_conf)
 
-    cmdline = " --verbose --debug "
+    cmdline = " --verbose "
     if dry_run == 'yes':
         cmdline += " --noop "
 
