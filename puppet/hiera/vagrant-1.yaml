@@ -59,8 +59,8 @@ nginx::nginx_locations:
                 ssl: true
                 location: '/munin/'
                 location_alias: '/var/cache/munin/www/'
-                auth_basic: 'Restricted'
-                auth_basic_user_file: '/etc/munin/munin-htpasswd'
+                #auth_basic: 'Restricted'
+                #auth_basic_user_file: '/etc/munin/munin-htpasswd'
         'nginx_status':
                 vhost: 'localhost'
                 location: '/nginx_status'
