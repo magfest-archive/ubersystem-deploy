@@ -6,6 +6,7 @@ puppet/q
 puppet/puppet.conf
 puppet/hiera/nodes
 puppet/hiera/nodes/secret
+puppet/hiera/external
 puppet/fabric_settings.ini
 puppet/fabric_settingsDONTUSE.ini
 .vagrant/
