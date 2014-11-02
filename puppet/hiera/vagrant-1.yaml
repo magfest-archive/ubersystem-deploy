@@ -34,6 +34,22 @@ uber_instances:
                 prereg_open:  '2014-09-30'
                 stripe_public_key: 'pk_test_sPIOYrr26T7YeSJ8lUGKYwpS'
                 stripe_secret_key: 'sk_test_aZUo9nidH2Pun2CQ4Bp0nFzU'
+                donation_tier:
+                  - "'No thanks'                      = 0"
+                  - "'Ribbon'                         = 5"
+                  - "'Button'                         = 10"
+                  - "'Tshirt'                         = SHIRT_LEVEL"
+                  - "'Supporter Package'              = SUPPORTER_LEVEL"
+                  - "'MAGFest USB Drive'              = 100"
+                  - "'Season Supporter Pass for 2015' = SEASON_LEVEL"
+                  - "'MPoint Holder'                  = 200"
+                  - "'Lightsuit'                      = 500"
+                ribbon_types:
+                  - 'press_ribbon       = "Camera"'
+                  - 'band_ribbon        = "Rock Star"'
+                  - 'dealer_ribbon      = "Dealer"'
+                  - 'dealer_asst_ribbon = "Dealer Assistant"'
+                  - 'bod_ribbon         = "Board of Directors"'
 nginx::nginx_vhosts:
         '%{hostname}':
                 listen_options: 'default'
