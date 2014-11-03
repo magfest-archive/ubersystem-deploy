@@ -56,8 +56,8 @@ nginx::nginx_vhosts:
                 www_root: '/var/www'
                 rewrite_to_https: true
                 ssl: true
-                ssl_cert: 'puppet:///modules/uber/magfest.org.crt-bundle'
-                ssl_key: 'puppet:///modules/uber/magfest.org.key'
+                ssl_cert: 'puppet:///modules/uber/selfsigned-testonly.crt'
+                ssl_key: 'puppet:///modules/uber/selfsigned-testonly.key'
                 location_cfg_append:
                         rewrite: '/ /anthrocon/ permanent'
         'localhost':
