@@ -120,6 +120,7 @@ class logstashforwarder(
   $autoupgrade       = $logstashforwarder::params::autoupgrade,
   $status            = $logstashforwarder::params::status,
   $restart_on_change = $logstashforwarder::params::restart_on_change,
+  $manage_repo       = false,
   $version           = false,
   $run_as_service     = true,
   $servers,
@@ -188,6 +189,18 @@ class logstashforwarder(
         class {'logstashforwarder::service':
             require => Class['logstashforwarder::config'],
         }
+
+        if ($manage_repo == true) {
+          # Set up repositories
+          class { 'logstashforwarder::repo': }
+
+          # Ensure that we set up the repositories before trying to install
+          # the packages
+          Anchor['logstashforwarder::begin']
+          -> Class['logstashforwarder::repo']
+          -> Class['logstashforwarder::package']
+        }
+
         anchor { 'logstashforwarder::end': 
             require => Class['logstashforwarder::service']
         }
