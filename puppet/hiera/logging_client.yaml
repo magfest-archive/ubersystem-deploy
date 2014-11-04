@@ -1,0 +1,29 @@
+---
+# -----------------
+# logstashforwarder stuff
+# run on NODES to send their logfiles back to the master control server running logstash
+# -----------------
+
+# SSL keys.
+# for vagrant/testing: for selfsigned*.key/crt you must include the puppet class 'generate_self_signed_ssl_certs'
+# for production: include the real path of your real SSL keys instead.
+logstashforwarder::ssl_key:               '/etc/ssl/certs/selfsignedHOST.key'
+logstashforwarder::ssl_certificate:       '/etc/ssl/certs/selfsignedHOST.crt'
+logstashforwarder::ssl_ca_path:           '/etc/ssl/certs/selfsignedCA.crt'
+
+logstashforwarder::idle_flush_time:       '5s'
+logstashforwarder::log_to_syslog:         false
+logstashforwarder::spool_size:            '1024'
+logstashforwarder::manage_repo:           true
+logstashforwarder::cpuprofile:            '/var/log/cpuprofile'
+logstashforwarder::servers:
+  - 'localhost:5678'
+
+logstashforwarder_files:
+  syslog:
+    paths:
+    - '/var/log/syslog'
+    - '/var/log/messages'
+    - '/var/log/secure'
+    fields:
+      type: 'syslog'

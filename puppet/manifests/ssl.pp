@@ -1,5 +1,11 @@
 # either specify SSL certs, or generate them
 
+class ssl_setup {
+  group { "certs":
+    ensure => "present",
+  }
+}
+
 class generate_self_signed_ssl_certs (
   $base_name    = 'selfsigned',
   $country      = 'US',
@@ -11,7 +17,7 @@ class generate_self_signed_ssl_certs (
   $password = undef,
   $cnf_tpl = 'openssl/cert.cnf.erb',
   $owner = 'root',
-  $group = 'root',
+  $group = 'certs',
   $state = undef,
   $locality = undef,
   $unit = undef,
@@ -88,7 +94,7 @@ class generate_self_signed_ssl_certs (
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
-      mode    => '0600',
+      mode    => '0640',
       require => Ssl_pkey["${base_dir}/${base_name}HOST.key"];
 
     "${base_dir}/${base_name}HOST.crt":

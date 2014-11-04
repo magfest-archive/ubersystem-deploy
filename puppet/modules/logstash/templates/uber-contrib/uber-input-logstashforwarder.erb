@@ -1,8 +1,8 @@
 input {
   lumberjack {
     port => 5678
-    ssl_certificate => '/etc/logstashforwarder/ssl/selfsigned-host.crt' # TODO: change this path!! won't exist on clients
-    ssl_key => '/etc/logstashforwarder/ssl/selfsigned-host.key'         # TODO: change this path!! won't exist on clients
+    ssl_certificate => '<%= @ssl_certificate %>'
+    ssl_key => '<%= @ssl_key %>'
     codec => "json"
 
     #add_field => ... # hash (optional), default: {}
