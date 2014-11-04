@@ -1,11 +1,5 @@
 # either specify SSL certs, or generate them
 
-class ssl_setup {
-  group { "certs":
-    ensure => "present",
-  }
-}
-
 class generate_self_signed_ssl_certs (
   $base_name    = 'selfsigned',
   $country      = 'US',
@@ -94,7 +88,7 @@ class generate_self_signed_ssl_certs (
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
-      mode    => '0640',
+      mode    => '0664',  # need to make logstash able to read this.  probably not the best idea.
       require => Ssl_pkey["${base_dir}/${base_name}HOST.key"];
 
     "${base_dir}/${base_name}HOST.crt":

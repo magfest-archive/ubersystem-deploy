@@ -3,10 +3,6 @@
 # and compiles it together into a central system for searching and storage
 
 class logging_centralized_server {
-  user { "logstash":
-    groups => [ "logstash", "certs" ],
-  }
-
   $logstash_configs = hiera_hash('logstash_configs', {})
   create_resources('logstash::configfile', $logstash_configs)
 
