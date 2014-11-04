@@ -53,22 +53,34 @@ class generate_self_signed_ssl_certs (
     require     => File["${base_dir}/${base_name}HOST.cnf"],
   }
 
-  x509_cert { "${base_dir}/${base_name}HOST.crt":
-    ensure      => $ensure,
-    template    => "${base_dir}/${base_name}HOST.cnf",
-    private_key => "${base_dir}/${base_name}CA.key",
-    days        => $days,
-    password    => $password,
-    force       => $force,
-    require     => [
+  # what we should be doing if openssl puppet lib supported it
+  #x509_cert { "${base_dir}/${base_name}HOST.crt":
+  #  ensure      => $ensure,
+  #  template    => "${base_dir}/${base_name}CA.cnf",
+  #  private_key => "${base_dir}/${base_name}CA.key",
+  #  days        => $days,
+  #  password    => $password,
+  #  force       => $force,
+  #  require     => [
+  #    File["${base_dir}/${base_name}HOST.cnf"],
+  #    File["${base_dir}/${base_name}CA.cnf"],
+  #    File["${base_dir}/${base_name}CA.crt"],
+  #    File["${base_dir}/${base_name}CA.key"],
+  #  ],
+  #}
+
+  # instead of the thing above, do this:
+  # hack this because I don't give a crap for self-signed cert code to be doing it "the right way"
+  exec { "${base_dir}/${base_name}HOST.crt":
+    command => "openssl x509 -req -in ${base_dir}/${base_name}HOST.csr -CA ${base_dir}/${base_name}CA.crt -CAkey ${base_dir}/${base_name}CA.key -CAcreateserial -out ${base_dir}/${base_name}HOST.crt -days 365",
+    creates => "${base_dir}/${base_name}HOST.crt",
+    require => [
       File["${base_dir}/${base_name}HOST.cnf"],
       File["${base_dir}/${base_name}CA.cnf"],
       File["${base_dir}/${base_name}CA.crt"],
       File["${base_dir}/${base_name}CA.key"],
     ],
   }
-
-  # openssl x509 -req -in host.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out host.crt -days 365
 
   # Set owner of all files
   file {
@@ -83,7 +95,7 @@ class generate_self_signed_ssl_certs (
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
-      require => X509_cert["${base_dir}/${base_name}HOST.crt"];
+      require => Exec["${base_dir}/${base_name}HOST.crt"];
 
     "${base_dir}/${base_name}HOST.csr":
       ensure  => $ensure,
