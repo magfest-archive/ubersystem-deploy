@@ -24,6 +24,9 @@ logstash_configs:
     template: "logstash/uber-contrib/uber-outputs.erb"
     order: 30
 
+logstash_patterns:
+  custom-patterns:
+    source: "logstash/uber-contrib/uber-patterns.erb"
 
 # -----------------
 # Elastisearch stuff

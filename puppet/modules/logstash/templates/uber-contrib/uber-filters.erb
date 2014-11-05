@@ -11,3 +11,19 @@ filter {
     }
   }
 }
+
+filter {
+  if [type] == "nginx-access" {
+    grok {
+      match => { "message" => "%{NGINXACCESS}" }
+    }
+    date {
+        type => "web_nginx_access"
+        match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+    }
+    geoip {
+        type => "web_nginx_access"
+        source => "clientip"
+    }
+  }
+}
