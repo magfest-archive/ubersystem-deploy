@@ -15,7 +15,6 @@ logstashforwarder::idle_flush_time:       '5s'
 logstashforwarder::log_to_syslog:         false
 logstashforwarder::spool_size:            '1024'
 logstashforwarder::manage_repo:           true
-logstashforwarder::cpuprofile:            '/var/log/cpuprofile'
 logstashforwarder::servers:
   - 'localhost:5678'
 
