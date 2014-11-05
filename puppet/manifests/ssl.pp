@@ -3,8 +3,8 @@
 class generate_self_signed_ssl_certs (
   $base_name    = 'selfsigned',
   $country      = 'US',
-  $organization = 'test.com',
-  $commonname   = 'test.com',
+  $organization = 'localhost',
+  $commonname   = 'localhost',
   $base_dir = '/etc/ssl/certs',
   $ensure = present,
   $days = 365,
