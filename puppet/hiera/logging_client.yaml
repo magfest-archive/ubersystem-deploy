@@ -24,5 +24,21 @@ logstashforwarder_files:
     - '/var/log/syslog'
     - '/var/log/messages'
     - '/var/log/secure'
+    - '/var/log/auth.log'
     fields:
       type: 'syslog'
+  ubersystem:
+    paths:
+    - '/var/log/supervisor/*'
+    fields:
+      type: 'ubersystem'
+  nginx-access:
+    paths:
+    - '/var/log/nginx/*access.log'
+    fields:
+      type: 'nginx-access'
+  nginx-error:
+    paths:
+    - '/var/log/nginx/*error.log'
+    fields:
+      type: 'nginx-error'
