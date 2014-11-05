@@ -2,11 +2,9 @@
 
 ---
 classes:
-  # - uber_server
-  - logging_centralized_server
-  - logstash
-  - logstashforwarder
-  - logstashforwarders
+  # - uber_server # HACK, uncomment before committing.
+  - logging_centralized_server        # include stuff needed for centralized log/analysis server
+  - logging_client                    # include stuff needed for lightweight log sending from a node to a central server
   - generate_self_signed_ssl_certs    # generate self signed certs signed by a generated self-signed CA key/crt
 
 uber_instances:
@@ -23,7 +21,7 @@ uber_instances:
                 # it also means that you have to have the GUEST machine powered up in order to access the files,
                 # and if you destroy the machine you will lose uncommited changes.
                 # 
-                # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
+                # it's not ideal, but it's a decent tradeoff because otherwise it tens of minutes to complete
                 # uber_path:      '/usr/local/uber/sideboard'
 
                 # a system user created for this instance.

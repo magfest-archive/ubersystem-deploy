@@ -37,3 +37,11 @@ elastisearch_instances:
   main:
     ensure: 'present'
 
+
+# -----------
+# kibana (searchable log web interface)
+# -----------
+
+# install apache and use it to allow access to kibana files
+kibana3::manage_ws: true
+kibana3::ws_port: "5601"

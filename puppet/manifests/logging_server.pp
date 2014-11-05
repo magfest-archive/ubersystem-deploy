@@ -3,6 +3,9 @@
 # and compiles it together into a central system for searching and storage
 
 class logging_centralized_server {
+  include 'logstash'
+  include 'kibana3'
+
   $logstash_configs = hiera_hash('logstash_configs', {})
   create_resources('logstash::configfile', $logstash_configs)
 
