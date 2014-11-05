@@ -6,9 +6,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "Ubuntu 14.04-64"
     config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
 
+    # needed for ubersystem direct access
     config.vm.network :forwarded_port, guest: 8282, host: 8282
+
+    # needed for nginx proxy access to ubersystem
     config.vm.network :forwarded_port, guest: 80, host: 8000
     config.vm.network :forwarded_port, guest: 4443, host: 4443
+
+    # needed for browser access to kibana (logging support)
+    config.vm.network :forwarded_port, guest: 5601, host: 5601
+
+    # needed for external access to elastisearch which is being fed by logstash (logging support)
+    # yes, we need to forward this because host OS's web browser will query this port
+    # via javascript
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
 
     # uncomment for private network 
     # (useful if doing SMB or NFS shares FROM the guest OS -to- host OS
