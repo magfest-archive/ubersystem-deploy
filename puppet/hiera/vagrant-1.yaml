@@ -50,6 +50,7 @@ uber_instances:
                   - 'dealer_ribbon      = "Dealer"'
                   - 'dealer_asst_ribbon = "Dealer Assistant"'
                   - 'bod_ribbon         = "Board of Directors"'
+                shiftless_depts: 'dorsai, charity'
                 job_listings:
                   - 'arcade            = "Arcade"'
                   - 'artemis           = "Artemis"'
