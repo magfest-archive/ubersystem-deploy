@@ -1,6 +1,6 @@
 # either specify SSL certs, or generate them
 
-class generate_self_signed_ssl_certs (
+class site::generate_self_signed_ssl_certs (
   $base_name    = 'selfsigned',
   $country      = 'US',
   $organization = 'localhost',
@@ -11,7 +11,7 @@ class generate_self_signed_ssl_certs (
   $password = undef,
   $cnf_tpl = 'openssl/cert.cnf.erb',
   $owner = 'root',
-  $group = 'certs',
+  $group = 'root',
   $state = undef,
   $locality = undef,
   $unit = undef,

@@ -2,7 +2,7 @@
 # collects log information from all the individual nodes,
 # and compiles it together into a central system for searching and storage
 
-class logging_centralized_server {
+class site::logging_server {
   include 'logstash'
   include 'kibana3'
 
@@ -11,6 +11,9 @@ class logging_centralized_server {
 
   $logstash_config_lumberjacks = hiera_hash('logstash_config_lumberjacks', {})
   create_resources('logstash::configfile_lumberjack', $logstash_config_lumberjacks)
+
+  $logstash_patternfiles = hiera_hash('logstash_patternfiles', {})
+  create_resources('logstash::patternfile', $logstash_patternfiles)
 
   $elastisearch_instances = hiera_hash('elastisearch_instances', {})
   create_resources('elasticsearch::instance', $elastisearch_instances)

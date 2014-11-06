@@ -3,9 +3,9 @@
 ---
 classes:
   - uber_server                       # install sideboard+plugins (including ubersystem)
-  - logging_centralized_server        # include stuff needed for centralized log/analysis server
-  - logging_client                    # include stuff needed for lightweight log sending from a node to a central server
-  - generate_self_signed_ssl_certs    # generate self signed certs signed by a generated self-signed CA key/crt
+  - site::logging_server              # include stuff needed for centralized log/analysis server
+  - site::logging_client              # include stuff needed for lightweight log sending from a node to a central server
+  - site::generate_self_signed_ssl_certs    # generate self signed certs signed by a generated self-signed CA key/crt
 
 uber_instances:
         ubersystem_vagrant:
