@@ -86,6 +86,21 @@ uber_instances:
                   - 'treasury          = "Treasury"'
                   - 'ccg_tabletop      = "Tabletop (CCG)"'
                   - 'tech_ops          = "Tech Ops"'
+                interest_lists:
+                  - 'console        = "Consoles"'
+                  - 'arcade         = "Arcade"'
+                  - 'lan            = "LAN"'
+                  - 'music          = "Music"'
+                  - 'pabels         = "Guests/Panels"'
+                  - 'tabletop       = "Tabletop games"'
+                  - 'marketplace    = "Dealers"'
+                  - 'tournaments    = "Tournaments"'
+                  - 'film_fest      = "Film Festival"'
+                  - 'indie_showcase = "Indie Game Showcase"'
+                  - 'larp           = "LARP"'
+                dept_overrides:
+                  - 'staff_support = "Jack Boyd"'
+                  - 'security = "The Dorsai Irregulars"'
 nginx::nginx_vhosts:
         '%{hostname}':
                 listen_options: 'default'
