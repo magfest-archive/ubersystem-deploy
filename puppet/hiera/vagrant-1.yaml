@@ -86,7 +86,7 @@ uber_instances:
                   - 'treasury          = "Treasury"'
                   - 'ccg_tabletop      = "Tabletop (CCG)"'
                   - 'tech_ops          = "Tech Ops"'
-                interest_lists:
+                interest_list:
                   - 'console        = "Consoles"'
                   - 'arcade         = "Arcade"'
                   - 'lan            = "LAN"'
