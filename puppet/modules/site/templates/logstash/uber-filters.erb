@@ -1,6 +1,7 @@
 filter {
   if [type] == "syslog" {
     grok {
+      patterns_dir => "/etc/logstash/patterns/"
       match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
       add_field => [ "received_at", "%{@timestamp}" ]
       add_field => [ "received_from", "%{host}" ]
@@ -15,14 +16,13 @@ filter {
 filter {
   if [type] == "nginx-access" {
     grok {
+      patterns_dir => "/etc/logstash/patterns/"
       match => { "message" => "%{NGINXACCESS}" }
     }
     date {
-        type => "web_nginx_access"
         match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
     }
     geoip {
-        type => "web_nginx_access"
         source => "clientip"
     }
   }

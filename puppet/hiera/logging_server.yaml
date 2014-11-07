@@ -11,17 +11,17 @@ logstash::java_install: true
 
 logstash_config_lumberjacks:
   input-lumberjack:
-    template:         "logstash/uber-contrib/uber-input-logstashforwarder.erb"
+    template:         "site/logstash/uber-input-logstashforwarder.erb"
     order:            10
     ssl_key:          '/etc/ssl/certs/selfsignedHOST.key'
     ssl_certificate:  '/etc/ssl/certs/selfsignedHOST.crt'
 
 logstash_configs:
   filter-main:
-    template: "logstash/uber-contrib/uber-filters.erb"
+    template: "site/logstash/uber-filters.erb"
     order: 20
   outputs:
-    template: "logstash/uber-contrib/uber-outputs.erb"
+    template: "site/logstash/uber-outputs.erb"
     order: 30
 
 logstash_patternfiles:
