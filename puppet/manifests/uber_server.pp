@@ -3,6 +3,7 @@
 class uber_server {
 
   include '::ntp'
+  include 'supervisor'
 
   class { 'timezone':
     timezone => 'America/New_York',
