@@ -6,6 +6,14 @@ class site::logging_server {
   include 'logstash'
   include 'kibana3'
 
+  ufw::allow { 'allow-logstash':
+    port => 9200,
+  }
+
+  ufw::allow { 'allow-logstash':
+    port => 5601,
+  }
+
   $logstash_configs = hiera_hash('logstash_configs', {})
   create_resources('logstash::configfile', $logstash_configs)
 
