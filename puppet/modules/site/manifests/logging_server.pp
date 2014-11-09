@@ -6,12 +6,19 @@ class site::logging_server {
   include 'logstash'
   include 'kibana3'
 
-  ufw::allow { 'allow-logstash':
+  # allow clients (like kibana's javascript) to connect to our elastisearch engine to query logfile entries
+  ufw::allow { 'allow-elastisearch':
     port => 9200,
   }
 
-  ufw::allow { 'allow-logstash':
+  # allow clients to access kibana (web UI frontend)
+  ufw::allow { 'allow-kibana-web':
     port => 5601,
+  }
+
+  # allow nodes to send logfile information to us
+  ufw::allow { 'allow-logstash-forwarder':
+    port => 5678,
   }
 
   $logstash_configs = hiera_hash('logstash_configs', {})
@@ -26,6 +33,8 @@ class site::logging_server {
   $elastisearch_instances = hiera_hash('elastisearch_instances', {})
   create_resources('elasticsearch::instance', $elastisearch_instances)
 }
+
+Class['site::logging_server'] -> Class['site::generate_self_signed_ssl_certs']
 
 # based on logstash::configfile
 # we are overriding this only because we need to pass in values to the template file.
