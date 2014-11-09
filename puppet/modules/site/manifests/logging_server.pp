@@ -34,8 +34,6 @@ class site::logging_server {
   create_resources('elasticsearch::instance', $elastisearch_instances)
 }
 
-Class['site::logging_server'] -> Class['site::generate_self_signed_ssl_certs']
-
 # based on logstash::configfile
 # we are overriding this only because we need to pass in values to the template file.
 # (lumberjack protocol = logstash_forwarder)

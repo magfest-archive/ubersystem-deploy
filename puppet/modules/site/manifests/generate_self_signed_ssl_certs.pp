@@ -104,3 +104,7 @@ class site::generate_self_signed_ssl_certs (
       require => X509_request["${base_dir}/${base_name}HOST.csr"];
   }
 }
+
+Class['site::logging_server'] -> Class['site::generate_self_signed_ssl_certs']
+Class['site::logging_client'] -> Class['site::generate_self_signed_ssl_certs']
+Class['site::uber_server'] -> Class['site::generate_self_signed_ssl_certs']
