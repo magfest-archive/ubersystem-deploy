@@ -87,7 +87,7 @@ def sync_puppet_related_files_to_node():
                 extra_opts=rsync_opts
         )
 
-def puppet_apply(dry_run='no'):
+def puppet_apply(dry_run='no', graphs='no'):
     execute(set_remote_hostname)
     execute(sync_puppet_related_files_to_node)
 
@@ -97,8 +97,12 @@ def puppet_apply(dry_run='no'):
     sudo('echo -en "[main]\nhiera_config='+hiera_conf+'" >> '+puppet_conf)
 
     cmdline = " --verbose --debug "
+
     if dry_run == 'yes':
         cmdline += " --noop "
+
+    if graphs == 'yes':
+        cmdline += " --graph "
 
     sudo(   "puppet apply "
             " --config "+puppet_conf+" "
