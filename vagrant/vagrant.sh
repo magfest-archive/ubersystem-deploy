@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # for the test DB to have words in it
+sudo apt-get update -y
 sudo apt-get install -y wamerican language-pack-id
 sudo locale-gen en_US en_US.UTF-8 hu_HU hu_HU.UTF-8
 sudo dpkg-reconfigure locales
