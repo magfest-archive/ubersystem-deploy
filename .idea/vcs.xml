@@ -7,6 +7,6 @@
     <mapping directory="$PROJECT_DIR$/sideboard" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/magprime_emails" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/uber" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sideboard/plugins/uber_analytics" vcs="Git" />
   </component>
 </project>
-
