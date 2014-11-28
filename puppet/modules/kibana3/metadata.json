@@ -1,0 +1,66 @@
+{
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "name": "thejandroman-kibana3",
+  "version": "0.0.3",
+  "source": "https://github.com/thejandroman/kibana3",
+  "author": "thejandroman",
+  "license": "Apache License, Version 2.0",
+  "summary": "Installs and configures kibana3.",
+  "description": "The kibana3 puppet module allows one to setup and configure the kibana3 interface to Logstash and ElasticSearch.",
+  "project_page": "https://github.com/thejandroman/kibana3",
+  "dependencies": [
+    {
+      "name": "puppetlabs/git",
+      "version_requirement": ">= 0.0.3"
+    },
+    {
+      "name": "puppetlabs/vcsrepo",
+      "version_requirement": ">= 0.2.0"
+    },
+    {
+      "name": "puppetlabs/apache",
+      "version_requirement": ">= 1.0.1"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 3.2.1"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CHANGELOG.md": "117bf4f963eeca8a361185968f1e9657",
+    "Gemfile": "4547702ae98462dfb57a064884b6526a",
+    "LICENSE": "b1b1222427797ff2583a958e2f32e9ef",
+    "Modulefile": "db62694978929cf132b76e318048c47f",
+    "README.md": "78ae4c79ecae40f3a294a8e738e192d1",
+    "Rakefile": "d884be2a35803faeeead87cb61a64647",
+    "manifests/config.pp": "61ea33cec8d30b5efa320a3e453f7419",
+    "manifests/init.pp": "8a6da90190518bbc4b9bf41ef97aa985",
+    "manifests/install.pp": "0ef3363adfb24cdd9d14ca41782896b2",
+    "manifests/params.pp": "fb6b391f6191eddf1436a1e5396c903b",
+    "manifests/uninstall.pp": "0f044aefcbf3e97b8eb88feed710433a",
+    "spec/classes/kibana3_init_spec.rb": "c1b7a82c845b43c765e2aa448ad412ba",
+    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+    "templates/config.js.erb": "74fd6df7467defc5fe2493ee4135a0b2",
+    "tests/init.pp": "5a0f09e3fbda7c532e0b763733bc0094",
+    "vagrant/Puppetfile": "7491a66a3bffdb81ee16cd9567459db2",
+    "vagrant/Vagrantfile": "0a5f4dff24cc3bb0b658de949d85bf7b",
+    "vagrant/default.sh": "7e234256c73fdade33c0f529b25c1e01",
+    "vagrant/manifests/default.pp": "666afb9606e448ab4c8e0c457a0118aa"
+  }
+}

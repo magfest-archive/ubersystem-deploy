@@ -1,0 +1,29 @@
+filter {
+  if [type] == "syslog" {
+    grok {
+      patterns_dir => "/etc/logstash/patterns/"
+      match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+      add_field => [ "received_at", "%{@timestamp}" ]
+      add_field => [ "received_from", "%{host}" ]
+    }
+    syslog_pri { }
+    date {
+      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
+  }
+}
+
+filter {
+  if [type] == "nginx-access" {
+    grok {
+      patterns_dir => "/etc/logstash/patterns/"
+      match => { "message" => "%{NGINXACCESS}" }
+    }
+    date {
+        match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+    }
+    geoip {
+        source => "clientip"
+    }
+  }
+}

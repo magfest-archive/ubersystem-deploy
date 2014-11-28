@@ -1,4 +1,4 @@
-class ssh {
+class site::ssh {
   package { 'ssh':
     ensure => present,
   }
@@ -8,7 +8,7 @@ class ssh {
     owner  => 'root',
     group  => 'root',
     mode   => 600,
-    source => 'puppet:///modules/uber/sshd_config',
+    source => 'puppet:///modules/uber/sshd_config', # TODO: move to 'site' module
     notify => Service['ssh'],
   }
 

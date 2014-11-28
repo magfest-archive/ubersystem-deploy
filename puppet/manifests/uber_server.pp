@@ -1,15 +1,17 @@
-import 'ssh.pp'
+# TODO: move this class to the new 'site' module
 
 class uber_server {
 
   include '::ntp'
+  include 'supervisor'
 
   class { 'timezone':
     timezone => 'America/New_York',
   }
 
-  include ssh
-  include uber
+  include 'site::ssh'
+  include 'uber'
+  include 'git'
 
   class { 'postgresql::server':
     ip_mask_deny_postgres_user => '0.0.0.0/32',

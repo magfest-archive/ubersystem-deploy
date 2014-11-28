@@ -13,3 +13,10 @@ sudo patch /usr/lib/python3.4/venv/__init__.py < /home/vagrant/uber/vagrant/venv
 
 # setup our custom bash aliases to make development easy
 cp /home/vagrant/uber/vagrant/bash_aliases /home/vagrant/.bash_aliases
+
+
+# setup the puppet module dir so it symlinks to our repository.
+# this is purely a convenience thing so you can type 'puppet module install' without
+# having to specify --modulepath
+mkdir -p /home/vagrant/.puppet
+ln -s /home/vagrant/uber/puppet/modules/ /home/vagrant/.puppet

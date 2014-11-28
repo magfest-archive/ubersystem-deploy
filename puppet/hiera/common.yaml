@@ -1,2 +1,4 @@
 ---
-test: 'common.yaml test data (no overrides)'
+info: "do not remove this line. apparently hiera goes berserk if this file doesn't contain at least one definition"
+
+supervisor::enable_http_inet_server: false

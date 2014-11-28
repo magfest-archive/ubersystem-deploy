@@ -9,5 +9,7 @@
         - "nodes/vagrant-%{::is_vagrant}"
         - "nodes/common"
         - "vagrant-%{::is_vagrant}"
+        - "logging_server"
+        - "logging_client"
         - "common"
 :merge_behavior: deeper
