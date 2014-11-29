@@ -6,6 +6,7 @@
     <mapping directory="$PROJECT_DIR$/puppet/modules/uber" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/magprime_emails" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sideboard/plugins/rockage" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/uber" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/uber_analytics" vcs="Git" />
   </component>
