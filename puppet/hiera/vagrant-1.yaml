@@ -89,4 +89,4 @@ uber_instances:
                                 - { '2015-01-01': 65 }
                                 - { '2015-01-20': 70 }
 
-                debugONLY_dont_init_python_or_git_repos_or_plugins: 'False' # DO NOT CHECK IN
+                # debugONLY_dont_init_python_or_git_repos_or_plugins: 'False' # DO NOT CHECK IN
