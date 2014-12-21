@@ -52,7 +52,7 @@ uber_instances:
                 send_emails: 'False'
 
                 prereg_open: '2014-08-06'
-                dealer_reg_start: '2014-08-08'
+                dealer_reg_start: '2014-08-07'
 
                 hostname: 'localhost'
                 ssl_port: '4443'
