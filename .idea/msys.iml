@@ -6,4 +6,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Puppet modules" level="application" />
   </component>
+  <component name="PuppetModuleSettings">
+    <option name="librariesDisabled" value="true" />
+  </component>
 </module>
