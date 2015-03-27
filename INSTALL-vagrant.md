@@ -53,9 +53,21 @@ cd ~/uber/puppet/
 http://localhost:8000/uber/
 ```
 
-7) logout of your SSH session and log back in again (for some bash login scripts to take effect)
+7) IMPORTANT: completely log out of your SSH session and log back in again (needed for some python startup scripts to kick in)
 
-8) For more info on how to actually code and make changes, see: [Developer Docs](DEVELOPING.md)
+8) Add a user to ubersystem so you can login. From your bash prompt, type:
+
+```bash
+sep insert_admin
+```
+
+Now you can visit 
+```
+http://localhost:8000/uber/
+```
+This account, by default, has a login of "magfest@example.com" and the password "magfest".
+
+9) Everything's installed! For more info on how to actually code and make changes, see: [Developer Docs](DEVELOPING.md)
 
 
 Vagrant Troubleshooting:
