@@ -12,4 +12,4 @@ Installation
 
 Use [Vagrant Install Instructions](INSTALL-vagrant.md) to setup a dev copy of ubersystem (new users, start here)
 
-Use [Real Install Instructions](INSTALL-real.md) to setup a production server
+Use [Real Install Instructions](INSTALL-realserver.md) to setup a production server
