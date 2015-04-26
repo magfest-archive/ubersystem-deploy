@@ -27,7 +27,7 @@ uber_instances:
                 uber_user:  'vagrant'
                 uber_group: 'vagrant'
 
-                organization_name: 'CoolCon'
+                organization_name: 'Demo INC'
 
                 sideboard_repo:       'https://github.com/magfest/sideboard'
                 sideboard_branch:     'master'
@@ -36,9 +36,6 @@ uber_instances:
                 sideboard_plugins:
                         uber:
                                 git_repo: 'https://github.com/magfest/ubersystem'
-                                git_branch: 'master'
-                        magprime_emails:
-                                git_repo: 'https://github.com/magfest/magprime_emails'
                                 git_branch: 'master'
 
                 # network settings
@@ -49,11 +46,47 @@ uber_instances:
                 url_prefix:     'uber'
 
                 # event-specific settings
-                event_name:     'CoolCon'
+                event_name:     'UbersystemDemoCon'
                 year: 13
                 dev_box: 'True'
                 send_emails: 'False'
+
                 prereg_open: '2014-08-06'
+                dealer_reg_start: '2014-08-07'
 
                 hostname: 'localhost'
                 ssl_port: '4443'
+
+                badge_types:
+                        staff_badge:
+                                range_start: 1
+                                range_end: 999
+                        supporter_badge:
+                                range_start: 1000
+                                range_end: 1999
+                        guest_badge:
+                                range_start: 2000
+                                range_end: 2999
+                        attendee_badge:
+                                range_start: 3000
+                                range_end: 29999
+                        one_day_badge:
+                                range_start: 30000
+                                range_end: 39999
+
+                badge_prices:
+                        single_day:
+                                - { 'Friday': 35 }
+                                - { 'Saturday': 40 }
+                                - { 'Sunday': 40 }
+                                - { 'Monday': 30 }
+
+                        attendee:
+                                - { '2014-09-01': 45 }
+                                - { '2014-10-01': 50 }
+                                - { '2014-11-01': 55 }
+                                - { '2014-12-01': 60 }
+                                - { '2015-01-01': 65 }
+                                - { '2015-01-20': 70 }
+
+                # debugONLY_dont_init_python_or_git_repos_or_plugins: 'False'
