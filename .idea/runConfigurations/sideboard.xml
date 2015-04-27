@@ -15,7 +15,7 @@
     <PathMappingSettings>
       <option name="pathMappings">
         <list>
-          <mapping local-root="d:\uber\rockage" remote-root="/home/vagrant/uber" />
+          <mapping local-root="$PROJECT_DIR$" remote-root="/home/vagrant/uber" />
         </list>
       </option>
     </PathMappingSettings>
