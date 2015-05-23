@@ -55,12 +55,19 @@ cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
 
-6) In about 35 minutes (vagrant shared folders are super-slow on windows) you should have a fully functional ubersystem deployment accessible at: 
+This step can take up to 40 minutes to build ubersystem on your new virtual machine for the first time.
+
+7) IMPORTANT: Do the following to completely log out of your SSH session and log back in again (needed for some python startup scripts to kick in):
+
 ```
-http://localhost:8000/uber/
+exit
 ```
 
-7) IMPORTANT: completely log out of your SSH session and log back in again (needed for some python startup scripts to kick in)
+Then back at the DOS prompt, type:
+
+```
+vagrant ssh
+```
 
 8) Add a user to ubersystem so you can login. From your bash prompt, type:
 
