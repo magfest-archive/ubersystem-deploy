@@ -69,10 +69,10 @@ Then back at the DOS prompt, type:
 vagrant ssh
 ```
 
-8) Manually add a user to ubersystem so you can login. From your bash prompt, type:
+8) Initialize the database for ubersystem so you can login to the web interface. From your bash prompt, type:
 
 ```bash
-sep insert_admin
+sep reset_uber_db
 ```
 
 Now you can visit 
