@@ -69,7 +69,7 @@ Then back at the DOS prompt, type:
 vagrant ssh
 ```
 
-8) Add a user to ubersystem so you can login. From your bash prompt, type:
+8) Manually add a user to ubersystem so you can login. From your bash prompt, type:
 
 ```bash
 sep insert_admin
@@ -79,7 +79,7 @@ Now you can visit
 ```
 http://localhost:8000/uber/
 ```
-This account, by default, has a login of "magfest@example.com" and the password "magfest".
+The site will have a login of "magfest@example.com" and the password is "magfest".
 
 9) Everything's installed! For more info on how to actually code and make changes, see: [Developer Docs](DEVELOPING.md)
 
