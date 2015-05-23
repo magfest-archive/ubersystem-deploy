@@ -36,7 +36,7 @@ uber_instances:
                 sideboard_plugins:
                         uber:
                                 git_repo: 'https://github.com/magfest/ubersystem'
-                                git_branch: 'master'
+                                git_branch: 'mag-unstable' # TODO! CHANGE THIS BACK TO MASTER, once mag-unstable has been merged back into master 5/23/15
 
                 # network settings
                 # note: this port number is an internal port number.
@@ -47,15 +47,49 @@ uber_instances:
 
                 # event-specific settings
                 event_name:     'UbersystemDemoCon'
-                year: 13
+                year: 26
                 dev_box: 'True'
                 send_emails: 'False'
 
+                groups_enabled: 'True'
                 prereg_open: '2014-08-06'
                 dealer_reg_start: '2014-08-07'
 
+                epoch: '2016-06-19 08'
+                eschaton: '2016-06-21 18'
+                prereg_open: '2015-04-25'
+                prereg_takedown: '2016-06-15'
+                placeholder_deadline: '2016-06-16'
+                shirt_deadline: '2016-05-30'
+                printed_badge_deadline: ''
+                dealer_reg_start: ''
+                uber_takedown: "2016-06-17"
+
                 hostname: 'localhost'
                 ssl_port: '4443'
+                
+                max_badge_sales: 18000
+
+                donation_tier:
+                    - "'No thanks'      = 0"
+                    - "'Shirt'          = SHIRT_LEVEL"
+                    - "'Supporter Pack' = SUPPORTER_LEVEL"
+
+                badge_enums:
+                        attendee_badge:         "Attendee"
+                        supporter_badge:        "Supporter"
+                        staff_badge:            "Staff"
+                        guest_badge:            "Guest"
+                        one_day_badge:          "One Day"
+
+                supporter_deadline: '2015-12-26'
+
+                # prereg form UI options
+                donations_enabled: true
+
+                consent_form_url: ""
+
+                event_timezone: "US/Eastern"
 
                 badge_types:
                         staff_badge:
@@ -74,19 +108,79 @@ uber_instances:
                                 range_start: 30000
                                 range_end: 39999
 
+                initial_attendee: 50    # badge price
                 badge_prices:
                         single_day:
                                 - { 'Friday': 35 }
                                 - { 'Saturday': 40 }
                                 - { 'Sunday': 40 }
                                 - { 'Monday': 30 }
-
                         attendee:
-                                - { '2014-09-01': 45 }
-                                - { '2014-10-01': 50 }
-                                - { '2014-11-01': 55 }
-                                - { '2014-12-01': 60 }
-                                - { '2015-01-01': 65 }
-                                - { '2015-01-20': 70 }
+                                - { '2016-01-18': 70 }
+
+                collect_exact_birthdate: 'True'
+                consent_form_url: ''
+
+                # MAGSTOCK SPECIFIC STUFF
+                job_interests:
+                        cat_herding: "Cat Herding"
+                        food: "Food"
+                        misc: "Standby/Misc"
+                        music: "Music"
+                        registration: "Registration"
+                        slip_slide: "Slip 'n Slide"
+
+                job_locations:
+                        cat_herding: "Cat Herding"
+                        food: "Food"
+                        misc: "Standby/Misc"
+                        music: "Music"
+                        registration: "Registration"
+                        slip_slide: "Slip 'n Slide"
+
+                noise_levels:
+                        quiet:   "As quiet as possible at night"
+                        normal:  "I can sleep through reasonable levels of noise"
+                        noisy:   "While others sleep, I PARTY!"
+
+                shirt_colors:
+                        no_shirt:     "No shirt"
+                        black_shirt:  "Black Shirt"
+                        white_shirt:  "White Shirt (for tie-dyeing later)"
+
+                site_types:
+                        primitive:  "Primitive - NO ELECTRIC OR WATER (but you get a swag bag)"
+                        normal:     "Normal - has electric and water hookups"
+
+                camping_types:
+                        small_tent:  "Small Tent (6 or fewer)"
+                        large_tent:  "Large Tent (more than 6)"
+                        car:         "Sleeping in car"
+                        rv:          "RV or other larger vehicle"
+
+                coming_as_types:
+                        tent_leader:    "I am the Tent Leader"
+                        tent_follower:  "I'm not the one coordinating my group"
+                        
+                supporter_stock: 50
+                food_stock: 120
+                food_price: 35
+                shirt_level: 20
+                supporter_level: 50
+                season_level: 160
+
+                ribbon_types:
+                        roughing_it: "Roughing It"
+
+                interest_list:
+                        chilling:     'Chilling'
+                        grilling:     'Grilling'
+                        music:        'Music'
+                        slip_slide:   'Slip n Slide'
+                        lake:         'Lake'
+                        video_games:  'Video Games'
+                        moonbounce:   'Moonbounce'
+                        activities:   'Activities'
+                # END OF MAGSTOCK SPECIFIC STUFF
 
                 # debugONLY_dont_init_python_or_git_repos_or_plugins: 'False'
