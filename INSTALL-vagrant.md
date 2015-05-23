@@ -16,33 +16,40 @@ Getting started with Vagrant
 
 (Windows instructions, though linux/mac should be identical)
 
+0) Launch a DOS prompt in administrator mode.
+Press the Start Menu, type in 'command prompt', and RIGHT CLICK, Run As Administrator
+
+Change your directory to where you want the code to live on your machine.
+
+```
+cd path\you\want
+```
+
 1) Clone this repository somewhere like so:
 ```
-cd somewhere
 git clone https://github.com/magfest/ubersystem-deploy/ 
 ```
 
-2) Setup the config file.  This step is optional if you're just doing Vagrant, but necessary for production.
+2) Setup the config file that tells our deploy scripts where to look for various things.
 ```
 cd ubersystem-deploy/puppet/
 cp fabric_settings.example.ini fabric_settings.ini
+cd ..
 ```
 
-(you can do this step in your host OS, i.e. windows, or in any text editor)
+Optional: edit fabric_settings.ini in your favorite text editor if you need to. (first time users, you won't need to)
 
-Optional: edit fabric_settings.ini if you need to. (first time users, you won't need to)
-
-3) AS AN ADMINISTRATOR, open a command prompt
+3) Bring up the Vagrant machine. Vagrant will run a new copy of Ubuntu as a virtual machine on your local computer.
 ```
 vagrant up
 ```
 
-4) then, SSH into vagrant by running
+4) then, SSH into your new machine by running
 ```
 vagrant ssh
 ```
 
-5) once in via SSH,
+5) once in via SSH, you can now start the automated installer:
 ```
 cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
