@@ -36,7 +36,7 @@ uber_instances:
                 sideboard_plugins:
                         uber:
                                 git_repo: 'https://github.com/magfest/ubersystem'
-                                git_branch: 'mag-unstable' # TODO! CHANGE THIS BACK TO MASTER, once mag-unstable has been merged back into master 5/23/15
+                                git_branch: 'master'
 
                 # network settings
                 # note: this port number is an internal port number.
