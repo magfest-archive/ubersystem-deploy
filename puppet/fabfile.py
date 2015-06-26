@@ -193,7 +193,7 @@ def bootstrap_control_server():
     local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes/", branch = fabricconfig.git_regular_nodes_repo_branch)
     local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/external/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
 
-def bootstrap_vagrant_control_server():
+def copy_control_server_files():
     generate_ssh_key_control_server_if_non_exists()
 
     # make it so we can SSH into root@localhost as though it was another node
@@ -202,6 +202,9 @@ def bootstrap_vagrant_control_server():
     local("sudo cp -f ~/.ssh/id_rsa.pub /root/.ssh/authorized_keys")
 
     bootstrap_control_server()
+
+def bootstrap_vagrant_control_server():
+    copy_control_server_files()
     puppet_apply_new_node(auto_update = False)
 
 
