@@ -6,29 +6,36 @@ classes:
 
 uber_instances:
         ubersystem_vagrant:
+                # system settings
+                socket_port:    '8282'
+                url_prefix:     'uber'
+
                 # the path where sideboard+ubersystem is installed on the guest OS
                 # /home/vagrant/uber/ is being hosted on the HOST os and shared.
                 # this is extremely convenient for development, but, disk IO is far slower
                 # in shared folders.
-                uber_path:      '/home/vagrant/uber/sideboard'
-
                 # ALTERNATIVELY, use this path instead for faster deploys/IO,
                 # but it will move the repo out of the HOST os's shared folder
                 # which will result in not being able to edit these directly on the shared host.
                 # it also means that you have to have the GUEST machine powered up in order to access the files,
                 # and if you destroy the machine you will lose uncommited changes.
-                # 
+                #
                 # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
+                uber_path:      '/home/vagrant/uber/sideboard'
                 # uber_path:      '/usr/local/uber/sideboard'
 
-                # a system user created for this instance.
-                # all files will be created as this user and the
-                # process runs as this user
-                uber_user:  'vagrant'
-                uber_group: 'vagrant'
+                uber_user:      'vagrant'
+                uber_group:     'vagrant'
 
-                organization_name: 'Demo INC'
+                dev_box:        'True'
+                send_emails:    'False'
+                numbered_badges: 'True'
+                hostname:       'localhost'
 
+                ssl_port: '4443'
+
+
+                # codebase settings
                 sideboard_repo:       'https://github.com/magfest/sideboard'
                 sideboard_branch:     'new_deploy_fixes'
 
@@ -38,37 +45,26 @@ uber_instances:
                                 git_repo: 'https://github.com/magfest/ubersystem'
                                 git_branch: 'master'
 
-                # network settings
-                # note: this port number is an internal port number.
-                # it is proxied by NGINX to 443 via virtualhost
-                # this port number is never publicly accessible
-                socket_port:    '8282'
-                url_prefix:     'uber'
-
-                # event-specific settings
+                # event settings
+                organization_name: 'Demo INC'
                 event_name:     'UbersystemDemoCon'
                 year: 26
-                dev_box: 'True'
-                send_emails: 'False'
 
                 groups_enabled: 'True'
-                prereg_open: '2014-08-06'
-                dealer_reg_start: '2014-08-07'
 
-                epoch: '2016-06-19 08'
-                eschaton: '2016-06-21 18'
+                epoch: '2015-09-11 08'
+                eschaton: '2015-09-13 18'
                 prereg_open: '2015-04-25'
-                prereg_takedown: '2016-06-15'
-                placeholder_deadline: '2016-06-16'
-                shirt_deadline: '2016-05-30'
+                prereg_takedown: '2015-09-10'
+                placeholder_deadline: '2015-08-15'
+                shirt_deadline: '2015-08-01'
                 printed_badge_deadline: ''
                 dealer_reg_start: ''
-                uber_takedown: "2016-06-17"
+                uber_takedown: '2015-09-10'
 
-                hostname: 'localhost'
-                ssl_port: '4443'
-                
-                max_badge_sales: 18000
+                max_badge_sales: 2000
+
+                at_the_con: 'False'
 
                 donation_tier:
                     - "'No thanks'      = 0"
@@ -82,7 +78,7 @@ uber_instances:
                         guest_badge:            "Guest"
                         one_day_badge:          "One Day"
 
-                supporter_deadline: '2015-12-26'
+                supporter_deadline: '2015-08-01'
 
                 # prereg form UI options
                 donations_enabled: true
@@ -103,26 +99,25 @@ uber_instances:
                                 range_end: 2999
                         attendee_badge:
                                 range_start: 3000
-                                range_end: 29999
+                                range_end: 5999
                         one_day_badge:
-                                range_start: 30000
-                                range_end: 39999
+                                range_start: 6000
+                                range_end: 7999
 
                 initial_attendee: 50    # badge price
                 badge_prices:
                         single_day:
-                                - { 'Friday': 35 }
-                                - { 'Saturday': 40 }
-                                - { 'Sunday': 40 }
-                                - { 'Monday': 30 }
+                                - { 'Friday': 55 }
+                                - { 'Saturday': 55 }
+                                - { 'Sunday': 45 }
                         attendee:
-                                - { '2016-01-18': 70 }
+                                - { '2015-08-01': 60 }
 
                 collect_exact_birthdate: 'True'
                 consent_form_url: ''
 
-                # MAGSTOCK SPECIFIC STUFF
                 job_interests:
+                        CHANGETHIS: "CHANGETHIS"
                         cat_herding: "Cat Herding"
                         food: "Food"
                         misc: "Standby/Misc"
@@ -131,49 +126,22 @@ uber_instances:
                         slip_slide: "Slip 'n Slide"
 
                 job_locations:
-                        cat_herding: "Cat Herding"
+                        CHANGETHIS: "CHANGETHIS"
                         food: "Food"
                         misc: "Standby/Misc"
                         music: "Music"
                         registration: "Registration"
                         slip_slide: "Slip 'n Slide"
 
-                noise_levels:
-                        quiet:   "As quiet as possible at night"
-                        normal:  "I can sleep through reasonable levels of noise"
-                        noisy:   "While others sleep, I PARTY!"
-
-                shirt_colors:
-                        no_shirt:     "No shirt"
-                        black_shirt:  "Black Shirt"
-                        white_shirt:  "White Shirt (for tie-dyeing later)"
-
-                site_types:
-                        primitive:  "Primitive - NO ELECTRIC OR WATER (but you get a swag bag)"
-                        normal:     "Normal - has electric and water hookups"
-
-                camping_types:
-                        small_tent:  "Small Tent (6 or fewer)"
-                        large_tent:  "Large Tent (more than 6)"
-                        car:         "Sleeping in car"
-                        rv:          "RV or other larger vehicle"
-
-                coming_as_types:
-                        tent_leader:    "I am the Tent Leader"
-                        tent_follower:  "I'm not the one coordinating my group"
-                        
-                supporter_stock: 50
-                food_stock: 120
-                food_price: 35
                 shirt_level: 20
                 supporter_level: 50
                 season_level: 160
 
                 ribbon_types:
-                        roughing_it: "Roughing It"
+                        roughing_it: "CHANGETHIS"
 
                 interest_list:
-                        chilling:     'Chilling'
+                        chilling:     'CHANGETHIS'
                         grilling:     'Grilling'
                         music:        'Music'
                         slip_slide:   'Slip n Slide'
@@ -181,6 +149,7 @@ uber_instances:
                         video_games:  'Video Games'
                         moonbounce:   'Moonbounce'
                         activities:   'Activities'
-                # END OF MAGSTOCK SPECIFIC STUFF
 
-                # debugONLY_dont_init_python_or_git_repos_or_plugins: 'False'
+                # DO NOT CHECK IN NEVER LEAVE THIS ON
+                # debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
+                # DO NOT CHECK IN NEVER LEAVE THIS ON
