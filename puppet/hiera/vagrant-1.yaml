@@ -30,7 +30,7 @@ uber_instances:
                 organization_name: 'Demo INC'
 
                 sideboard_repo:       'https://github.com/magfest/sideboard'
-                sideboard_branch:     'master'
+                sideboard_branch:     'new_deploy_fixes'
 
                 # each of these repos will be cloned and put in %uber_path%/plugins/%name%
                 sideboard_plugins:
