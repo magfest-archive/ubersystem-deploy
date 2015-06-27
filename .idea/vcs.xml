@@ -5,7 +5,7 @@
     <mapping directory="$PROJECT_DIR$/puppet/hiera/nodes" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/puppet/modules/uber" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/sideboard/plugins/magstock" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sideboard/plugins/magclassic" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sideboard/plugins/uber" vcs="Git" />
   </component>
 </project>
