@@ -63,23 +63,11 @@ This step can take up to 40 minutes to build ubersystem on your new virtual mach
 exit
 ```
 
-Then back at the DOS prompt, type:
-
-```
-vagrant ssh
-```
-
-8) Initialize the database for ubersystem so you can login to the web interface. From your bash prompt, type:
-
-```bash
-sep reset_uber_db
-```
-
 Now you can visit 
 ```
-http://localhost:8000/uber/
+http://localhost:8000/uber/accounts/insert_test_admin
 ```
-The site will have a login of "magfest@example.com" and the password is "magfest".
+You can now login with "magfest@example.com" and the password is "magfest".
 
 9) Everything's installed! For more info on how to actually code and make changes, see: [Developer Docs](DEVELOPING.md)
 
