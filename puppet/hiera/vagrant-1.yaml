@@ -37,7 +37,7 @@ uber_instances:
 
                 # codebase settings
                 sideboard_repo:       'https://github.com/magfest/sideboard'
-                sideboard_branch:     'new_deploy_fixes'
+                sideboard_branch:     'master'
 
                 # each of these repos will be cloned and put in %uber_path%/plugins/%name%
                 sideboard_plugins:
