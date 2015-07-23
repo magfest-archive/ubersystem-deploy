@@ -12,3 +12,5 @@ puppet/fabric_settingsDONTUSE.ini
 puppet/modules/uber/
 sideboard/
 .idea/workspace.xml
+utils/*.cfg
+utils/*.diff
