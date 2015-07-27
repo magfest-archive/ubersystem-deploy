@@ -20,6 +20,8 @@ class FabricConfig:
         self.git_secret_nodes_repo = self.read_config('repositories', 'git_secret_nodes_repo')
         self.git_secret_nodes_repo_branch = self.read_config('repositories', 'git_secret_nodes_repo_branch', None)
 
+        self.vagrant_extra_prefix = self.read_config('repositories', 'vagrant_extra_prefix', None)
+
 
     def read_config(self, section_name, option, default=None):
         try:
@@ -203,7 +205,12 @@ def copy_control_server_files():
 
     bootstrap_control_server()
 
+def setup_vagrant_prefix_facts():
+    if fabricconfig.vagrant_extra_prefix:
+        local("sudo bash -c 'echo vagrant_extra_prefix=" + fabricconfig.vagrant_extra_prefix + " > /etc/facter/facts.d/vagrant_extra_prefix.txt'")
+
 def bootstrap_vagrant_control_server():
+    setup_vagrant_prefix_facts()
     copy_control_server_files()
     puppet_apply_new_node(auto_update = False)
 
