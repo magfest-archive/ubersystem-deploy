@@ -105,13 +105,14 @@ uber_instances:
                                 range_end: 7999
 
                 initial_attendee: 50    # badge price
-                badge_prices:
-                        single_day:
-                                - { 'Friday': 55 }
-                                - { 'Saturday': 55 }
-                                - { 'Sunday': 45 }
-                        attendee:
-                                - { '2015-08-01': 60 }
+
+                #badge_prices:
+                #        single_day:
+                #                - { 'Friday': 55 }
+                #                - { 'Saturday': 55 }
+                #                - { 'Sunday': 45 }
+                #        attendee:
+                #                - { '2015-08-01': 60 }
 
                 collect_exact_birthdate: 'True'
                 consent_form_url: ''
