@@ -1,7 +1,6 @@
 ---
-test: 'common.yaml test data (no overrides)'
+uber::db::user:             'rams'
+uber::db::pass:             'rams'
+uber::db::dbname:           'rams'
 
-classes:
-- roles::uber_server
-
-uber::test::foo: "NOTBAR"
+uber::db::replication:      'false'

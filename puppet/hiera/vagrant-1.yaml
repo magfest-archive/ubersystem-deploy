@@ -3,6 +3,5 @@
 # die for now.
 
 ---
-test: "nothing"
-
-uber::test::foo: "derived1-ITWORKED"
+classes:
+- roles::uber_server
