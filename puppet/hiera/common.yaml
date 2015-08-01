@@ -1,2 +1,5 @@
 ---
 test: 'common.yaml test data (no overrides)'
+
+classes:
+- roles::uber_server
