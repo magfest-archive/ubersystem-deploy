@@ -4,3 +4,5 @@
 
 ---
 test: "nothing"
+
+uber::test::foo: "derived1-ITWORKED"
