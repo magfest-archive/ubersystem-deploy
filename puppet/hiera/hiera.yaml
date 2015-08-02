@@ -10,4 +10,4 @@
         - "nodes/common"
         - "vagrant-%{::is_vagrant}"
         - "common"
-:merge_behavior: deeper
+# :merge_behavior: deeper # used to need this, probably not anymore.

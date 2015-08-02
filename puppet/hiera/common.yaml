@@ -1,22 +1,25 @@
 ---
 
+# TODO: move this into a role-specific area
+
 # common settings, individual nodes can override this stuff
 uber::hostname:                 'localhost'
 uber::event_name:               'KrozeCon'
 uber::year:                     '2016'
 
-uber::db::user:                 'rams'
-uber::db::pass:                 'rams'
-uber::db::dbname:               'rams'
+uber::path: '/usr/local/uber'
+uber::socket_port: 8282
+uber::url_prefix: 'uber'
 
-uber::db::replication:          'false'
+uber::user:                     'rams'
+uber::group:                    'rams'
 
-uber::nginx::hostname:          '%{hiera("uber::hostname")}'
-uber::nginx::ssl_crt_bundle:    'puppet:///modules/uber/selfsigned-testonly.crt'
-uber::nginx::ssl_crt_key:       'puppet:///modules/uber/selfsigned-testonly.key'
-uber::nginx::ssl_port:          '443'
+uber::db_user:                  'rams_db'
+uber::db_pass:                  'rams_db'
+uber::db_name:                  'rams_db'
 
-uber::nginx::event_name:        '%{hiera("uber::event_name")}'
-uber::nginx::year:              '%{hiera("uber::year")}'
+# uber::nginx::ssl_crt_bundle:    'puppet:///modules/uber/selfsigned-testonly.crt'
+# uber::nginx::ssl_crt_key:       'puppet:///modules/uber/selfsigned-testonly.key'
+# uber::nginx::ssl_port:          '443'
 
 role_common::timezone:          'America/New_York'

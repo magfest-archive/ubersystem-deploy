@@ -28,5 +28,5 @@ class roles::uber_server () inherits role_common {
   include nginx
   include uber
 
-  include uber::rams_app_stack
+  include uber::profile_rams_full_stack
 }
