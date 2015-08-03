@@ -1,22 +1,25 @@
 ---
-
-# TODO: move this into a role-specific area
+# TODO: move this entire thing into a role-specific area
 
 # common settings, individual nodes can override this stuff
 uber::hostname:                 'localhost'
-uber::event_name:               'KrozeCon'
-uber::year:                     '2016'
-
 uber::path: '/usr/local/uber'
-uber::socket_port: 8282
-uber::url_prefix: 'uber'
-
 uber::user:                     'rams'
 uber::group:                    'rams'
 
-uber::db_user:                  'rams_db'
-uber::db_pass:                  'rams_db'
-uber::db_name:                  'rams_db'
+uber::config::event_name:               'SuperRad CoolCon 6'
+uber::config::organization_name:        'RadDudettes INC'
+uber::config::year:                     '2016'
+
+uber::config::socket_port: 8282
+uber::config::ssl_port: 443
+uber::config::url_prefix: 'uber'
+
+uber::config::db_user:                  'rams_db'
+uber::config::db_pass:                  'rams_db'
+uber::config::db_name:                  'rams_db'
+
+uber::config::prereg_open: ''
 
 
 # uber::nginx::ssl_crt_bundle:    'puppet:///modules/uber/selfsigned-testonly.crt'
