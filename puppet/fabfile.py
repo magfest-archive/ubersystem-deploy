@@ -20,9 +20,6 @@ class FabricConfig:
         self.git_secret_nodes_repo = self.read_config('repositories', 'git_secret_nodes_repo')
         self.git_secret_nodes_repo_branch = self.read_config('repositories', 'git_secret_nodes_repo_branch', None)
 
-        self.vagrant_extra_prefix = self.read_config('repositories', 'vagrant_extra_prefix', None)
-
-
     def read_config(self, section_name, option, default=None):
         try:
             return self.parser.get(section_name, option)
@@ -191,6 +188,7 @@ def local_git_clone(repo_url, checkout_path, branch=None):
 # get a control server (NOT a node) ready to go. a control server runs fabric and puppet, and controls deployment
 # of several (usually separate) nodes
 def bootstrap_control_server():
+    setup_extra_puppet_facts()
     local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber", branch = fabricconfig.git_ubersystem_module_repo_branch)
     local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes/", branch = fabricconfig.git_regular_nodes_repo_branch)
     local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/external/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
@@ -205,12 +203,13 @@ def copy_control_server_files():
 
     bootstrap_control_server()
 
-def setup_vagrant_prefix_facts():
-    if fabricconfig.vagrant_extra_prefix:
-        local("sudo bash -c 'echo vagrant_extra_prefix=" + fabricconfig.vagrant_extra_prefix + " > /etc/facter/facts.d/vagrant_extra_prefix.txt'")
+def setup_extra_puppet_facts():
+    if fabricconfig.event_name:
+        local("sudo bash -c 'echo event_name=" + fabricconfig.event_name + " > /etc/facter/facts.d/event_name.txt'")
+    if fabricconfig.environment:
+        local("sudo bash -c 'echo environment=" + fabricconfig.environment + " > /etc/facter/facts.d/environment.txt'")
 
 def bootstrap_vagrant_control_server():
-    setup_vagrant_prefix_facts()
     copy_control_server_files()
     puppet_apply_new_node(auto_update = False)
 
