@@ -3,27 +3,39 @@
 
 # common settings, individual nodes can override this stuff
 uber::hostname:                 'localhost'
-uber::path: '/usr/local/uber'
+uber::path:                     '/usr/local/uber'
 uber::user:                     'rams'
 uber::group:                    'rams'
+
+uber::socket_port:              4321
+uber::ssl_port:                 443
+
+uber::plugins::sideboard_repo:    'https://github.com/magfest/sideboard'
+uber::plugins::sideboard_branch:  'master'
+
+# each of these repos will be cloned and put in %uber_path%/plugins/%name%
+uber::plugins::sideboard_plugins:
+        uber:
+                git_repo: 'https://github.com/magfest/ubersystem'
+                git_branch: 'master'
+        magprime:
+                git_repo: 'https://github.com/magfest/magprime'
+                git_branch: 'master'
+        uber_analytics:
+                git_repo: 'https://github.com/magfest/uber_analytics'
+                git_branch: 'master'
 
 uber::config::event_name:               'SuperRad CoolCon 6'
 uber::config::organization_name:        'RadDudettes INC'
 uber::config::year:                     '2016'
 
-uber::config::socket_port: 8282
-uber::config::ssl_port: 443
 uber::config::url_prefix: 'uber'
 
 uber::config::db_user:                  'rams_db'
 uber::config::db_pass:                  'rams_db'
 uber::config::db_name:                  'rams_db'
 
-uber::config::prereg_open: ''
-
-
 # uber::nginx::ssl_crt_bundle:    'puppet:///modules/uber/selfsigned-testonly.crt'
 # uber::nginx::ssl_crt_key:       'puppet:///modules/uber/selfsigned-testonly.key'
-# uber::nginx::ssl_port:          '443'
 
 role_common::timezone:          'America/New_York'

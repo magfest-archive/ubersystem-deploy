@@ -5,3 +5,8 @@
 ---
 classes:
 - roles::uber_server
+
+uber::user:                     'vagrant'
+uber::group:                    'vagrant'
+
+uber::ssl_port:                 4443
