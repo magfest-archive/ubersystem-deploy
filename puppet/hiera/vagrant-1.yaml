@@ -1,7 +1,5 @@
 # hiera file that is used for Vagrant installs only, never for production
 
-# die for now.
-
 ---
 classes:
 - roles::uber_server

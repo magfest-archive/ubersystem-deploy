@@ -1,6 +1,4 @@
 ---
-# TODO: move this entire thing into a role-specific area
-
 # common settings, individual nodes can override this stuff
 uber::hostname:                 'localhost'
 uber::path:                     '/usr/local/uber'
