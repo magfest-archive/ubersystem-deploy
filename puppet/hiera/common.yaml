@@ -28,6 +28,10 @@ uber::config::db_user:                  'rams_db'
 uber::config::db_pass:                  'rams_db'
 uber::config::db_name:                  'rams_db'
 
+uber::db::user:    '%{hiera("uber::config::db_user")}'
+uber::db::pass:    '%{hiera("uber::config::db_pass")}'
+uber::db::dbname:    '%{hiera("uber::config::db_name")}'
+
 uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
