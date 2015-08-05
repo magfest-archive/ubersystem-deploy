@@ -30,3 +30,8 @@ class roles::uber_server () inherits role_common {
 
   include uber::profile_rams_full_stack
 }
+
+# debug only: use this to print all facts given to this node
+#file { "/tmp/facts.yaml":
+#  content => inline_template("<%= scope.to_hash.reject { |k,v| !( k.is_a?(String) && v.is_a?(String) ) }.to_yaml %>"),
+#}
