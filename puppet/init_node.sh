@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$1" || -z "$2" ]
+if [ $# -ne 3 ]
 then
         echo "Usage: $0 hostname-to-affect environment event_name"
         echo "example: $0 localhost development classic"

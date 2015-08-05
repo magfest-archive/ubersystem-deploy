@@ -159,12 +159,12 @@ def reboot_if_updates_needed():
 
 # one command to rule them all.  take a brand new newly provisioned virgin box and do everything needed
 # to have a full ubersystem deploy applied with puppet
-def puppet_apply_new_node(auto_update = True):
-    execute(bootstrap_new_node, auto_update)
+def puppet_apply_new_node(auto_update = True, environment='development', event_name='test'):
+    execute(bootstrap_new_node, auto_update, environment=environment, event_name=event_name)
     execute(puppet_apply)
 
 # do all setup tasks to get a node (a server which runs ubersystem) ready to do a 'puppet apply'
-def bootstrap_new_node(auto_update = True):
+def bootstrap_new_node(auto_update = True, environment='development', event_name='test'):
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
 
@@ -173,9 +173,14 @@ def bootstrap_new_node(auto_update = True):
 
     execute(install_initial_packages)
 
+    execute(setup_extra_node_specific_facter_facts, environment=environment, event_name=event_name)
+
     if auto_update:
         execute(reboot_if_updates_needed)
 
+def setup_extra_node_specific_facter_facts(environment, event_name):
+    sudo("bash -c 'echo event_name=" + event_name + " > /etc/facter/facts.d/event_name.txt'")
+    sudo("bash -c 'echo environment=" + environment + " > /etc/facter/facts.d/environment.txt'")
 
 def local_git_clone(repo_url, checkout_path, branch=None):
     if repo_url and not os.path.exists(checkout_path):
@@ -188,7 +193,6 @@ def local_git_clone(repo_url, checkout_path, branch=None):
 # get a control server (NOT a node) ready to go. a control server runs fabric and puppet, and controls deployment
 # of several (usually separate) nodes
 def bootstrap_control_server():
-    setup_extra_puppet_facts()
     local_git_clone(fabricconfig.git_ubersystem_module_repo, "modules/uber", branch = fabricconfig.git_ubersystem_module_repo_branch)
     local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes/", branch = fabricconfig.git_regular_nodes_repo_branch)
     local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/external/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
@@ -203,15 +207,9 @@ def copy_control_server_files():
 
     bootstrap_control_server()
 
-def setup_extra_puppet_facts():
-    if fabricconfig.event_name:
-        local("sudo bash -c 'echo event_name=" + fabricconfig.event_name + " > /etc/facter/facts.d/event_name.txt'")
-    if fabricconfig.environment:
-        local("sudo bash -c 'echo environment=" + fabricconfig.environment + " > /etc/facter/facts.d/environment.txt'")
-
-def bootstrap_vagrant_control_server():
+def bootstrap_vagrant_control_server(environment='development', event_name='test'):
     copy_control_server_files()
-    puppet_apply_new_node(auto_update = False)
+    puppet_apply_new_node(auto_update = False, environment=environment, event_name=event_name)
 
 
 # generate an ssh key
