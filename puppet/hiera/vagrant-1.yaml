@@ -1,4 +1,5 @@
-# hiera file that is used for Vagrant installs only, never for production
+# non-event specific vagrant generic settings
+# all cons doing development on uber with vagrant will inherit these settings
 
 ---
 classes:
@@ -6,5 +7,7 @@ classes:
 
 uber::user:                     'vagrant'
 uber::group:                    'vagrant'
+uber::path:                     '/home/vagrant/uber/sideboard'
 
-uber::ssl_port:                 4443
+uber::config::send_emails:      'True'
+uber::config::dev_box:          'True'

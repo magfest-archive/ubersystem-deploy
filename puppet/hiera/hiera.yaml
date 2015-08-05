@@ -6,12 +6,12 @@
 :hierarchy:
   # things in nodes/ are part of event-specific repositories, not included in this repo
   - "nodes/external/secret/%{::fqdn}"
-  - "nodes/external/secret/%{::event_name}"
+  - "nodes/external/secret/event-%{::event_name}"
   - "nodes/external/secret/%{::environment}"
   - "nodes/external/%{::fqdn}"
   - "nodes/vagrant-%{::event_name}-%{::is_vagrant}"
   - "nodes/vagrant-%{::is_vagrant}"
-  - "nodes/%{::event_name}"
+  - "nodes/event-%{::event_name}"
   - "nodes/%{::environment}"
   - "nodes/common"
   # things below nodes are included in this repo and visible to any event running uber

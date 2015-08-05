@@ -1,1 +1,4 @@
-# development-specific overrides
+# generic non-convention-specific non-event-specific overrides for development servers
+
+uber::config::send_emails:      'True'
+uber::config::dev_box:          'True'
