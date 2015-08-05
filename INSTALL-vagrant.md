@@ -49,11 +49,17 @@ vagrant up
 vagrant ssh
 ```
 
-5) once in via SSH, you can now start the automated installer:
+5) once in via SSH, you can now start the automated installer.
+
 ```
 cd ~/uber/puppet/
 ./setup_vagrant_control_server.sh
 ```
+advanced: optional: if your organization has multiple events configured, specify the event_name puppet should use here. For instance, for an event named "magstock" you could do:
+```
+./setup_vagrant_control_server.sh magstock
+```
+
 
 This step can take up to 40 minutes to build ubersystem on your new virtual machine for the first time.
 
@@ -63,7 +69,7 @@ This step can take up to 40 minutes to build ubersystem on your new virtual mach
 exit
 ```
 
-Now you can visit 
+In your browser, visit the following URL to get an admin account setup.
 ```
 http://localhost:8000/uber/accounts/insert_test_admin
 ```
