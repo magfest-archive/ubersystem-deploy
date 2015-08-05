@@ -11,3 +11,7 @@ uber::path:                     '/home/vagrant/uber/sideboard'
 
 uber::config::send_emails:      'True'
 uber::config::dev_box:          'True'
+
+# sadly, ubersystem doesn't redirect correctly when the outside URL is 4443, and the backend url is forwarded to 443,
+# so we have to make 4443 be the port it listens to internally.
+uber::ssl_port:                 4443
