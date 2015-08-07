@@ -138,8 +138,8 @@ uber_instances:
                 supporter_level: 50
                 season_level: 160
 
-                ribbon_types:
-                        roughing_it: "CHANGETHIS"
+                extra_ribbon_types:
+                        band: "RockStar"
 
                 interest_list:
                         chilling:     'CHANGETHIS'
