@@ -15,4 +15,4 @@ event_name=$3
 # which can then be used to do stuff. only run this script once, and once
 # it's successful, use apply instead
 
-fab -u root -H $hostn puppet_apply_new_node $environment $event_name
+fab -u root -H $hostn puppet_apply_new_node:environment=$environment,event_name=$event_name
