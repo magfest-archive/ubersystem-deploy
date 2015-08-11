@@ -29,6 +29,7 @@ uber_instances:
 
                 dev_box:        'True'
                 send_emails:    'False'
+                log_to_stderr:   'True'
                 numbered_badges: 'True'
                 hostname:       'localhost'
 
