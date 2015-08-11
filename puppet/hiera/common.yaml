@@ -32,6 +32,9 @@ uber::db::user:    '%{hiera("uber::config::db_user")}'
 uber::db::pass:    '%{hiera("uber::config::db_pass")}'
 uber::db::dbname:    '%{hiera("uber::config::db_name")}'
 
+uber::config::code_of_conduct: "http://coolcon.com/codeofconduct"
+uber::config::contact_url: "contact@coolcon.org"
+
 uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
