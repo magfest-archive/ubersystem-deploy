@@ -179,6 +179,7 @@ def bootstrap_new_node(auto_update = True, environment='development', event_name
         execute(reboot_if_updates_needed)
 
 def setup_extra_node_specific_facter_facts(environment, event_name):
+    sudo("mkdir -p /etc/facter/facts.d/")
     sudo("bash -c 'echo event_name=" + event_name + " > /etc/facter/facts.d/event_name.txt'")
     sudo("bash -c 'echo environment=" + environment + " > /etc/facter/facts.d/environment.txt'")
 
