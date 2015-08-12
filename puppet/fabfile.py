@@ -54,36 +54,14 @@ def set_remote_hostname():
     sudo('hostname ' + env.host)
 
 def sync_puppet_related_files_to_node():
-    # 1st sync everything but hiera/nodes/external dir
+    # sync everything
+    # TODO: SECURITY: we're copying too much data onto the other box about other nodes.
+    # really.... we should just use a puppet master for this thing, as it handles all this part for us.
     rsync_project(
-            remote_dir=puppet_dir, 
-            local_dir='.', 
-            extra_opts=rsync_opts + ' --exclude=hiera/nodes/external'
+        remote_dir=puppet_dir,
+        local_dir='.',
+        extra_opts=rsync_opts
     )
-
-    sudo('rm -rf ' + node_dir)
-    sudo('mkdir -p ' +node_dir)
-
-    # now sync just the hiera node we're looking at
-    # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    local_node_file = './hiera/nodes/external/' + env.host + '.yaml'
-    if os.path.exists(local_node_file):
-        rsync_project(
-                remote_dir=node_dir,
-                local_dir=local_node_file,
-                extra_opts=rsync_opts
-        )
-
-    # now sync just the secret hiera node we're looking at
-    # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    secret_node_dir = node_dir + '/secret/'
-    local_secret_node_file = './hiera/nodes/external/secret/' + env.host + '.yaml'
-    if os.path.exists(local_secret_node_file):
-        rsync_project(
-                remote_dir=secret_node_dir,
-                local_dir=local_secret_node_file,
-                extra_opts=rsync_opts
-        )
 
 def puppet_apply(dry_run='no'):
     execute(set_remote_hostname)
