@@ -53,13 +53,17 @@ vagrant ssh
 
 ```
 cd ~/uber/puppet/
-./setup_vagrant_control_server.sh
 ```
-advanced: optional: if your organization has multiple events configured, specify the event_name puppet should use here. For instance, for an event named "magstock" you could do:
+
+advanced: optional: if your organization has multiple events configured, specify the event_name puppet should use here for this installation. For instance, for an event named "magstock" you would do:
+
 ```
 ./setup_vagrant_control_server.sh magstock
 ```
-
+If you don't know which event_name to use, just leave it blank, like this:
+```
+./setup_vagrant_control_server.sh
+```
 
 This step can take up to 40 minutes to build ubersystem on your new virtual machine for the first time.
 
