@@ -198,11 +198,14 @@ def generate_ssh_key_control_server_if_non_exists():
 
     local("ssh-keygen -f ~/.ssh/id_rsa -t rsa -C 'root@magfest-vagrant.com' -N '' ")
 
-def test():
-    print("TEST")
+def print_server_info():
     print("full hoststring = "+env.host_string)
     print("Executing on %(host)s as %(user)s" % env)
     print("port = " + env.port)
     print("ip_of_host = "+get_host_ip(env.host))
     print("remotely exec'ing: 'uname -a'")
     sudo("uname -a")
+    print("fact: environment is:")
+    sudo("facter environment")
+    print("fact: event_name is:")
+    sudo("facter event_name")
