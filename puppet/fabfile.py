@@ -54,7 +54,7 @@ def start_uber_service():
 def set_remote_hostname():
     sudo('hostname ' + env.host)
 
-def backup_db(dbname = 'uber', local_backup_dir='~/backup/'):
+def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     backup_filename = "dbbackup-" + env.host + "+" + datetime.now().strftime("%F-%H:%M:%S") + ".sql"
     backups_dir = "/home/backups/"
     remote_backup_fullpath = backups_dir + backup_filename
