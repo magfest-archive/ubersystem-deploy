@@ -60,10 +60,14 @@ def backup_db(dbname = 'uber', local_backup_dir='~/backup/'):
     remote_backup_fullpath = backups_dir + backup_filename
 
     sudo("mkdir " + backups_dir)
-    sudo("su postgres -c 'pg_dump " + dbname + " -f " + remote_backup_fullpath)
-    sudo("bzip2 " + remote_backup_fullpath)
 
-    get(remote_path=backup_filename + ".bz2", local_path=local_backup_dir)
+    backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
+    sudo("su postgres -c '" + backup_cmd + "'")
+
+    sudo("bzip2 " + remote_backup_fullpath)
+    remote_backup_fullpath_zipped = remote_backup_fullpath + ".bz2"
+
+    get(remote_path=remote_backup_fullpath_zipped, local_path=local_backup_dir)
 
 
 def sync_puppet_related_files_to_node():
