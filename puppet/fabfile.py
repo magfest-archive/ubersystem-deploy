@@ -56,16 +56,19 @@ def set_remote_hostname():
 
 def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     backup_filename = "dbbackup-" + env.host + "+" + datetime.now().strftime("%F-%H:%M:%S") + ".sql"
-    backups_dir = "/home/backups/"
+    backups_dir = "/var/db_backups/"
     remote_backup_fullpath = backups_dir + backup_filename
 
     sudo("mkdir -p " + backups_dir)
+    sudo("chown postgres.postgres -R " + backups_dir)
 
     backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
     sudo("su - postgres -c '" + backup_cmd + "'")
 
     sudo("bzip2 " + remote_backup_fullpath)
     remote_backup_fullpath_zipped = remote_backup_fullpath + ".bz2"
+
+    sudo("chmod 600 -R " + backups_dir)
 
     get(remote_path=remote_backup_fullpath_zipped, local_path=local_backup_dir)
 
