@@ -1,13 +1,24 @@
 ---
 :backends:
-        - yaml
+  - yaml
 :yaml:
-        :datadir: '/usr/local/puppet/hiera/'
+  :datadir: '/usr/local/puppet/hiera/'
 :hierarchy:
-        - "nodes/external/secret/%{::fqdn}"
-        - "nodes/external/%{::fqdn}"
-        - "nodes/vagrant-%{::vagrant_extra_prefix}%{::is_vagrant}"
-        - "nodes/common"
-        - "vagrant-%{::is_vagrant}"
-        - "common"
-:merge_behavior: deeper
+  # things in nodes/ are part of event-specific repositories, not included in this repo
+  - "nodes/external/secret/%{::fqdn}"
+  - "nodes/external/secret/event-%{::event_name}-%{::environment}"
+  - "nodes/external/secret/event-%{::event_name}"
+  - "nodes/external/secret/%{::environment}"
+  - "nodes/external/secret/common"
+  - "nodes/external/%{::fqdn}"
+  - "nodes/vagrant-%{::event_name}-%{::is_vagrant}"
+  - "nodes/vagrant-%{::is_vagrant}"
+  - "nodes/event-%{::event_name}-%{::environment}"
+  - "nodes/event-%{::event_name}"
+  - "nodes/%{::environment}"
+  - "nodes/common"
+  # things below nodes are included in this repo and visible to any event running uber
+  - "vagrant-%{::is_vagrant}"
+  - "%{::environment}"
+  - "common"
+# :merge_behavior: deeper # used to need this, probably not anymore.

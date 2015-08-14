@@ -1,2 +1,44 @@
 ---
-test: 'common.yaml test data (no overrides)'
+# common settings, individual nodes can override this stuff
+uber::hostname:                 'localhost'
+uber::path:                     '/usr/local/uber'
+uber::user:                     'rams'
+uber::group:                    'rams'
+
+uber::socket_port:              8282
+uber::ssl_port:                 443
+
+uber::plugins::sideboard_repo:    'https://github.com/magfest/sideboard'
+uber::plugins::sideboard_branch:  'master'
+uber::plugins::sideboard_plugins:
+  uber:
+    git_repo: 'https://github.com/magfest/ubersystem'
+    git_branch: 'master'
+  uber_analytics:
+    git_repo: 'https://github.com/magfest/uber_analytics'
+    git_branch: 'master'
+
+uber::config::event_name:               'SuperRad CoolCon'
+uber::config::organization_name:        'RadDudettes INC'
+uber::config::year:                     33
+
+uber::config::url_prefix: 'uber'
+
+uber::config::db_user:                  'rams_db'
+uber::config::db_pass:                  'rams_db'
+uber::config::db_name:                  'rams_db'
+
+uber::db::user:    '%{hiera("uber::config::db_user")}'
+uber::db::pass:    '%{hiera("uber::config::db_pass")}'
+uber::db::dbname:    '%{hiera("uber::config::db_name")}'
+
+uber::config::code_of_conduct: "http://coolcon.com/codeofconduct"
+uber::config::contact_url: "contact@coolcon.org"
+
+uber::config::numbered_badges:          'True'
+
+role_common::timezone:          'America/New_York'
+
+# DO NOT CHECK IN NEVER LEAVE THIS ON
+# debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
+# DO NOT CHECK IN NEVER LEAVE THIS ON

@@ -32,21 +32,25 @@ Control server is now setup!
 Deploying uber to a target node
 ==========
 
+To install ubersystem on a target node (usually a different server from this one)
+
 1) make sure you have root SSH login via SSH keys to the target node.  
 
-2) Make sure you have an appropriate hiera YAML file in puppet/nodes/external name as the fully qualified domain name of the target node.  The hostname must resolve.
+2) decide the 'facts' associated with this node.
+environment='development' or 'production'
+event_name=[whatever you want]. examples: 'classic' for magfest classic.  'prime' for magfest prime
 
-example: if the target node is named uber.mydomain.com, you want to do the following:
-
-```
-cp puppet/hiera/nodes/vagrant-1.yaml puppet/hiera/nodes/external/uber.mydomain.com.yaml
-```
-
-3) Do the first-time deploy
+3) Do the first-time deploy like this:
 
 ```
 cd puppet/
-./init_node.sh uber.mydomain.com
+./init_node.sh [your_target_nodes_hostname_here] [your_environment_here] [your_event_name_here]
+```
+
+Example, if your target name is myuberserver.myorganization.com, for a 'production' environment deploy for an event named 'coolcon', you'd do:
+
+```
+./init_node.sh myuberserver.myorganization.com production coolcon
 ```
 
 That's it, you are done!

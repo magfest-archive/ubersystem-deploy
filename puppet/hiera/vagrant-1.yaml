@@ -1,157 +1,19 @@
-# hiera file that is used for Vagrant installs only, never for production
+# non-event specific vagrant generic settings
+# all cons doing development on uber with vagrant will inherit these settings
 
 ---
 classes:
-        - uber_server
+- roles::uber_server
 
-uber_instances:
-        ubersystem_vagrant:
-                # system settings
-                socket_port:    '8282'
-                url_prefix:     'uber'
+uber::user:                     'vagrant'
+uber::group:                    'vagrant'
+uber::path:                     '/home/vagrant/uber/sideboard'
 
-                # the path where sideboard+ubersystem is installed on the guest OS
-                # /home/vagrant/uber/ is being hosted on the HOST os and shared.
-                # this is extremely convenient for development, but, disk IO is far slower
-                # in shared folders.
-                # ALTERNATIVELY, use this path instead for faster deploys/IO,
-                # but it will move the repo out of the HOST os's shared folder
-                # which will result in not being able to edit these directly on the shared host.
-                # it also means that you have to have the GUEST machine powered up in order to access the files,
-                # and if you destroy the machine you will lose uncommited changes.
-                #
-                # it's not ideal, but it's a decent tradeoff because otherwise it takes hours to install
-                uber_path:      '/home/vagrant/uber/sideboard'
-                # uber_path:      '/usr/local/uber/sideboard'
+uber::config::send_emails:      'True'
+uber::config::dev_box:          'True'
 
-                uber_user:      'vagrant'
-                uber_group:     'vagrant'
+uber::config::log_to_stderr:    'True'
 
-                dev_box:        'True'
-                send_emails:    'False'
-                log_to_stderr:   'True'
-                numbered_badges: 'True'
-                hostname:       'localhost'
-
-                ssl_port: '4443'
-
-
-                # codebase settings
-                sideboard_repo:       'https://github.com/magfest/sideboard'
-                sideboard_branch:     'master'
-
-                # each of these repos will be cloned and put in %uber_path%/plugins/%name%
-                sideboard_plugins:
-                        uber:
-                                git_repo: 'https://github.com/magfest/ubersystem'
-                                git_branch: 'master'
-
-                # event settings
-                organization_name: 'Demo INC'
-                event_name:     'UbersystemDemoCon'
-                year: 26
-
-                groups_enabled: 'True'
-
-                epoch: '2015-09-11 08'
-                eschaton: '2015-09-13 18'
-                prereg_open: '2015-04-25'
-                prereg_takedown: '2015-09-10'
-                placeholder_deadline: '2015-08-15'
-                shirt_deadline: '2015-08-01'
-                printed_badge_deadline: ''
-                dealer_reg_start: ''
-                uber_takedown: '2015-09-10'
-
-                max_badge_sales: 2000
-
-                at_the_con: 'False'
-
-                donation_tier:
-                    - "'No thanks'      = 0"
-                    - "'Shirt'          = SHIRT_LEVEL"
-                    - "'Supporter Pack' = SUPPORTER_LEVEL"
-
-                badge_enums:
-                        attendee_badge:         "Attendee"
-                        supporter_badge:        "Supporter"
-                        staff_badge:            "Staff"
-                        guest_badge:            "Guest"
-                        one_day_badge:          "One Day"
-
-                supporter_deadline: '2015-08-01'
-
-                # prereg form UI options
-                donations_enabled: true
-
-                consent_form_url: ""
-
-                event_timezone: "US/Eastern"
-
-                badge_types:
-                        staff_badge:
-                                range_start: 1
-                                range_end: 999
-                        supporter_badge:
-                                range_start: 1000
-                                range_end: 1999
-                        guest_badge:
-                                range_start: 2000
-                                range_end: 2999
-                        attendee_badge:
-                                range_start: 3000
-                                range_end: 5999
-                        one_day_badge:
-                                range_start: 6000
-                                range_end: 7999
-
-                initial_attendee: 50    # badge price
-
-                #badge_prices:
-                #        single_day:
-                #                - { 'Friday': 55 }
-                #                - { 'Saturday': 55 }
-                #                - { 'Sunday': 45 }
-                #        attendee:
-                #                - { '2015-08-01': 60 }
-
-                collect_exact_birthdate: 'True'
-                consent_form_url: ''
-
-                job_interests:
-                        CHANGETHIS: "CHANGETHIS"
-                        cat_herding: "Cat Herding"
-                        food: "Food"
-                        misc: "Standby/Misc"
-                        music: "Music"
-                        registration: "Registration"
-                        slip_slide: "Slip 'n Slide"
-
-                job_locations:
-                        CHANGETHIS: "CHANGETHIS"
-                        food: "Food"
-                        misc: "Standby/Misc"
-                        music: "Music"
-                        registration: "Registration"
-                        slip_slide: "Slip 'n Slide"
-
-                shirt_level: 20
-                supporter_level: 50
-                season_level: 160
-
-                extra_ribbon_types:
-                        band: "RockStar"
-
-                interest_list:
-                        chilling:     'CHANGETHIS'
-                        grilling:     'Grilling'
-                        music:        'Music'
-                        slip_slide:   'Slip n Slide'
-                        lake:         'Lake'
-                        video_games:  'Video Games'
-                        moonbounce:   'Moonbounce'
-                        activities:   'Activities'
-
-                # DO NOT CHECK IN NEVER LEAVE THIS ON
-                # debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
-                # DO NOT CHECK IN NEVER LEAVE THIS ON
+# sadly, ubersystem doesn't redirect correctly when the outside URL is 4443, and the backend url is forwarded to 443,
+# so we have to make 4443 be the port it listens to internally.
+uber::ssl_port:                 4443
