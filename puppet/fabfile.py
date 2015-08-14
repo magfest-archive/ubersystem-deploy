@@ -59,7 +59,7 @@ def backup_db(dbname = 'uber', local_backup_dir='~/backup/'):
     backups_dir = "/home/backups/"
     remote_backup_fullpath = backups_dir + backup_filename
 
-    sudo("mkdir " + backups_dir)
+    sudo("mkdir -p " + backups_dir)
 
     backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
     sudo("su postgres -c '" + backup_cmd + "'")
