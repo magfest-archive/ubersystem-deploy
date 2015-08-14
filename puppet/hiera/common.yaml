@@ -1,6 +1,6 @@
 ---
 # common settings, individual nodes can override this stuff
-uber::hostname:                 'localhost'
+uber::hostname:                 '%{::fqdn}'
 uber::path:                     '/usr/local/uber'
 uber::user:                     'rams'
 uber::group:                    'rams'
