@@ -1,21 +1,9 @@
 Some info on how to develop.
 
-Creating a default admin account
-================================
-
-By default uber has no admin users in the database.  To create one, do:
-
-```
-sep insert_admin
-```
-
-('sep' stands for Sideboard Entry Point and is a utility that comes with ubersystem to help manage it)
-
-Now you can login with user: magfest@example.com, password magfest
 
 Supervisord
 =============
-First, ubersystem by default is running as a process inside a program Supervisor which runs
+First, ubersystem by default is running as a process inside a program called Supervisor which runs
 uber as a daemon automatically on system start.
 
 For development purposes, you will want to disable this.  Type the following:
@@ -63,17 +51,17 @@ You can put new stuff in development.ini by doing the following:
 https://github.com/magfest/ubersystem-puppet/blob/master/templates/uber-development.ini.erb
 
 2) modify the puppet manifest to know about that config:
-https://github.com/magfest/ubersystem-puppet/blob/master/manifests/instance.pp
+https://github.com/magfest/ubersystem-puppet/blob/master/manifests/config.pp
 
 3) modify your hiera node to use those template values
-https://github.com/magfest/ubersystem-deploy/blob/master/puppet/hiera/vagrant-1.yaml
+https://github.com/magfest/ubersystem-deploy/blob/master/puppet/hiera/common.yaml
 
-For an example, look through those files for "event_name" and that's exactly how you implement it.
+For an example, look through those files for the config setting named "organizatin_name" and that's exactly how you implement it.
 
 
 TODO
 ====
 - add info about setting up test data in the DB
-- add info about resetting the db with 'sep reset_db'
+- add info about resetting the db with 'sep reset_uber_db'
 - add info about re-deploying config changes with 'puppet/apply_node.sh'
 - add info about fabric_settings.ini and the recommended way to setup production environments for other organizations
