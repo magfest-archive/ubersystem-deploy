@@ -21,6 +21,8 @@ uber::config::event_name:               'SuperRad CoolCon'
 uber::config::organization_name:        'RadDudettes INC'
 uber::config::year:                     33
 
+uber::config::prereg_takedown: '2099-08-21'
+uber::config::uber_takedown: '2099-08-30'
 uber::config::epoch: '2099-09-11 08'
 uber::config::eschaton: '2099-09-13 18'
 
