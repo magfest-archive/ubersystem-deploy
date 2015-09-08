@@ -4,12 +4,9 @@
 ---
 classes:
 - roles::uber_server
-- uber::json_rpc
 
 # selfsigned-X are for *LOCAL* DEVELOPMENT only, never use these on any kind of public server
-uber::json_rpc::ssl_server_crt: "puppet:///modules/uber/selfsigned-X-server.crt"
-uber::json_rpc::ssl_server_key: "puppet:///modules/uber/selfsigned-X-server.key"
-uber::json_rpc::ssl_ca_crt:     "puppet:///modules/uber/selfsigned-X-ca.crt"
+uber::nginx::ssl_ca_crt:     "puppet:///modules/uber/selfsigned-X-ca.crt"
 
 uber::user:                     'vagrant'
 uber::group:                    'vagrant'
