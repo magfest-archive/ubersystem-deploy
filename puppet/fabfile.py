@@ -4,6 +4,7 @@ from fabric.contrib.files import exists
 import os
 from os.path import expanduser
 import subprocess
+from datetime import datetime
 from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 
 class FabricConfig:
@@ -19,9 +20,6 @@ class FabricConfig:
 
         self.git_secret_nodes_repo = self.read_config('repositories', 'git_secret_nodes_repo')
         self.git_secret_nodes_repo_branch = self.read_config('repositories', 'git_secret_nodes_repo_branch', None)
-
-        self.vagrant_extra_prefix = self.read_config('repositories', 'vagrant_extra_prefix', None)
-
 
     def read_config(self, section_name, option, default=None):
         try:
@@ -56,37 +54,35 @@ def start_uber_service():
 def set_remote_hostname():
     sudo('hostname ' + env.host)
 
+def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
+    backup_filename = "dbbackup-" + env.host + "+" + datetime.now().strftime("%F-%H:%M:%S") + ".sql"
+    backups_dir = "/var/db_backups/"
+    remote_backup_fullpath = backups_dir + backup_filename
+
+    sudo("mkdir -p " + backups_dir)
+    sudo("chown postgres.postgres -R " + backups_dir)
+    sudo("chmod 700 " + backups_dir)
+
+    backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
+    sudo("su - postgres -c '" + backup_cmd + "'")
+
+    sudo("bzip2 " + remote_backup_fullpath)
+    remote_backup_fullpath_zipped = remote_backup_fullpath + ".bz2"
+
+    sudo("chmod 600 -R " + backups_dir + "/*")
+
+    get(remote_path=remote_backup_fullpath_zipped, local_path=local_backup_dir)
+
+
 def sync_puppet_related_files_to_node():
-    # 1st sync everything but hiera/nodes/external dir
+    # sync everything
+    # TODO: SECURITY: we're copying too much data onto the other box about other nodes.
+    # really.... we should just use a puppet master for this thing, as it handles all this part for us.
     rsync_project(
-            remote_dir=puppet_dir, 
-            local_dir='.', 
-            extra_opts=rsync_opts + ' --exclude=hiera/nodes/external'
+        remote_dir=puppet_dir,
+        local_dir='.',
+        extra_opts=rsync_opts
     )
-
-    sudo('rm -rf ' + node_dir)
-    sudo('mkdir -p ' +node_dir)
-
-    # now sync just the hiera node we're looking at
-    # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    local_node_file = './hiera/nodes/external/' + env.host + '.yaml'
-    if os.path.exists(local_node_file):
-        rsync_project(
-                remote_dir=node_dir,
-                local_dir=local_node_file,
-                extra_opts=rsync_opts
-        )
-
-    # now sync just the secret hiera node we're looking at
-    # (we don't want to sync them all because there's no need to have all of them on the remote node)
-    secret_node_dir = node_dir + '/secret/'
-    local_secret_node_file = './hiera/nodes/external/secret/' + env.host + '.yaml'
-    if os.path.exists(local_secret_node_file):
-        rsync_project(
-                remote_dir=secret_node_dir,
-                local_dir=local_secret_node_file,
-                extra_opts=rsync_opts
-        )
 
 def puppet_apply(dry_run='no'):
     execute(set_remote_hostname)
@@ -97,7 +93,8 @@ def puppet_apply(dry_run='no'):
     sudo('cp -f '+puppet_dir+'/puppet.conf.template '+puppet_conf)
     sudo('echo -en "[main]\nhiera_config='+hiera_conf+'" >> '+puppet_conf)
 
-    cmdline = " --verbose --debug "
+    cmdline = " --verbose "
+    # cmdline += " --debug "
     if dry_run == 'yes':
         cmdline += " --noop "
 
@@ -162,12 +159,12 @@ def reboot_if_updates_needed():
 
 # one command to rule them all.  take a brand new newly provisioned virgin box and do everything needed
 # to have a full ubersystem deploy applied with puppet
-def puppet_apply_new_node(auto_update = True):
-    execute(bootstrap_new_node, auto_update)
+def puppet_apply_new_node(auto_update = True, environment='development', event_name='test'):
+    execute(bootstrap_new_node, auto_update, environment=environment, event_name=event_name)
     execute(puppet_apply)
 
 # do all setup tasks to get a node (a server which runs ubersystem) ready to do a 'puppet apply'
-def bootstrap_new_node(auto_update = True):
+def bootstrap_new_node(auto_update = True, environment='development', event_name='test'):
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
 
@@ -176,9 +173,15 @@ def bootstrap_new_node(auto_update = True):
 
     execute(install_initial_packages)
 
+    execute(setup_extra_node_specific_facter_facts, environment=environment, event_name=event_name)
+
     if auto_update:
         execute(reboot_if_updates_needed)
 
+def setup_extra_node_specific_facter_facts(environment, event_name):
+    sudo("mkdir -p /etc/facter/facts.d/")
+    sudo("bash -c 'echo event_name=" + event_name + " > /etc/facter/facts.d/event_name.txt'")
+    sudo("bash -c 'echo environment=" + environment + " > /etc/facter/facts.d/environment.txt'")
 
 def local_git_clone(repo_url, checkout_path, branch=None):
     if repo_url and not os.path.exists(checkout_path):
@@ -205,14 +208,9 @@ def copy_control_server_files():
 
     bootstrap_control_server()
 
-def setup_vagrant_prefix_facts():
-    if fabricconfig.vagrant_extra_prefix:
-        local("sudo bash -c 'echo vagrant_extra_prefix=" + fabricconfig.vagrant_extra_prefix + " > /etc/facter/facts.d/vagrant_extra_prefix.txt'")
-
-def bootstrap_vagrant_control_server():
-    setup_vagrant_prefix_facts()
+def bootstrap_vagrant_control_server(environment='development', event_name='test'):
     copy_control_server_files()
-    puppet_apply_new_node(auto_update = False)
+    puppet_apply_new_node(auto_update = False, environment=environment, event_name=event_name)
 
 
 # generate an ssh key
@@ -222,11 +220,14 @@ def generate_ssh_key_control_server_if_non_exists():
 
     local("ssh-keygen -f ~/.ssh/id_rsa -t rsa -C 'root@magfest-vagrant.com' -N '' ")
 
-def test():
-    print("TEST")
+def print_server_info():
     print("full hoststring = "+env.host_string)
     print("Executing on %(host)s as %(user)s" % env)
     print("port = " + env.port)
     print("ip_of_host = "+get_host_ip(env.host))
     print("remotely exec'ing: 'uname -a'")
     sudo("uname -a")
+    print("fact: environment is:")
+    sudo("facter environment")
+    print("fact: event_name is:")
+    sudo("facter event_name")

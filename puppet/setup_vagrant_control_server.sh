@@ -1,9 +1,14 @@
 #!/bin/bash
 
+if [ $# -eq 1 ];
+then
+	extra_args=":event_name=$1"
+fi
+
 sudo apt-get update -y
 sudo apt-get install -y fabric vim lynx git tofrodos
 
-fab -u root -H `hostname` bootstrap_vagrant_control_server
+fab -u root -H `hostname` bootstrap_vagrant_control_server$extra_args
 
 # if we're running under windows, tell git to ignore file permissions on all git repos
 # (since the shared folders wrongly mark EVERYTHING as executable and
