@@ -60,9 +60,9 @@ advanced: optional: if your organization has multiple events configured, specify
 ```
 ./setup_vagrant_control_server.sh magstock
 ```
-If you don't know which event_name to use, just leave it blank, like this:
+If you don't know which event_name to use, or are installing for the first time, just use 'test', like this:
 ```
-./setup_vagrant_control_server.sh
+./setup_vagrant_control_server.sh test
 ```
 
 This step can take up to 40 minutes to build ubersystem on your new virtual machine for the first time.
