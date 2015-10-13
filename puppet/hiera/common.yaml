@@ -21,6 +21,28 @@ uber::config::event_name:               'SuperRad CoolCon'
 uber::config::organization_name:        'RadDudettes INC'
 uber::config::year:                     33
 
+uber::config::initial_attendee: 50    # badge price
+uber::config::dealer_badge_price: 30
+uber::config::max_dealers: 20
+uber::config::default_table_price: 350
+
+uber::config::table_prices:
+  1: 125
+  2: 175
+  3: 250
+  4: 350
+
+uber::config::badge_prices:
+  single_day:
+    - { 'Friday': 65 }
+    - { 'Saturday': 65 }
+    - { 'Sunday': 65 }
+
+  attendee:
+    - { '2019-09-01': 50 }
+    - { '2019-01-20': 75 }
+
+uber::config::group_prereg_takedown: '2099-08-30'
 uber::config::prereg_takedown: '2099-08-21'
 uber::config::uber_takedown: '2099-08-30'
 uber::config::epoch: '2099-09-11 08'
@@ -36,8 +58,8 @@ uber::db::user:    '%{hiera("uber::config::db_user")}'
 uber::db::pass:    '%{hiera("uber::config::db_pass")}'
 uber::db::dbname:    '%{hiera("uber::config::db_name")}'
 
-uber::config::code_of_conduct: "http://coolcon.com/codeofconduct"
-uber::config::contact_url: "contact@coolcon.org"
+uber::config::code_of_conduct: "http://www.imdb.com/title/tt0096928/quotes?item=qt0412295"
+uber::config::contact_url: "https://www.futureme.org/letters/recently_delivered"
 
 uber::config::numbered_badges:          'True'
 
