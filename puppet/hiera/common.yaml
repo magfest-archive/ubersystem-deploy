@@ -75,6 +75,16 @@ uber::config::job_locations:
   charity: "Charity"
   chipspace: "Chipspace"
 
+uber::config::dept_head_checklist:
+  creating_shifts:
+    deadline: "2015-11-17"
+    description: "STOPS is happy to assist you in creating shifts. Since the days of the week are different than M13, we recomend only using M13 as a simple guideline.  Please let us know if you need assistance with this step."
+    path: "/jobs/index?location={department}"
+  postcon_hours:
+    name: "(After the Event) Marking and Rating Shifts"
+    deadline: "2016-03-01"
+    description: "After the weekend is over, we'll want all department heads to ensure that their volunteers had their shifts marked and rated."
+    path: "/jobs/signups?location=59983785"
 # DO NOT CHECK IN NEVER LEAVE THIS ON
 # debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
 # DO NOT CHECK IN NEVER LEAVE THIS ON
