@@ -65,6 +65,16 @@ uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
 
+
+uber::config::job_locations:
+  console: "Consoles"
+  arcade: "Arcade"
+  lanlounge: "LAN Events"
+  artemis: "Artemis"
+  challenges: "Challenges"
+  charity: "Charity"
+  chipspace: "Chipspace"
+
 # DO NOT CHECK IN NEVER LEAVE THIS ON
 # debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
 # DO NOT CHECK IN NEVER LEAVE THIS ON
