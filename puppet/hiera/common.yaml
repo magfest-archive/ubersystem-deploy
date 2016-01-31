@@ -6,6 +6,7 @@ uber::group:                    'rams'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
+uber::ssl_api_port:             4444
 
 uber::plugins::sideboard_repo:    'https://github.com/magfest/sideboard'
 uber::plugins::sideboard_branch:  'master'
