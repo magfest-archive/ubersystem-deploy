@@ -1,6 +1,8 @@
 
 run this on a node to see the values as interpreted by hiera
 ```
+hiera --config hiera.yaml uber::config::post_con ::fqdn=prime.uber.magfest.org ::event_name=prime ::environment=production
+
 hiera --config /usr/local/puppet/hiera/hiera.yaml uber::nginx::hostname
 
 # older stuff below
