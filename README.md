@@ -1,7 +1,7 @@
 Ubersystem Deploy Repository
 ============================
 
-This module is your starting point for setting up ubersystem and working on it.  
+This repo contains intermediate configuration/setup data for installing ubersystem.  Whenever possible, you should use the following instead: https://github.com/magfest/simple-rams-deploy (currently Windows-only, need to get a linux/mac version going)
 
 It will check out a bunch of git repos and is the basis for both Vagrant setups and also production deployments.
 
