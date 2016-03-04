@@ -14,3 +14,4 @@ sideboard/
 .idea/workspace.xml
 utils/*.cfg
 utils/*.diff
+run-simple-deploy.sh
