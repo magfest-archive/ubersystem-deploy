@@ -66,6 +66,12 @@ uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
 
-# DO NOT CHECK IN NEVER LEAVE THIS ON
-# debugONLY_dont_init_python_or_git_repos_or_plugins: true # NEVER set in production DO NOT CHECK IN
-# DO NOT CHECK IN NEVER LEAVE THIS ON
+
+
+# DO NOT CHECK IN == TRUE
+# if enabled, puppet will ignore the following things it normally handles:
+# - init python, install dependencies, setup permissions, firewall, daemon
+# if you know what you're doing, enable this if *TESTING* INI settings changes in puppet, it will
+# shave some time off of the deploy. (about 2x faster)
+debugONLY_dont_init_python_or_git_repos_or_plugins: false # NEVER set to TRUE in production DO NOT CHECK IN
+# DO NOT CHECK IN == TRUE
