@@ -2,4 +2,6 @@ alias python='/home/vagrant/uber/sideboard/env/bin/python'
 export PYTHONSTARTUP='/home/vagrant/uber/vagrant/pythonstartup.py'
 alias run_server='/home/vagrant/uber/sideboard/env/bin/python /home/vagrant/uber/sideboard/sideboard/run_server.py'
 
+alias redeploy='( cd /home/vagrant/uber/puppet/ && ./apply_node.sh localhost )'
+
 source /home/vagrant/uber/sideboard/env/bin/activate
