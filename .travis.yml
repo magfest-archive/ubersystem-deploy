@@ -1,0 +1,3 @@
+language: ruby
+install: true
+script: ruby utils/validate-yaml.rb
