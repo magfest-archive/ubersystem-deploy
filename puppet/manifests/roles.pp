@@ -1,9 +1,14 @@
 import 'ssh.pp'
+import 'swap.pp'
 
 class role_common (
   $timezone,
 ) {
   include ssh
+
+  if (!$::is_vagrant) {
+    include swap
+  }
 
   include '::ntp'
 
