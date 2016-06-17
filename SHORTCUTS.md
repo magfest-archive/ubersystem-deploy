@@ -16,3 +16,12 @@ hiera --config /usr/local/puppet/hiera/hiera.yaml -d -h uber_instances ::fqdn=lo
 # for looking up which classes a node should have
 hiera --config /usr/local/puppet/hiera/hiera.yaml -d -a classes ::fqdn=localhost ::is_vagrant=1
 ```
+
+to access python stuff from the commandline for testing or batch operations:
+```
+. /usr/local/uber/env/bin/activate
+python3
+import sideboard
+from uber.common import * 
+session = Session().session
+```
