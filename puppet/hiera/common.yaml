@@ -1,8 +1,12 @@
 ---
-# common settings, individual nodes can override this stuff
+# common settings for *ALL* installations, including non-magfest installs
+# individual servers can override this stuff
 uber::path:                     '/usr/local/uber'
 uber::user:                     'rams'
 uber::group:                    'rams'
+
+uber::daemon_name:              'uber_daemon'
+uber::app_logfile_name:         '/var/log/uber-app.log'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
