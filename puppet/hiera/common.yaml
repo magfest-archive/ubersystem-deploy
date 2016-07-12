@@ -6,7 +6,7 @@ uber::user:                     'rams'
 uber::group:                    'rams'
 
 uber::daemon_name:              'uber_daemon'
-uber::app_logifle_name:         '/var/log/uber-app.log'
+uber::app_logfile_name:         '/var/log/uber-app.log'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
