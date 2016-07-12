@@ -1,81 +1,69 @@
 # ppa.pp
-
 define apt::ppa(
-  $release = $::lsbdistcodename,
-  $options = $apt::params::ppa_options,
+  $ensure         = 'present',
+  $options        = $::apt::ppa_options,
+  $release        = $::apt::xfacts['lsbdistcodename'],
+  $package_name   = $::apt::ppa_package,
+  $package_manage = false,
 ) {
-  $ensure  = 'present'
-  include apt::params
-  include apt::update
-
-  $sources_list_d = $apt::params::sources_list_d
-
-  if ! $release {
+  unless $release {
     fail('lsbdistcodename fact not available: release parameter required')
   }
 
-  if $::operatingsystem != 'Ubuntu' {
-    fail("apt::ppa is currently supported on Ubuntu only.")
+  if $::apt::xfacts['lsbdistid'] == 'Debian' {
+    fail('apt::ppa is not currently supported on Debian.')
   }
 
-  $filename_without_slashes = regsubst($name, '/', '-', 'G')
-  $filename_without_dots    = regsubst($filename_without_slashes, '\.', '_', 'G')
-  $filename_without_ppa     = regsubst($filename_without_dots, '^ppa:', '', 'G')
-  $sources_list_d_filename  = "${filename_without_ppa}-${release}.list"
+  if versioncmp($::apt::xfacts['lsbdistrelease'], '15.10') >= 0 {
+    $distid = downcase($::apt::xfacts['lsbdistid'])
+    $filename = regsubst($name, '^ppa:([^/]+)/(.+)$', "\\1-${distid}-\\2-${release}")
+  } else {
+    $filename = regsubst($name, '^ppa:([^/]+)/(.+)$', "\\1-\\2-${release}")
+  }
+
+  $filename_no_slashes      = regsubst($filename, '/', '-', 'G')
+  $filename_no_specialchars = regsubst($filename_no_slashes, '[\.\+]', '_', 'G')
+  $sources_list_d_filename  = "${filename_no_specialchars}.list"
 
   if $ensure == 'present' {
-    $package = $::lsbdistrelease ? {
-        /^[1-9]\..*|1[01]\..*|12.04$/ => 'python-software-properties',
-        default  => 'software-properties-common',
-    }
+    if $package_manage {
+      ensure_packages($package_name)
 
-    if ! defined(Package[$package]) {
-        package { $package: }
-    }
-
-    if defined(Class[apt]) {
-        $proxy_host = $apt::proxy_host
-        $proxy_port = $apt::proxy_port
-        case  $proxy_host {
-        false, '': {
-            $proxy_env = []
-        }
-        default: {$proxy_env = ["http_proxy=http://${proxy_host}:${proxy_port}", "https_proxy=http://${proxy_host}:${proxy_port}"]}
-        }
+      $_require = [File['sources.list.d'], Package[$package_name]]
     } else {
-        $proxy_env = []
-    }
-    exec { "add-apt-repository-${name}":
-        environment  => $proxy_env,
-        command      => "/usr/bin/add-apt-repository ${options} ${name}",
-        unless       => "/usr/bin/test -s ${sources_list_d}/${sources_list_d_filename}",
-        user         => 'root',
-        logoutput    => 'on_failure',
-        notify       => Exec['apt_update'],
-        require      => [
-        File['sources.list.d'],
-        Package[$package],
-        ],
+      $_require = File['sources.list.d']
     }
 
-    file { "${sources_list_d}/${sources_list_d_filename}":
-        ensure  => file,
-        require => Exec["add-apt-repository-${name}"],
+    $_proxy = $::apt::_proxy
+    if $_proxy['host'] {
+      if $_proxy['https'] {
+        $_proxy_env = ["http_proxy=http://${$_proxy['host']}:${$_proxy['port']}", "https_proxy=https://${$_proxy['host']}:${$_proxy['port']}"]
+      } else {
+        $_proxy_env = ["http_proxy=http://${$_proxy['host']}:${$_proxy['port']}"]
+      }
+    } else {
+      $_proxy_env = []
+    }
+
+    exec { "add-apt-repository-${name}":
+      environment => $_proxy_env,
+      command     => "/usr/bin/add-apt-repository ${options} ${name}",
+      unless      => "/usr/bin/test -s ${::apt::sources_list_d}/${sources_list_d_filename}",
+      user        => 'root',
+      logoutput   => 'on_failure',
+      notify      => Class['apt::update'],
+      require     => $_require,
+    }
+
+    file { "${::apt::sources_list_d}/${sources_list_d_filename}":
+      ensure  => file,
+      require => Exec["add-apt-repository-${name}"],
     }
   }
   else {
-
-    file { "${sources_list_d}/${sources_list_d_filename}":
-        ensure => 'absent',
-        mode   => '0644',
-        owner  => 'root',
-        gruop  => 'root',
-        notify => Exec['apt_update'],
+    file { "${::apt::sources_list_d}/${sources_list_d_filename}":
+      ensure => 'absent',
+      notify => Class['apt::update'],
     }
-  }
-
-  # Need anchor to provide containment for dependencies.
-  anchor { "apt::ppa::${name}":
-    require => Class['apt::update'],
   }
 }
