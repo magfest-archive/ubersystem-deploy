@@ -6,7 +6,7 @@ class role_common (
 ) {
   include ssh
 
-  if (!$::is_vagrant) {
+  if getvar('::is_vagrant') {
     include swap
   }
 
