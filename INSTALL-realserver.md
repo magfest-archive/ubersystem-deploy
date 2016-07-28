@@ -2,7 +2,9 @@
 Getting started with a real control server
 ====================
 
-Use this for production.  A control server controls the puppet deploys on OTHER NODES, not the one it's running on.  Don't use this for Vagrant
+Use this for actually running this in production.  A control server controls the puppet deploys on OTHER NODES, not the one it's running on.
+
+*IF YOU JUST WANT TO PLAY AROUND WITH UBER, DON'T DO THIS, DO THE SIMPLER VERSION HERE: https://github.com/magfest/simple-rams-deploy*
 
 1) get this repo on the control server box
 ```
