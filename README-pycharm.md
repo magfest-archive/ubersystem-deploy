@@ -81,7 +81,7 @@ To update all of your projects from github:
 
 1) Click the bottom right source control dialog:
 
-![image](https://cloud.githubusercontent.com/assets/5413064/17231472/1092477a-54f0-11e6-8762-8c4c9b2ee573.png)
+![image](https://cloud.githubusercontent.com/assets/5413064/17231510/58e1d50e-54f0-11e6-8175-8e215762791a.png)
 
 2) Make sure everything is set to either 'master' or a branch that exists in github.
 
@@ -94,3 +94,9 @@ Other stuff
 ======
 
 You can also do some other stuff we will document later like running with code coverage + unit tests to show you which lines of code are and aren't being hit.
+
+
+Troubleshooting:
+======
+
+If you see 'Private key file not found' when setting up, come back later and I will write some docs on how to fix this once I figure out how to fix it (TODO FIXME BAD-DOCS I AM THE WORST)
