@@ -1,5 +1,7 @@
 Some info on how to develop.
 
+We recommend if you have the option to use PyCharm, an awesome python IDE, to develop ubersystem.  View the instructions here:
+https://github.com/magfest/ubersystem-deploy/blob/master/README-pycharm.md
 
 Supervisord
 =============
