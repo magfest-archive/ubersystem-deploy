@@ -16,6 +16,8 @@ Make sure you are running a recent version of PyCharm Professional 2016.2 or hig
 
 1) Open Pycharm
 
+note: You are going to see some warning messages about 'can't find git version control roots' for a couple of projects, that's OK just ignore those.  also dismiss anything about docker.
+
 2) File->Open and select the folder 'simple-rams-deploy' (or whatever you named it)
 
 3) File->Settings and under Project:rams, click Project Interpreter
@@ -49,6 +51,7 @@ Anytime you restart vagrant, you will need to stop ubersystem from running in th
 ![image](https://cloud.githubusercontent.com/assets/5413064/17231311/28436f80-54ef-11e6-930d-4b3ab293ae1b.png)
 
 This will stop ubersystem from running as a daemon and allow you to take control of it from PyCharm
+
 
 Debugging in Pycharm
 ====
@@ -90,7 +93,34 @@ To update all of your projects from github:
 ![image](https://cloud.githubusercontent.com/assets/5413064/17231489/31ec3174-54f0-11e6-8a22-d694fef941d1.png)
 
 
-Other stuff
+Re-deploying 
+=====
+
+If there are config changes introduced from github (this happens from time to time), or if you want to make sure you have the very latest, then follow this procedure to re-deploy.  You'll need a decently fast internet connection as this process will pull down stuff from github/etc.
+
+At some future point, we're going to make this process a bit more automated.
+
+1) First, follow the steps above in the 'source control' section to set all branches to master and update the project. (This is important because in order for the deploy to succeed, all of your local branches must correspond to branches that currently exist on github).
+
+2) Before deploying, make sure that any local changes are committed to source control or stashed (use the version control tab in PyCharm).
+
+2) Open a command prompt or terminal and change directory to simple-rams-deploy/ubersystem-deploy
+
+3) Run the 'vagrant up' command if the vagrant machine isn't already running.
+
+4) Run 'vagrant ssh' to ssh into the machine.
+
+5) Type 'cd ~/uber/puppet' then to deploy type './apply_node.sh localhost'.  This will bring your deploy up to date with the latest code, apply all configuration (YAML/INI) changes, install any new plugins that were added, and a bunch of other stuff.  It should end with a pristine copy of everything deployed and ready to rock.
+
+6) If you are planning on running the uber server from inside PyCharm (so you can debug it, for instance) then you'll need to turn off the server which the deploy auto-starts by typing 'sudo supervisorctl stop all' from inside vagrant.  If not, skip this step.
+
+Deploy is now finished! you can close the command prompt.
+
+7) If you were working on local changes, switch back to those branches, or unstash your changes.
+
+8) Click the 'debug' or 'run' icon in PyCharm and you should be up and running again.
+
+To be continued
 ======
 
 You can also do some other stuff we will document later like running with code coverage + unit tests to show you which lines of code are and aren't being hit.
@@ -99,4 +129,6 @@ You can also do some other stuff we will document later like running with code c
 Troubleshooting:
 ======
 
-If you see 'Private key file not found' when setting up, come back later and I will write some docs on how to fix this once I figure out how to fix it (TODO FIXME BAD-DOCS I AM THE WORST)
+If you see 'Private key file not found' when setting up, please upgrade your PyCharm, there was a bug in older versions.
+
+If things are in general starting to get weird, check that you have definitely clicked on the 'simple-rams-deploy' directory when you opened the project.  If you open any other directory THINGS WILL START GETTING WEIRD.
