@@ -15,6 +15,19 @@ class supervisor (
   $enable_http_inet_server  = true,
 ) {
 
+  case $::osfamily {
+    redhat: {
+      $pkg_setuptools = 'python-setuptools'
+      $path_config    = '/etc'
+      $path_bin       = '/usr/bin'
+    }
+    debian: {
+      $pkg_setuptools = 'python-setuptools'
+      $path_config    = '/etc'
+      $path_bin       = '/usr/local/bin'
+    }
+    default: { fail("ERROR: ${::osfamily} based systems are not supported!") }
+  }
 
   package { $pkg_setuptools: ensure => installed, }
 
