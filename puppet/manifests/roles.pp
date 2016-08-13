@@ -30,10 +30,12 @@ class roles::uber_server () inherits role_common {
     manage_firewall            => true,
   }
 
+  include sysctl
   include nginx
   include uber
 
   include uber::profile_rams_full_stack
+  sysctl { 'fs.file-max': value => '200000' }
 }
 
 # debug only: use this to print all facts given to this node
