@@ -87,9 +87,17 @@ force_stop() {
     return 0
 }
 
+# magfest-specific, set higher file limits for daemons
+set_higher_max_file_open_limit() {
+    max_file_limit=200000
+    ulimit -H -n $max_file_limit
+    ulimit -S -n $max_file_limit
+}
+
 case "$1" in
   start)
         echo -n "Starting $DESC: "
+        set_higher_max_file_open_limit
         start-stop-daemon --start --quiet --pidfile $PIDFILE \
                 --exec $DAEMON -- $DAEMON_OPTS
         test -f $PIDFILE || sleep 1
@@ -132,6 +140,7 @@ case "$1" in
         #       just the same as "restart" except that it does nothing if the
         #   daemon isn't already running.
         # check wether $DAEMON is running. If so, restart
+        set_higher_max_file_open_limit
         start-stop-daemon --stop --test --quiet --pidfile \
                 /var/run/$NAME.pid --exec $DAEMON \
         && $0 restart \
@@ -139,6 +148,7 @@ case "$1" in
         ;;
   restart)
     echo -n "Restarting $DESC: "
+        set_higher_max_file_open_limit
         start-stop-daemon --stop --quiet --pidfile \
                 /var/run/$NAME.pid --exec $DAEMON
         [ -n "$DODTIME" ] && sleep $DODTIME
