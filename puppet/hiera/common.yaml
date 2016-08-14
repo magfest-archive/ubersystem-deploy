@@ -70,7 +70,12 @@ uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
 
-
+# nginx caching params
+nginx::proxy_cache_path: '/var/cache/nginx'
+nginx::proxy_cache_levels: '1:2'
+nginx::proxy_cache_keys_zone: 'one:8m'
+nginx::proxy_cache_max_size: '3000m'
+nginx::proxy_cache_inactive: '600m'
 
 # DO NOT CHECK IN == TRUE
 # if enabled, puppet will ignore the following things it normally handles:
