@@ -30,6 +30,18 @@ class roles::uber_server () inherits role_common {
     manage_firewall            => true,
   }
 
+  class { 'limits':
+    config => {
+      '*' => {
+        'nofile' => {
+          soft => '50000',
+          hard => '50000',
+        },
+      },
+    },
+    use_hiera => false,
+  }
+
   include nginx
   include uber
 
