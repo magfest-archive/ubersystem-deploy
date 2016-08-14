@@ -30,6 +30,8 @@ class roles::uber_server () inherits role_common {
     manage_firewall            => true,
   }
 
+  include sysctl
+  
   class { 'limits':
     config => {
       '*' => {
@@ -41,6 +43,8 @@ class roles::uber_server () inherits role_common {
     },
     use_hiera => false,
   }
+  
+  sysctl { 'fs.file-max': value => '200000' }
 
   include nginx
   include uber
