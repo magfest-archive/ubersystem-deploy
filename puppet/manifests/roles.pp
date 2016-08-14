@@ -29,8 +29,6 @@ class roles::uber_server () inherits role_common {
     listen_addresses           => 'localhost',
     manage_firewall            => true,
   }
-
-  include sysctl
   
   class { 'limits':
     config => {
