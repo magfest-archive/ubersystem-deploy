@@ -31,11 +31,25 @@ class roles::uber_server () inherits role_common {
   }
 
   include sysctl
+  
+  class { 'limits':
+    config => {
+      '*' => {
+        'nofile' => {
+          soft => '50000',
+          hard => '50000',
+        },
+      },
+    },
+    use_hiera => false,
+  }
+  
+  sysctl { 'fs.file-max': value => '200000' }
+
   include nginx
   include uber
 
   include uber::profile_rams_full_stack
-  sysctl { 'fs.file-max': value => '200000' }
 }
 
 # debug only: use this to print all facts given to this node
