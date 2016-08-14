@@ -39,12 +39,37 @@ class supervisor (
     require => Package[$pkg_setuptools],
   }
 
-  # install start/stop script
-  file { '/etc/init.d/supervisord':
-    source => "puppet:///modules/supervisor/${::osfamily}.supervisord",
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
+
+  case $::osfamily {
+    redhat: {
+      file { '/etc/init.d/supervisord':
+        source => "puppet:///modules/supervisor/Redhat.supervisord",
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755',
+      }
+      service { 'supervisord':
+        ensure     => running,
+        enable     => true,
+        hasrestart => true,
+        require    => File["${path_config}/supervisord.conf"],
+      }
+    }
+    debian: {
+      file { '/etc/init/supervisor.conf':
+        source => "puppet:///modules/supervisor/Debian.supervisord",
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755',
+      }
+      service { 'supervisor':
+        ensure     => running,
+        enable     => true,
+        hasrestart => true,
+        require    => File["${path_config}/supervisord.conf"],
+      }
+    }
+    default: { fail("ERROR: ${::osfamily} based systems are not supported!") }
   }
 
   file { '/var/log/supervisor':
@@ -73,13 +98,6 @@ class supervisor (
     group => 'root',
     mode => '0755',
     require => File["${path_config}/supervisord.conf"],
-  }
-
-  service { 'supervisord':
-    ensure     => running,
-    enable     => true,
-    hasrestart => true,
-    require    => File["${path_config}/supervisord.conf"],
   }
 
   if $include_superlance {
