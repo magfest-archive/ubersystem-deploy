@@ -7,6 +7,7 @@ import subprocess
 from datetime import datetime
 from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
 
+
 class FabricConfig:
     def __init__(self):
         self.parser = SafeConfigParser()
@@ -42,17 +43,22 @@ modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
 
+
 def restart_uber_service():
     sudo('supervisorctl restart all')
+
 
 def stop_uber_service():
     sudo('supervisorctl stop all')
 
+
 def start_uber_service():
     sudo('supervisorctl start all')
 
+
 def set_remote_hostname():
     sudo('hostname ' + env.host)
+
 
 def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     backup_filename = "dbbackup-" + env.host + "+" + datetime.now().strftime("%F-%H:%M:%S") + ".sql"
@@ -84,6 +90,7 @@ def sync_puppet_related_files_to_node():
         extra_opts=rsync_opts
     )
 
+
 def puppet_apply(dry_run='no'):
     execute(set_remote_hostname)
     execute(sync_puppet_related_files_to_node)
@@ -107,9 +114,11 @@ def puppet_apply(dry_run='no'):
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
+
 def do_security_updates():
     sudo('apt-get update')
     sudo('apt-get -y upgrade')
+
 
 # install just enough initial packages to get puppet going.
 def install_initial_packages():
@@ -118,6 +127,7 @@ def install_initial_packages():
     sudo('gem install deep_merge')
     sudo('mkdir -p ' + puppet_dir)
     sudo('chown -R ' + env.user + ' ' + puppet_dir)
+
 
 # get the IP of a particular host
 def get_host_ip(hostname):
@@ -130,6 +140,7 @@ def get_host_ip(hostname):
     if len(output) > 0:
         ip = output.split(" ")[0]
     return ip
+
 
 # somewhat optional, but if we don't do this, it will prompt us yes/no
 # for accepting the key for a new server, which we don't want if we're
@@ -144,24 +155,27 @@ def register_remote_ssh_keys():
     # remove and re-add the new server's SSH key
     ip_of_host = get_host_ip(env.host)
     print("ip is " + ip_of_host)
-	
+
     if os.path.exists(known_hosts):
         print('removing existing keys')
         local('ssh-keygen -R ' + env.host)
         local('ssh-keygen -R ' + ip_of_host)
-		
+
     local('ssh-keyscan -H ' + env.host + ' >> ' + known_hosts)
     local('ssh-keyscan -H ' + ip_of_host + ' >> ' + known_hosts)
+
 
 def reboot_if_updates_needed():
     if exists('/var/run/reboot-required'):
         reboot(120) # waits for 2 minutes for it to reboot
+
 
 # one command to rule them all.  take a brand new newly provisioned virgin box and do everything needed
 # to have a full ubersystem deploy applied with puppet
 def puppet_apply_new_node(auto_update = True, environment='development', event_name='test'):
     execute(bootstrap_new_node, auto_update, environment=environment, event_name=event_name)
     execute(puppet_apply)
+
 
 # do all setup tasks to get a node (a server which runs ubersystem) ready to do a 'puppet apply'
 def bootstrap_new_node(auto_update = True, environment='development', event_name='test'):
@@ -178,10 +192,12 @@ def bootstrap_new_node(auto_update = True, environment='development', event_name
     if auto_update:
         execute(reboot_if_updates_needed)
 
+
 def setup_extra_node_specific_facter_facts(environment, event_name):
     sudo("mkdir -p /etc/facter/facts.d/")
     sudo("bash -c 'echo event_name=" + event_name + " > /etc/facter/facts.d/event_name.txt'")
     sudo("bash -c 'echo environment=" + environment + " > /etc/facter/facts.d/environment.txt'")
+
 
 def local_git_clone(repo_url, checkout_path, branch=None):
     if repo_url and not os.path.exists(checkout_path):
@@ -198,6 +214,7 @@ def bootstrap_control_server():
     local_git_clone(fabricconfig.git_regular_nodes_repo, "hiera/nodes/", branch = fabricconfig.git_regular_nodes_repo_branch)
     local_git_clone(fabricconfig.git_secret_nodes_repo, "hiera/nodes/external/secret", branch = fabricconfig.git_secret_nodes_repo_branch)
 
+
 def copy_control_server_files():
     generate_ssh_key_control_server_if_non_exists()
 
@@ -207,6 +224,7 @@ def copy_control_server_files():
     local("sudo cp -f ~/.ssh/id_rsa.pub /root/.ssh/authorized_keys")
 
     bootstrap_control_server()
+
 
 def bootstrap_vagrant_control_server(environment='development', event_name='test'):
     copy_control_server_files()
@@ -219,6 +237,7 @@ def generate_ssh_key_control_server_if_non_exists():
         return
 
     local("ssh-keygen -f ~/.ssh/id_rsa -t rsa -C 'root@magfest-vagrant.com' -N '' ")
+
 
 def print_server_info():
     print("full hoststring = "+env.host_string)
