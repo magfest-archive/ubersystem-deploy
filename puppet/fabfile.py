@@ -1,7 +1,7 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists
-import os
+import os, sys
 from os.path import expanduser
 import subprocess
 from datetime import datetime
@@ -41,6 +41,15 @@ manifest_to_run = puppet_dir+'/manifests/site.pp'
 modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
+
+def read_hosts():
+    """
+    Reads hosts from sys.stdin line by line, expecting one host per line.
+
+    example: use to run the same command on a bunch of hosts like this:
+    cat active-hosts.txt | fab read_hosts do_security_updates
+    """
+    env.hosts = [line.strip() for line in sys.stdin.readlines() if '#' not in line]
 
 def restart_uber_service():
     sudo('supervisorctl restart all')
