@@ -250,3 +250,31 @@ def print_server_info():
     sudo("facter environment")
     print("fact: event_name is:")
     sudo("facter event_name")
+
+
+def maintenance_deploy(branch, deploy_dir, user='rams', restart_server=True):
+    """
+    Do a maintenance deploy against a still-running but obsolete ubersystem instance.
+    Typically after events are done, we don't update the code for that year anymore.
+
+    Sometimes though, we need to run queries and reports after the server is finished, so rather than use puppet,
+    we'll just do a manual git update and restart the server.
+
+    This assumes that branches or tags have been made for each release
+
+    :param branch:          Which branch should we set all git repos found at deploy_dir to.
+    :param deploy_dir:      Which directory the original installation was in.  All repos in this dir or subdirs will
+                            be updated to 'branch'
+    :param user:            Which user to run the git commands as
+    :param restart_server   If True, restart the server after the deploy is finished
+    """
+
+    assert branch != "master", "you probably don't want to set this branch to master, since this is for an old deploy"
+
+    dirs = run("find {} -name '.git'".format(deploy_dir)).replace('\r', '').split('\n')
+    for dir in [dir.replace('.git', '') for dir in dirs]:
+        with cd(dir):
+            sudo('git checkout %s' % (branch))
+
+    if restart_server:
+        restart_uber_service()
