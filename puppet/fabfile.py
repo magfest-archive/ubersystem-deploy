@@ -125,6 +125,21 @@ def puppet_apply(dry_run='no'):
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
 
+def run_unit_tests(path='/usr/local/uber/plugins', pytest='/usr/local/uber/env/bin/py.test'):
+    """
+    Run all unit tests in a given subdirectory.
+
+    If running this against staging or production servers, it's usually a good idea to skip the sideboard tests
+    because they actually start up the server and do some slightly weird things.
+
+    This function is kind of a 'best-effort' quick way to run the unit tests, and does not take the place of
+    real CI which would do a better job.
+    :param path: The path to run the tests in
+    """
+
+    sudo('{} {}'.format(pytest, path))
+
+
 def do_security_updates():
     sudo('apt-get update')
     sudo('apt-get -y upgrade')
