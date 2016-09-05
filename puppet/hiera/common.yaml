@@ -39,13 +39,13 @@ uber::config::table_prices:
 
 uber::config::badge_prices:
   single_day:
-    - { 'Friday': 65 }
-    - { 'Saturday': 65 }
-    - { 'Sunday': 65 }
+    Friday: 65
+    Saturday: 65
+    Sunday: 65
 
   attendee:
-    - { '2019-09-01': 50 }
-    - { '2019-01-20': 75 }
+    '2019-09-01': 50
+    '2019-01-20': 75
 
 uber::config::group_prereg_takedown: '2099-08-30'
 uber::config::prereg_takedown: '2099-08-21'
