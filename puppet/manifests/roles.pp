@@ -38,6 +38,7 @@ class roles::uber_server () inherits role_common {
   sysctl { 'fs.file-max': value => '200000' }
 
   include uber
+  include nginx
 
   include uber::profile_rams_full_stack
 }
