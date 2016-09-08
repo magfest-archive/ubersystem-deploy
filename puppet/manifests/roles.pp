@@ -23,13 +23,6 @@ class role_common (
 }
 
 class roles::uber_server () inherits role_common {
-  class { 'postgresql::server':
-    ip_mask_deny_postgres_user => '0.0.0.0/32',
-    ip_mask_allow_all_users    => '0.0.0.0/0',
-    listen_addresses           => 'localhost',
-    manage_firewall            => true,
-  }
-  
   class { 'limits':
     config => {
       '*' => {
@@ -44,8 +37,8 @@ class roles::uber_server () inherits role_common {
   
   sysctl { 'fs.file-max': value => '200000' }
 
-  include nginx
   include uber
+  include nginx
 
   include uber::profile_rams_full_stack
 }
