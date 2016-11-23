@@ -66,6 +66,8 @@ uber::db::dbname:    '%{hiera("uber::config::db_name")}'
 uber::config::code_of_conduct: "http://www.imdb.com/title/tt0096928/quotes?item=qt0412295"
 uber::config::contact_url: "https://www.futureme.org/letters/recently_delivered"
 
+uber::config::pseudo_name: "Paul"
+
 uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
