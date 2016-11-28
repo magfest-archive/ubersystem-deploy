@@ -6,6 +6,12 @@ from os.path import expanduser
 import subprocess
 from datetime import datetime
 from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
+import logging
+
+
+# enable this to get more advanced SSH logging, useful if you're having
+# SSH key issues.
+# logging.basicConfig(level=logging.DEBUG)
 
 
 class FabricConfig:
