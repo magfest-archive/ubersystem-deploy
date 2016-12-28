@@ -3,10 +3,11 @@ require File.join(File.dirname(__FILE__), '..', 'vcsrepo')
 Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) do
   desc "Supports Bazaar repositories"
 
-  optional_commands   :bzr => 'bzr'
+  commands :bzr => 'bzr'
   has_features :reference_tracking
 
   def create
+    check_force
     if !@resource.value(:source)
       create_repository(@resource.value(:path))
     else
@@ -15,7 +16,13 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
   end
 
   def working_copy_exists?
-    File.directory?(File.join(@resource.value(:path), '.bzr'))
+    return false if not File.directory?(@resource.value(:path))
+    begin
+      bzr('status', @resource.value(:path))
+      return true
+    rescue Puppet::ExecutionFailure
+      return false
+    end
   end
 
   def exists?
@@ -52,6 +59,17 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
         bzr('update', '-r', desired, ':parent')
       end
     end
+    update_owner
+  end
+
+  def source
+    at_path do
+      bzr('info')[/^\s+parent branch:\s+(\S+?)$/m, 1]
+    end
+  end
+
+  def source=(desired)
+    create # recreate
   end
 
   def latest
@@ -70,6 +88,7 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
 
   def create_repository(path)
     bzr('init', path)
+    update_owner
   end
 
   def clone_repository(revision)
@@ -80,6 +99,12 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
     args.push(@resource.value(:source),
               @resource.value(:path))
     bzr(*args)
+    update_owner
   end
 
+  def update_owner
+    if @resource.value(:owner) or @resource.value(:group)
+      set_ownership
+    end
+  end
 end
