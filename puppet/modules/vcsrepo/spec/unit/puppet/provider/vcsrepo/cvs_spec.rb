@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
+describe Puppet::Type.type(:vcsrepo).provider(:cvs) do
 
   let(:resource) { Puppet::Type.type(:vcsrepo).new({
     :name     => 'test',
     :ensure   => :present,
     :provider => :cvs,
     :revision => '2634',
-    :source   => 'lp:do',
+    :source   => ':pserver:anonymous@cvs.sv.gnu.org:/sources/cvs/',
     :path     => '/tmp/test',
   })}
 
@@ -23,14 +23,23 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
         resource[:source] = ':ext:source@example.com:/foo/bar'
         resource[:revision] = 'an-unimportant-value'
         expects_chdir('/tmp')
-        provider.expects(:cvs).with('-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', 'bar')
+        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', '.'], :custom_environment => {}, :combine => true, :failonfail => true)
+        provider.create
+      end
+
+      it "should execute 'cvs checkout' as user 'muppet'" do
+        resource[:source] = ':ext:source@example.com:/foo/bar'
+        resource[:revision] = 'an-unimportant-value'
+        resource[:user] = 'muppet'
+        expects_chdir('/tmp')
+        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', '.'], :uid => 'muppet', :custom_environment => {}, :combine => true, :failonfail => true)
         provider.create
       end
 
       it "should just execute 'cvs checkout' without a revision" do
         resource[:source] = ':ext:source@example.com:/foo/bar'
         resource.delete(:revision)
-        provider.expects(:cvs).with('-d', resource.value(:source), 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source)))
+        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-d', File.basename(resource.value(:path)), '.'], :custom_environment => {}, :combine => true, :failonfail => true)
         provider.create
       end
 
@@ -39,7 +48,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
           resource[:source] = ':ext:source@example.com:/foo/bar'
           resource[:compression] = '3'
           resource.delete(:revision)
-          provider.expects(:cvs).with('-d', resource.value(:source), '-z', '3', 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source)))
+          Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), '-z', '3', 'checkout', '-d', File.basename(resource.value(:path)), '.'], :custom_environment => {}, :combine => true, :failonfail => true)
           provider.create
         end
       end
@@ -48,7 +57,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
     context "when a source is not given" do
       it "should execute 'cvs init'" do
         resource.delete(:source)
-        provider.expects(:cvs).with('-d', resource.value(:path), 'init')
+        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:path), 'init'], :custom_environment => {}, :combine => true, :failonfail => true)
         provider.create
       end
     end
@@ -61,16 +70,23 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
   end
 
   describe "checking existence" do
-    it "should check for the CVS directory with source" do
-      resource[:source] = ':ext:source@example.com:/foo/bar'
-      File.expects(:directory?).with(File.join(resource.value(:path), 'CVS'))
-      provider.exists?
+    context "with a source value" do
+      it "should run 'cvs status'" do
+        resource[:source] = ':ext:source@example.com:/foo/bar'
+        File.expects(:directory?).with(File.join(resource.value(:path), 'CVS')).returns(true)
+        expects_chdir
+        Puppet::Util::Execution.expects(:execute).with([:cvs, '-nqd', resource.value(:path), 'status', '-l'], :custom_environment => {}, :combine => true, :failonfail => true)
+        provider.exists?
+      end
     end
 
-    it "should check for the CVSROOT directory without source" do
-      resource.delete(:source)
-      File.expects(:directory?).with(File.join(resource.value(:path), 'CVSROOT'))
-      provider.exists?
+    context "without a source value" do
+      it "should check for the CVSROOT directory and config file" do
+        resource.delete(:source)
+        File.expects(:directory?).with(File.join(resource.value(:path), 'CVSROOT')).returns(true)
+        File.expects(:exists?).with(File.join(resource.value(:path), 'CVSROOT', 'config,v')).returns(true)
+        provider.exists?
+      end
     end
   end
 
@@ -86,7 +102,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
       end
       it "should read CVS/Tag" do
         File.expects(:read).with(@tag_file).returns("T#{@tag}")
-        provider.revision.should == @tag
+        expect(provider.revision).to eq(@tag)
       end
     end
 
@@ -95,7 +111,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
         File.expects(:exist?).with(@tag_file).returns(false)
       end
       it "assumes HEAD" do
-        provider.revision.should == 'HEAD'
+        expect(provider.revision).to eq('HEAD')
       end
     end
   end
@@ -107,8 +123,39 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
 
     it "should use 'cvs update -dr'" do
       expects_chdir
-      provider.expects(:cvs).with('update', '-dr', @tag, '.')
+      Puppet::Util::Execution.expects(:execute).with([:cvs, 'update', '-dr', @tag, '.'], :custom_environment => {}, :combine => true, :failonfail => true)
       provider.revision = @tag
+    end
+  end
+
+  describe "checking the source property" do
+    it "should read the contents of file 'CVS/Root'" do
+      File.expects(:read).with(File.join(resource.value(:path), 'CVS', 'Root')).
+        returns(':pserver:anonymous@cvs.sv.gnu.org:/sources/cvs/')
+      expect(provider.source).to eq(resource.value(:source))
+    end
+  end
+  describe "setting the source property" do
+    it "should call 'create'" do
+      provider.expects(:create)
+      provider.source = resource.value(:source)
+    end
+  end
+
+  describe "checking the module property" do
+    before do
+      resource[:module] = 'ccvs'
+    end
+    it "should read the contents of file 'CVS/Repository'" do
+      File.expects(:read).with(File.join(resource.value(:path), 'CVS', 'Repository')).
+        returns('ccvs')
+      expect(provider.module).to eq(resource.value(:module))
+    end
+  end
+  describe "setting the module property" do
+    it "should call 'create'" do
+      provider.expects(:create)
+      provider.module = resource.value(:module)
     end
   end
 

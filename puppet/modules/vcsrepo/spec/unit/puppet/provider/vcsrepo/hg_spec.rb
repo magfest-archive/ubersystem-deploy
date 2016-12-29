@@ -42,6 +42,22 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         provider.create
       end
     end
+
+    context "when basic auth is used" do
+      it "should execute 'hg clone'" do
+        resource[:source] = 'something'
+        resource[:basic_auth_username] = 'user'
+        resource[:basic_auth_password] = 'pass'
+        provider.expects(:hg).with('clone',
+          resource.value(:source),
+          resource.value(:path),
+            "--config","\"auth.x.prefix=" + resource.value(:source) + "\"",
+            "--config","\"auth.x.username=" + resource.value(:basic_auth_username) + "\"",
+            "--config","\"auth.x.password=" + resource.value(:basic_auth_password) + "\"",
+            "--config","\"auth.x.schemes=http https" + "\"")
+        provider.create
+      end
+    end
   end
 
   describe 'destroying' do
@@ -53,7 +69,8 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
 
   describe "checking existence" do
     it "should check for the directory" do
-      expects_directory?(true, File.join(resource.value(:path), '.hg'))
+      expects_directory?(true, resource.value(:path))
+      provider.expects(:hg).with('status', resource.value(:path))
       provider.exists?
     end
   end
@@ -72,14 +89,14 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
       context "when its SHA is not different than the current SHA" do
         it "should return the ref" do
           resource[:revision] = '0.6'
-          provider.revision.should == '0.6'
+          expect(provider.revision).to eq('0.6')
         end
       end
 
       context "when its SHA is different than the current SHA" do
         it "should return the current SHA" do
           resource[:revision] = '0.5.3'
-          provider.revision.should == '34e6012c783a'
+          expect(provider.revision).to eq('34e6012c783a')
         end
       end
     end
@@ -92,7 +109,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         it "should return it" do
           resource[:revision] = '34e6012c783a'
           provider.expects(:hg).with('tags').returns(fixture(:hg_tags))
-          provider.revision.should == resource.value(:revision)
+          expect(provider.revision).to eq(resource.value(:revision))
         end
       end
 
@@ -100,7 +117,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         it "should return the current SHA" do
           resource[:revision] = 'not-the-same'
           provider.expects(:hg).with('tags').returns(fixture(:hg_tags))
-          provider.revision.should == '34e6012c783a'
+          expect(provider.revision).to eq('34e6012c783a')
         end
       end
     end
@@ -116,6 +133,23 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
       provider.expects(:hg).with('merge')
       provider.expects(:hg).with('update', '--clean', '-r', @revision)
       provider.revision = @revision
+    end
+  end
+
+  describe "checking the source property" do
+    it "should return the default path" do
+      resource[:source] = 'http://selenic.com/hg'
+      expects_chdir
+      provider.expects(:hg_wrapper).with('paths').returns('default = http://selenic.com/hg')
+      expect(provider.source).to eq(resource.value(:source))
+    end
+  end
+
+  describe "setting the source property" do
+    it "should call 'create'" do
+      resource[:source] = 'some-example'
+      provider.expects(:create)
+      provider.source = resource.value(:source)
     end
   end
 
