@@ -264,7 +264,7 @@ def bootstrap_vagrant_control_server(environment='development', event_name='test
 
 # generate an ssh key
 def generate_ssh_key_control_server_if_non_exists():
-    if os.path.exists("~/.ssh/id_rsa.pub"):
+    if os.path.exists(home_dir + "/.ssh/id_rsa.pub"):
         return
 
     local("ssh-keygen -f ~/.ssh/id_rsa -t rsa -C 'root@magfest-vagrant.com' -N '' ")
