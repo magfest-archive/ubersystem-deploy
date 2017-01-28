@@ -19,6 +19,7 @@ if os.path.exists(history_path):
 try:
     import sideboard
     from uber.common import *
+    initialize_db()
     session = Session().session  # make it easier to do session stuff at the command line
     cherrypy.session = {'account_id': session.query(AdminAccount).first().id}  # make it easier to do site section testing at the command line
 except:
