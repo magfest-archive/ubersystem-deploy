@@ -1,5 +1,5 @@
 # -*- mode: ruby -*-
-
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.require_version ">= 1.6.2"
 
