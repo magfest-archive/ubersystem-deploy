@@ -134,7 +134,7 @@ def db_requires_upgrade():
         return False
 
     # If the current version hashes don't match our available heads, then we
-    # need to updated the database.
+    # need to update the database.
     return current != heads
 
 
