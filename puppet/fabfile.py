@@ -164,8 +164,9 @@ def puppet_apply(dry_run='no'):
             )
 
     if db_requires_upgrade():
-        backup_db()
-        upgrade_db()
+        if dry_run != 'yes':
+            backup_db()
+            upgrade_db()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
