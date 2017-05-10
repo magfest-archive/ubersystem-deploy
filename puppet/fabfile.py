@@ -100,10 +100,17 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
 
 
 def upgrade_db():
+    """
+    Runs any available database migrations to bring the database up-to-date.
+    """
     run('{}/sep alembic upgrade heads'.format(python_bin_dir))
 
 
 def db_requires_upgrade():
+    """
+    Returns True if the database is out-of-date & requires upgrade migrations.
+    Returns False otherwise.
+    """
     # The output of our commands looks something like this, and the portion we
     # really care about is the 12 character hexadecimal hash at the beginning:
     # fc791d73e762 (uber, bands, panels) (head)
