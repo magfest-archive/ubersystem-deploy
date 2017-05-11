@@ -174,9 +174,10 @@ def puppet_apply(dry_run='no'):
 
     if db_requires_upgrade():
         if dry_run != 'yes':
+            stop_uber_service()
             backup_db()
             upgrade_db()
-            restart_uber_service()
+            start_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
