@@ -41,7 +41,7 @@ fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
 
-python_venv_dir = '/usr/local/uber/env'
+python_env_dir = '/usr/local/uber/env'
 if not os.path.exists(python_env_dir):
     python_env_dir = '/home/vagrant/uber/sideboard/env'
 python_bin_dir = '{}/bin'.format(python_env_dir)
