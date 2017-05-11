@@ -1,8 +1,9 @@
 from fabric.api import *
 from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists
-import os, sys
-from os.path import expanduser
+import os, re, sys
+from os.path import abspath, dirname, expanduser, join
+
 import subprocess
 from datetime import datetime
 from ConfigParser import SafeConfigParser, NoOptionError, NoSectionError
@@ -40,6 +41,10 @@ fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
 
+python_env_dir = abspath(join(abspath(dirname(__file__)), '..', 'sideboard/env'))
+if not os.path.exists(python_env_dir):
+    python_env_dir = abspath(join(abspath(dirname(__file__)), '..', 'uber/env'))
+python_bin_dir = '{}/bin'.format(python_env_dir)
 puppet_dir = '/usr/local/puppet'
 puppet_conf = puppet_dir+'/puppet.conf'
 hiera_conf = puppet_dir+'/hiera/hiera.yaml'
@@ -96,6 +101,45 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     get(remote_path=remote_backup_fullpath_zipped, local_path=local_backup_dir)
 
 
+def upgrade_db():
+    """
+    Runs any available database migrations to bring the database up-to-date.
+    """
+    run('{}/sep alembic upgrade heads'.format(python_bin_dir))
+
+
+def db_requires_upgrade():
+    """
+    Returns True if the database is out-of-date & requires upgrade migrations.
+    Returns False otherwise.
+    """
+    # The output of our commands looks something like this, and the portion we
+    # really care about is the 12 character hexadecimal hash at the beginning:
+    # fc791d73e762 (uber, bands, panels) (head)
+    # 73b22ccbe472 (uber, attendee_tournaments) (head)
+    # 771555241255 (uber, hotel) (head)
+    # e68ef1dc43fc (uber, magprime) (head)
+    # 826e6c309c31 (uber, mivs) (head)
+    # 691be8fa880d (uber, tabletop, panels) (head)
+    hash_re = re.compile(r'\s*[a-zA-Z0-9]{12}\s*')
+
+    # Get the set of current version hashes from the database
+    results = run('{}/sep alembic current'.format(python_bin_dir)).split('\n')
+    current = set(s.strip()[:12] for s in results if hash_re.match(s))
+
+    # Get the set of head version hashes available in our migrations
+    results = run('{}/sep alembic heads'.format(python_bin_dir)).split('\n')
+    heads = set(s.strip()[:12] for s in results if hash_re.match(s))
+
+    # No migrations? DB doesn't require an upgrade!
+    if not heads:
+        return False
+
+    # If the current version hashes don't match our available heads, then we
+    # need to update the database.
+    return current != heads
+
+
 def sync_puppet_related_files_to_node():
     # sync everything
     # TODO: SECURITY: we're copying too much data onto the other box about other nodes.
@@ -127,6 +171,13 @@ def puppet_apply(dry_run='no'):
             " "+cmdline+" "
             " "+manifest_to_run+" "
             )
+
+    if db_requires_upgrade():
+        if dry_run != 'yes':
+            stop_uber_service()
+            backup_db()
+            upgrade_db()
+            start_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
@@ -176,7 +227,7 @@ def get_host_ip(hostname):
 # somewhat optional, but if we don't do this, it will prompt us yes/no
 # for accepting the key for a new server, which we don't want if we're
 # fully automated.  or if this is a rebuild, the keys will mismatch
-# and it will stop.  
+# and it will stop.
 #
 # ONLY DO THIS ON SERVER INIT. DO NOT DO THIS EACH TIME WHICH WILL DEFEAT
 # THE SECURITY MEASURES.
