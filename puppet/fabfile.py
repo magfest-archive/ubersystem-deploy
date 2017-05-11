@@ -2,7 +2,7 @@ from fabric.api import *
 from fabric.contrib.project import rsync_project
 from fabric.contrib.files import exists
 import os, re, sys
-from os.path import expanduser
+from os.path import abspath, dirname, expanduser, join
 
 import subprocess
 from datetime import datetime
@@ -41,7 +41,9 @@ fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
 
-python_env_dir = '/home/vagrant/uber/sideboard/env'
+python_env_dir = abspath(join(abspath(dirname(__file__)), '..', 'sideboard/env'))
+if not os.path.exists(python_env_dir):
+    python_env_dir = abspath(join(abspath(dirname(__file__)), '..', 'uber/env'))
 python_bin_dir = '{}/bin'.format(python_env_dir)
 puppet_dir = '/usr/local/puppet'
 puppet_conf = puppet_dir+'/puppet.conf'
@@ -174,6 +176,7 @@ def puppet_apply(dry_run='no'):
         if dry_run != 'yes':
             backup_db()
             upgrade_db()
+            restart_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
