@@ -52,10 +52,10 @@ rsync_opts = '--delete -L --exclude=.git'
 
 
 def get_python_bin_dir():
-    if os.path.exists('/usr/local/uber/env/bin'):
-        return '/usr/local/uber/env/bin'
-    else:
+    if os.path.exists('/home/vagrant/uber/sideboard/env/bin'):
         return '/home/vagrant/uber/sideboard/env/bin'
+    else:
+        return '/usr/local/uber/env/bin'
 
 
 def read_hosts():
