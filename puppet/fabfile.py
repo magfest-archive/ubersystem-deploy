@@ -41,10 +41,6 @@ fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
 
-python_env_dir = '/usr/local/uber/env'
-if not os.path.exists(python_env_dir):
-    python_env_dir = '/home/vagrant/uber/sideboard/env'
-python_bin_dir = '{}/bin'.format(python_env_dir)
 puppet_dir = '/usr/local/puppet'
 puppet_conf = puppet_dir+'/puppet.conf'
 hiera_conf = puppet_dir+'/hiera/hiera.yaml'
@@ -53,6 +49,13 @@ manifest_to_run = puppet_dir+'/manifests/site.pp'
 modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
+
+
+def get_python_bin_dir():
+    if os.path.exists('/usr/local/uber/env/bin'):
+        return '/usr/local/uber/env/bin'
+    else:
+        return '/home/vagrant/uber/sideboard/env/bin'
 
 
 def read_hosts():
@@ -105,7 +108,7 @@ def upgrade_db():
     """
     Runs any available database migrations to bring the database up-to-date.
     """
-    run('{}/sep alembic upgrade heads'.format(python_bin_dir))
+    run('{}/sep alembic upgrade heads'.format(get_python_bin_dir()))
 
 
 def db_requires_upgrade():
@@ -124,11 +127,11 @@ def db_requires_upgrade():
     hash_re = re.compile(r'\s*[a-zA-Z0-9]{12}\s*')
 
     # Get the set of current version hashes from the database
-    results = run('{}/sep alembic current'.format(python_bin_dir)).split('\n')
+    results = run('{}/sep alembic current'.format(get_python_bin_dir())).split('\n')
     current = set(s.strip()[:12] for s in results if hash_re.match(s))
 
     # Get the set of head version hashes available in our migrations
-    results = run('{}/sep alembic heads'.format(python_bin_dir)).split('\n')
+    results = run('{}/sep alembic heads'.format(get_python_bin_dir())).split('\n')
     heads = set(s.strip()[:12] for s in results if hash_re.match(s))
 
     # No migrations? DB doesn't require an upgrade!
