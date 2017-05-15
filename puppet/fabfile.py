@@ -37,6 +37,7 @@ class FabricConfig:
         except NoSectionError:
             return default
 
+
 fabricconfig = FabricConfig()
 
 home_dir = expanduser("~")
@@ -49,6 +50,18 @@ manifest_to_run = puppet_dir+'/manifests/site.pp'
 modules_path = puppet_dir+'/modules'
 
 rsync_opts = '--delete -L --exclude=.git'
+
+
+# The output of Alembic commands regarding versioning looks something like
+# this, and the portion we really care about is the 12 character hexadecimal
+# hash at the beginning:
+# fc791d73e762 (uber, bands, panels) (head)
+# 73b22ccbe472 (uber, attendee_tournaments) (head)
+# 771555241255 (uber, hotel) (head)
+# e68ef1dc43fc (uber, magprime) (head)
+# 826e6c309c31 (uber, mivs) (head)
+# 691be8fa880d (uber, tabletop, panels) (head)
+hash_re = re.compile(r'\s*[a-zA-Z0-9]{12}\s*')
 
 
 def get_python_bin_dir():
@@ -111,35 +124,38 @@ def upgrade_db():
     run('{}/sep alembic upgrade heads'.format(get_python_bin_dir()))
 
 
+def stamp_db():
+    """
+    Stamps the database with the most current migration version.
+    """
+    run('{}/sep alembic stamp heads'.format(get_python_bin_dir()))
+
+
+def get_current_db_versions():
+    """
+    Get the set of current version hashes from the database.
+    """
+    results = run('{}/sep alembic current'.format(get_python_bin_dir())).split('\n')
+    return set(s.strip()[:12] for s in results if hash_re.match(s))
+
+
+def get_head_db_versions():
+    """
+    Get the set of head version hashes available in our migrations.
+    """
+    results = run('{}/sep alembic heads'.format(get_python_bin_dir())).split('\n')
+    return set(s.strip()[:12] for s in results if hash_re.match(s))
+
+
 def db_requires_upgrade():
     """
     Returns True if the database is out-of-date & requires upgrade migrations.
     Returns False otherwise.
     """
-    # The output of our commands looks something like this, and the portion we
-    # really care about is the 12 character hexadecimal hash at the beginning:
-    # fc791d73e762 (uber, bands, panels) (head)
-    # 73b22ccbe472 (uber, attendee_tournaments) (head)
-    # 771555241255 (uber, hotel) (head)
-    # e68ef1dc43fc (uber, magprime) (head)
-    # 826e6c309c31 (uber, mivs) (head)
-    # 691be8fa880d (uber, tabletop, panels) (head)
-    hash_re = re.compile(r'\s*[a-zA-Z0-9]{12}\s*')
 
-    # Get the set of current version hashes from the database
-    results = run('{}/sep alembic current'.format(get_python_bin_dir())).split('\n')
-    current = set(s.strip()[:12] for s in results if hash_re.match(s))
-
-    # Get the set of head version hashes available in our migrations
-    results = run('{}/sep alembic heads'.format(get_python_bin_dir())).split('\n')
-    heads = set(s.strip()[:12] for s in results if hash_re.match(s))
-
-    # No migrations? DB doesn't require an upgrade!
     if not heads:
         return False
 
-    # If the current version hashes don't match our available heads, then we
-    # need to update the database.
     return current != heads
 
 
@@ -155,6 +171,15 @@ def sync_puppet_related_files_to_node():
 
 
 def puppet_apply(dry_run='no'):
+    is_dry_run = dry_run.strip().lower() not in ('no', 'false')
+
+    current_db_versions = get_current_db_versions()
+    if not current_db_versions and not is_dry_run:
+        # If the database is unversioned, then we consider it up-to-date and
+        # stamp it with the latest version.
+        stamp_db()
+        current_db_versions = get_current_db_versions()
+
     execute(set_remote_hostname)
     execute(sync_puppet_related_files_to_node)
 
@@ -165,7 +190,7 @@ def puppet_apply(dry_run='no'):
 
     cmdline = " --verbose "
     # cmdline += " --debug "
-    if dry_run == 'yes':
+    if is_dry_run:
         cmdline += " --noop "
 
     sudo(   "puppet apply "
@@ -175,12 +200,14 @@ def puppet_apply(dry_run='no'):
             " "+manifest_to_run+" "
             )
 
-    # if db_requires_upgrade():
-    #     if dry_run != 'yes':
-    #         stop_uber_service()
-    #         backup_db()
-    #         upgrade_db()
-    #         start_uber_service()
+    head_db_versions = get_head_db_versions()
+    if head_db_versions != current_db_versions and not is_dry_run:
+        # If the current version hashes don't match our available heads, then
+        # we need to update the database.
+        stop_uber_service()
+        backup_db()
+        upgrade_db()
+        start_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
