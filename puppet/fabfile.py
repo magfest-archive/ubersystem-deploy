@@ -147,18 +147,6 @@ def get_head_db_versions():
     return set(s.strip()[:12] for s in results if hash_re.match(s))
 
 
-def db_requires_upgrade():
-    """
-    Returns True if the database is out-of-date & requires upgrade migrations.
-    Returns False otherwise.
-    """
-
-    if not heads:
-        return False
-
-    return current != heads
-
-
 def sync_puppet_related_files_to_node():
     # sync everything
     # TODO: SECURITY: we're copying too much data onto the other box about other nodes.
