@@ -206,7 +206,7 @@ def puppet_apply(dry_run='no'):
                 # If the current version hashes don't match our available
                 # heads, then we need to update the database.
                 stop_uber_service()
-                backup_db()
+                # backup_db()
                 upgrade_db()
                 start_uber_service()
 
