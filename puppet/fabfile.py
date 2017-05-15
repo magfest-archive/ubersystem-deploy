@@ -161,12 +161,19 @@ def sync_puppet_related_files_to_node():
 def puppet_apply(dry_run='no'):
     is_dry_run = dry_run.strip().lower() not in ('no', 'false')
 
-    current_db_versions = get_current_db_versions()
-    if not current_db_versions and not is_dry_run:
-        # If the database is unversioned, then we consider it up-to-date and
-        # stamp it with the latest version.
-        stamp_db()
-        current_db_versions = get_current_db_versions()
+    if not is_dry_run:
+        try:
+            current_db_versions = get_current_db_versions()
+            if not current_db_versions
+                # If the database is unversioned, then we consider it
+                # up-to-date and stamp it with the latest version.
+                stamp_db()
+                current_db_versions = get_current_db_versions()
+            is_first_run = False
+        except:
+            # If this is the first run then the sep command won't exist yet.
+            current_db_versions = set()
+            is_first_run = True
 
     execute(set_remote_hostname)
     execute(sync_puppet_related_files_to_node)
@@ -188,14 +195,18 @@ def puppet_apply(dry_run='no'):
             " "+manifest_to_run+" "
             )
 
-    head_db_versions = get_head_db_versions()
-    if head_db_versions != current_db_versions and not is_dry_run:
-        # If the current version hashes don't match our available heads, then
-        # we need to update the database.
-        stop_uber_service()
-        backup_db()
-        upgrade_db()
-        start_uber_service()
+    if not is_dry_run:
+        if is_first_run:
+            stamp_db()
+        else:
+            head_db_versions = get_head_db_versions()
+            if head_db_versions != current_db_versions:
+                # If the current version hashes don't match our available
+                # heads, then we need to update the database.
+                stop_uber_service()
+                backup_db()
+                upgrade_db()
+                start_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
