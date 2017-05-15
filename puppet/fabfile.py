@@ -162,18 +162,20 @@ def puppet_apply(dry_run='no'):
     is_dry_run = dry_run.strip().lower() not in ('no', 'false')
 
     if not is_dry_run:
+        is_first_run = True
         try:
             current_db_versions = get_current_db_versions()
-            if not current_db_versions
+            if not current_db_versions:
                 # If the database is unversioned, then we consider it
                 # up-to-date and stamp it with the latest version.
-                stamp_db()
-                current_db_versions = get_current_db_versions()
-            is_first_run = False
+                head_db_versions = get_head_db_versions()
+                if head_db_versions:
+                    stamp_db()
+                    current_db_versions = get_current_db_versions()
+                    is_first_run = False
         except:
             # If this is the first run then the sep command won't exist yet.
             current_db_versions = set()
-            is_first_run = True
 
     execute(set_remote_hostname)
     execute(sync_puppet_related_files_to_node)
