@@ -106,6 +106,8 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     sudo("chown postgres.postgres -R " + backups_dir)
     sudo("chmod 700 " + backups_dir)
 
+    remote_dbname = run('facter db_name').strip()
+    dbname = remote_dbname if remote_dbname else dbname
     backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
     sudo("su - postgres -c '" + backup_cmd + "'")
 
@@ -206,7 +208,7 @@ def puppet_apply(dry_run='no'):
                 # If the current version hashes don't match our available
                 # heads, then we need to update the database.
                 stop_uber_service()
-                # backup_db()
+                backup_db()
                 upgrade_db()
                 start_uber_service()
 
