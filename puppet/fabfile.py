@@ -109,7 +109,7 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     remote_dbname = run('facter db_name').strip()
     dbname = remote_dbname if remote_dbname else dbname
     backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
-    sudo("db_name=$(facter db_name); su - postgres -c '" + backup_cmd + "'")
+    sudo("su - postgres -c '" + backup_cmd + "'")
 
     sudo("bzip2 " + remote_backup_fullpath)
     remote_backup_fullpath_zipped = remote_backup_fullpath + ".bz2"
