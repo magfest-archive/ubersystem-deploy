@@ -106,8 +106,9 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
     sudo("chown postgres.postgres -R " + backups_dir)
     sudo("chmod 700 " + backups_dir)
 
-    run('db_name=$(facter db_name); echo "db_name=\'${db_name:-' + dbname + '}\'"')
-    backup_cmd = 'pg_dump "${db_name:-' + dbname + '}" -f ' + remote_backup_fullpath
+    remote_dbname = run('facter db_name').strip()
+    dbname = remote_dbname if remote_dbname else dbname
+    backup_cmd = 'pg_dump ' + dbname + ' -f ' + remote_backup_fullpath
     sudo("db_name=$(facter db_name); su - postgres -c '" + backup_cmd + "'")
 
     sudo("bzip2 " + remote_backup_fullpath)
