@@ -29,6 +29,7 @@ uber::config::year:                     33
 uber::config::initial_attendee: 50    # badge price
 uber::config::dealer_badge_price: 30
 uber::config::shirts_per_staffer: 0
+uber::config::staff_eligible_for_swag_shirt: True
 uber::config::max_dealers: 20
 uber::config::default_table_price: 350
 
