@@ -10,7 +10,7 @@ uber::app_logfile_name:         '/var/log/uber-app.log'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
-uber::ssl_api_port:             4443
+uber::ssl_api_port:             4445
 
 uber::plugins::sideboard_repo:    'https://github.com/magfest/sideboard'
 uber::plugins::sideboard_branch:  'master'
