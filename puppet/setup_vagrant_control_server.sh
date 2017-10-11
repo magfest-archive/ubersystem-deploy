@@ -1,9 +1,14 @@
 #!/bin/bash
 
-if [ $# -eq 1 ];
+if [ $# -ne 1 ];
 then
-	extra_args=":event_name=$1"
+	echo "usage: $0 event_name"
+	echo "example for an event named classic: $0 classic"
+	echo "if you don't know your event name, just use 'test'"
+	exit -1
 fi
+
+extra_args=":event_name=$1"
 
 sudo apt-get update -y
 sudo apt-get install -y fabric vim lynx git tofrodos
