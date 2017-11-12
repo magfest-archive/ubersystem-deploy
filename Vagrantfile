@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 4443, host: 4443
 
     # normal nginx client cert API ports
-    config.vm.network :forwarded_port, guest: 4444, host: 4444
+    config.vm.network :forwarded_port, guest: 4445, host: 4445
 
     # expose cherrypy port directly for debugging purposes
     config.vm.network :forwarded_port, guest: 8282, host: 8282
