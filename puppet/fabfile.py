@@ -78,7 +78,7 @@ def read_hosts():
     example: use to run the same command on a bunch of hosts like this:
     cat active-hosts.txt | fab read_hosts do_security_updates
     """
-    env.hosts = [line.strip() for line in sys.stdin.readlines() if '#' not in line]
+    env.hosts = [line.strip() for line in sys.stdin.readlines() if '#' not in line and not line.startswith('\n')]
 
 
 def restart_uber_service():
@@ -213,8 +213,10 @@ def run_unit_tests(path='/usr/local/uber/plugins', pytest='/usr/local/uber/env/b
 
 
 def do_security_updates():
+    sudo('wget https://nginx.org/keys/nginx_signing.key -O - | apt-key add -')
+    sudo('apt-key update')
     sudo('apt-get update')
-    sudo('apt-get -y upgrade')
+    sudo('DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade')
 
 
 # install just enough initial packages to get puppet going.
