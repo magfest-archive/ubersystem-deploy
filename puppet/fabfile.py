@@ -118,6 +118,8 @@ def backup_db(dbname = 'rams_db', local_backup_dir='~/backup/'):
 
     get(remote_path=remote_backup_fullpath_zipped, local_path=local_backup_dir)
 
+    sudo('rm ' + remote_backup_fullpath_zipped)
+
 
 def upgrade_db():
     """
