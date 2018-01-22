@@ -275,7 +275,7 @@ def puppet_apply_new_node(auto_update = True, environment='development', event_n
 
 
 # do all setup tasks to get a node (a server which runs ubersystem) ready to do a 'puppet apply'
-def bootstrap_new_node(auto_update = True, environment='development', event_name='test'):
+def bootstrap_new_node(auto_update = True, environment='development', event_name='test', event_year=''):
     execute(register_remote_ssh_keys)
     execute(set_remote_hostname)
 
@@ -284,16 +284,17 @@ def bootstrap_new_node(auto_update = True, environment='development', event_name
 
     execute(install_initial_packages)
 
-    execute(setup_extra_node_specific_facter_facts, environment=environment, event_name=event_name)
+    execute(setup_extra_node_specific_facter_facts, environment=environment, event_name=event_name, event_year=event_year)
 
     if auto_update:
         execute(reboot_if_updates_needed)
 
 
-def setup_extra_node_specific_facter_facts(environment, event_name):
+def setup_extra_node_specific_facter_facts(environment, event_name, event_year):
     sudo("mkdir -p /etc/facter/facts.d/")
     sudo("bash -c 'echo event_name=" + event_name + " > /etc/facter/facts.d/event_name.txt'")
     sudo("bash -c 'echo environment=" + environment + " > /etc/facter/facts.d/environment.txt'")
+    sudo("bash -c 'echo event_year=" + event_year + " > /etc/facter/facts.d/event_year.txt'")
 
 
 def local_git_clone(repo_url, checkout_path, branch=None):
