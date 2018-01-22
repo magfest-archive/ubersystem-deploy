@@ -2,7 +2,7 @@
 
 if [ $# -eq 1 ];
 then
-	extra_args=":event_name=$1"
+	extra_args=":event_name=$1,event_year=$2"
 fi
 
 sudo apt-get update -y
@@ -17,7 +17,7 @@ fab -u root -H `hostname` bootstrap_vagrant_control_server$extra_args
 # read up on git's 'core.filemode' for more info
 #
 # this does mean that windows users can't mark things as executable in git repositories without
-# explicitly changing things, which is a drag.
+# explicitly changing things, which sucks.
 if [ "`facter is_vagrant_windows`" == '1' ];
 then
     find /home/vagrant/uber -type d -name '.git' | while read -r FILE

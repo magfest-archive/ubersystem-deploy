@@ -6,6 +6,8 @@
 :hierarchy:
   # things in nodes/ are part of event-specific repositories, not included in this repo
   - "nodes/external/secret/%{::fqdn}"
+  - "nodes/external/secret/event-%{::event_name}-%{::event_year}-%{::environment}"
+  - "nodes/external/secret/event-%{::event_name}-%{::event_year}"
   - "nodes/external/secret/event-%{::event_name}-%{::environment}"
   - "nodes/external/secret/event-%{::event_name}"
   - "nodes/external/secret/%{::environment}"
@@ -13,6 +15,8 @@
   - "nodes/external/%{::fqdn}"
   - "nodes/vagrant-%{::event_name}-%{::is_vagrant}"
   - "nodes/vagrant-%{::is_vagrant}"
+  - "nodes/event-%{::event_name}-%{::event_year}-%{::environment}"
+  - "nodes/event-%{::event_name}-%{::event_year}"
   - "nodes/event-%{::event_name}-%{::environment}"
   - "nodes/event-%{::event_name}"
   - "nodes/%{::environment}"
