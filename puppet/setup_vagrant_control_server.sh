@@ -2,7 +2,12 @@
 
 if [ $# -eq 1 ];
 then
-	extra_args=":event_name=$1,event_year=$2"
+    extra_args=":event_name=$1"
+fi
+
+if [ $# -eq 2 ];
+then
+    extra_args=":event_name=$1,event_year=$2"
 fi
 
 sudo apt-get update -y
