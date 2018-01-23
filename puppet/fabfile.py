@@ -273,8 +273,8 @@ def reboot_if_updates_needed():
 
 # one command to rule them all.  take a brand new newly provisioned virgin box and do everything needed
 # to have a full ubersystem deploy applied with puppet
-def puppet_apply_new_node(auto_update = True, environment='development', event_name='test'):
-    execute(bootstrap_new_node, auto_update, environment=environment, event_name=event_name)
+def puppet_apply_new_node(auto_update = True, environment='development', event_name='test', event_year=''):
+    execute(bootstrap_new_node, auto_update, environment=environment, event_name=event_name, event_year=event_year)
     execute(puppet_apply)
 
 
@@ -328,9 +328,9 @@ def copy_control_server_files():
     bootstrap_control_server()
 
 
-def bootstrap_vagrant_control_server(environment='development', event_name='test'):
+def bootstrap_vagrant_control_server(environment='development', event_name='test', event_year=''):
     copy_control_server_files()
-    puppet_apply_new_node(auto_update = False, environment=environment, event_name=event_name)
+    puppet_apply_new_node(auto_update = False, environment=environment, event_name=event_name, event_year=event_year)
 
 
 # generate an ssh key
