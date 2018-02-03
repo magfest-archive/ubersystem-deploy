@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 group :test do
-  gem 'rest-client', '~> 1.6.8', :require => false, :platforms => :ruby_18
+  gem 'rest-client', '~> 1.7.3', :require => false, :platforms => :ruby_18
 end
 
 group :rake, :test do
