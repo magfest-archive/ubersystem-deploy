@@ -19,9 +19,6 @@ uber::plugins::sideboard_plugins:
   uber:
     git_repo: 'https://github.com/magfest/ubersystem'
     git_branch: 'master'
-  uber_analytics:
-    git_repo: 'https://github.com/magfest/uber_analytics'
-    git_branch: 'master'
 
 uber::config::event_name:               'SuperRad CoolCon'
 uber::config::organization_name:        'RadDudettes INC'
