@@ -56,9 +56,8 @@ rsync_opts = '--delete -L --exclude=.git'
 # this, and the portion we really care about is the 12 character hexadecimal
 # hash at the beginning:
 # fc791d73e762 (uber, bands, panels) (head)
-# 73b22ccbe472 (uber, attendee_tournaments) (head)
-# 771555241255 (uber, hotel) (head)
 # e68ef1dc43fc (uber, magprime) (head)
+# e68ef1dc43fc (uber, magwest) (head)
 # 826e6c309c31 (uber, mivs) (head)
 # 691be8fa880d (uber, tabletop, panels) (head)
 hash_re = re.compile(r'\s*[a-zA-Z0-9]{12}\s*')
