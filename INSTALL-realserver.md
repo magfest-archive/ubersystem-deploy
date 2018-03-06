@@ -41,6 +41,7 @@ To install ubersystem on a target node (usually a different server from this one
 2) decide the 'facts' associated with this node.
 environment='development' or 'production'
 event_name=[whatever you want]. examples: 'classic' for magfest classic.  'prime' for magfest prime
+event_year=[whatever you want]. examples: 1999, 2020, 3000
 
 3) Do the first-time deploy like this:
 
@@ -52,7 +53,7 @@ cd puppet/
 Example, if your target name is myuberserver.myorganization.com, for a 'production' environment deploy for an event named 'coolcon', you'd do:
 
 ```
-./init_node.sh myuberserver.myorganization.com production coolcon
+./init_node.sh myuberserver.myorganization.com production coolcon 2020
 ```
 
 That's it, you are done!
