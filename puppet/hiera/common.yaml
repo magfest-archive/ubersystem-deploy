@@ -14,7 +14,7 @@ uber::celery_worker_logfile:   '/var/log/uber-celery-worker.log'
 uber::celery_beat_name:        'uber_celery_beat'
 uber::celery_beat_logfile:     '/var/log/uber-celery-beat.log'
 
-uber::config::celery_brokerurl: 'pyamqp://localhost//'
+uber::config::celery_broker_url: 'amqp://%{hiera("rabbitmq::default_user")}:%{hiera("rabbitmq::default_pass")}@localhost//'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
