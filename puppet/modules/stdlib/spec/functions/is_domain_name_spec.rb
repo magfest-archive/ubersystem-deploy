@@ -1,64 +1,43 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the is_domain_name function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
-
-  it "should exist" do
-    Puppet::Parser::Functions.function("is_domain_name").should == "function_is_domain_name"
+describe 'is_domain_name' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params('one', 'two').and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params(1).and_return(false) }
+  it { is_expected.to run.with_params([]).and_return(false) }
+  it { is_expected.to run.with_params({}).and_return(false) }
+  it { is_expected.to run.with_params('').and_return(false) }
+  it { is_expected.to run.with_params('.').and_return(true) }
+  it { is_expected.to run.with_params('com').and_return(true) }
+  it { is_expected.to run.with_params('com.').and_return(true) }
+  it { is_expected.to run.with_params('x.com').and_return(true) }
+  it { is_expected.to run.with_params('x.com.').and_return(true) }
+  it { is_expected.to run.with_params('foo.example.com').and_return(true) }
+  it { is_expected.to run.with_params('foo.example.com.').and_return(true) }
+  it { is_expected.to run.with_params('2foo.example.com').and_return(true) }
+  it { is_expected.to run.with_params('2foo.example.com.').and_return(true) }
+  it { is_expected.to run.with_params('www.2foo.example.com').and_return(true) }
+  it { is_expected.to run.with_params('www.2foo.example.com.').and_return(true) }
+  describe 'inputs with spaces' do
+    it { is_expected.to run.with_params('invalid domain').and_return(false) }
   end
-
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_is_domain_name([]) }.should( raise_error(Puppet::ParseError))
+  describe 'inputs with hyphens' do
+    it { is_expected.to run.with_params('foo-bar.example.com').and_return(true) }
+    it { is_expected.to run.with_params('foo-bar.example.com.').and_return(true) }
+    it { is_expected.to run.with_params('www.foo-bar.example.com').and_return(true) }
+    it { is_expected.to run.with_params('www.foo-bar.example.com.').and_return(true) }
+    it { is_expected.to run.with_params('-foo.example.com').and_return(false) }
+    it { is_expected.to run.with_params('-foo.example.com.').and_return(false) }
   end
-
-  it "should return true if a valid short domain name" do
-    result = scope.function_is_domain_name(["x.com"])
-    result.should(be_true)
+  # Values obtained from Facter values will be frozen strings
+  # in newer versions of Facter:
+  it { is_expected.to run.with_params('www.example.com'.freeze).and_return(true) }
+  describe 'top level domain must be alphabetic if there are multiple labels' do
+    it { is_expected.to run.with_params('2com').and_return(true) }
+    it { is_expected.to run.with_params('www.example.2com').and_return(false) }
   end
-
-  it "should return true if the domain is ." do
-    result = scope.function_is_domain_name(["."])
-    result.should(be_true)
-  end
-
-  it "should return true if the domain is x.com." do
-    result = scope.function_is_domain_name(["x.com."])
-    result.should(be_true)
-  end
-
-  it "should return true if a valid domain name" do
-    result = scope.function_is_domain_name(["foo.bar.com"])
-    result.should(be_true)
-  end
-
-  it "should allow domain parts to start with numbers" do
-    result = scope.function_is_domain_name(["3foo.2bar.com"])
-    result.should(be_true)
-  end
-
-  it "should allow domain to end with a dot" do
-    result = scope.function_is_domain_name(["3foo.2bar.com."])
-    result.should(be_true)
-  end
-
-  it "should allow a single part domain" do
-    result = scope.function_is_domain_name(["orange"])
-    result.should(be_true)
-  end
-
-  it "should return false if domain parts start with hyphens" do
-    result = scope.function_is_domain_name(["-3foo.2bar.com"])
-    result.should(be_false)
-  end
-
-  it "should return true if domain contains hyphens" do
-    result = scope.function_is_domain_name(["3foo-bar.2bar-fuzz.com"])
-    result.should(be_true)
-  end
-
-  it "should return false if domain name contains spaces" do
-    result = scope.function_is_domain_name(["not valid"])
-    result.should(be_false)
+  describe 'IP addresses are not domain names' do
+    it { is_expected.to run.with_params('192.168.1.1').and_return(false) }
   end
 end

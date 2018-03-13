@@ -1,31 +1,23 @@
-#! /usr/bin/env ruby -S rspec
-
 require 'spec_helper'
 
-describe "the count function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'count' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params('one').and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params('one', 'two').and_return(1) }
+  it {
+    pending('should actually be like this, and not like above')
+    is_expected.to run.with_params('one', 'two').and_raise_error(ArgumentError)
+  }
+  it { is_expected.to run.with_params('one', 'two', 'three').and_raise_error(ArgumentError) }
+  it { is_expected.to run.with_params(%w[one two three]).and_return(3) }
+  it { is_expected.to run.with_params(%w[one two two], 'two').and_return(2) }
+  it { is_expected.to run.with_params(['one', nil, 'two']).and_return(2) }
+  it { is_expected.to run.with_params(['one', '', 'two']).and_return(2) }
+  it { is_expected.to run.with_params(['one', :undef, 'two']).and_return(2) }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("count").should == "function_count"
-  end
-
-  it "should raise a ArgumentError if there is more than 2 arguments" do
-    lambda { scope.function_count(['foo', 'bar', 'baz']) }.should( raise_error(ArgumentError))
-  end
-
-  it "should be able to count arrays" do
-    scope.function_count([["1","2","3"]]).should(eq(3))
-  end
-
-  it "should be able to count matching elements in arrays" do
-    scope.function_count([["1", "2", "2"], "2"]).should(eq(2))
-  end
-
-  it "should not count nil or empty strings" do
-    scope.function_count([["foo","bar",nil,""]]).should(eq(2))
-  end
-
-  it 'does not count an undefined hash key or an out of bound array index (which are both :undef)' do
-    expect(scope.function_count([["foo",:undef,:undef]])).to eq(1)
-  end
+  it { is_expected.to run.with_params(['ổņ℮', 'ŧщộ', 'three']).and_return(3) }
+  it { is_expected.to run.with_params(['ổņ℮', 'ŧщộ', 'ŧщộ'], 'ŧщộ').and_return(2) }
+  it { is_expected.to run.with_params(['ổņ℮', nil, 'ŧщộ']).and_return(2) }
+  it { is_expected.to run.with_params(['ổņ℮', :undef, 'ŧщộ']).and_return(2) }
 end

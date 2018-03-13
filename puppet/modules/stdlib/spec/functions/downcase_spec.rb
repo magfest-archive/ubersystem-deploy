@@ -1,24 +1,15 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the downcase function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'downcase' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params(100).and_raise_error(Puppet::ParseError) }
+  it { is_expected.to run.with_params('abc').and_return('abc') }
+  it { is_expected.to run.with_params('Abc').and_return('abc') }
+  it { is_expected.to run.with_params('ABC').and_return('abc') }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("downcase").should == "function_downcase"
-  end
-
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_downcase([]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should downcase a string" do
-    result = scope.function_downcase(["ASFD"])
-    result.should(eq("asfd"))
-  end
-
-  it "should do nothing to a string that is already downcase" do
-    result = scope.function_downcase(["asdf asdf"])
-    result.should(eq("asdf asdf"))
-  end
+  it { is_expected.to run.with_params(AlsoString.new('ABC')).and_return('abc') }
+  it { is_expected.to run.with_params([]).and_return([]) }
+  it { is_expected.to run.with_params(%w[ONE TWO]).and_return(%w[one two]) }
+  it { is_expected.to run.with_params(['One', 1, 'Two']).and_return(['one', 1, 'two']) }
 end

@@ -1,43 +1,42 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the type function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
-  it "should exist" do
-    Puppet::Parser::Functions.function("type").should == "function_type"
+describe 'type' do
+  it 'exists' do
+    expect(Puppet::Parser::Functions.function('type')).to eq('function_type')
   end
 
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_type([]) }.should( raise_error(Puppet::ParseError))
+  it 'gives a deprecation warning when called' do
+    scope.expects(:warning).with("type() DEPRECATED: This function will cease to function on Puppet 4; please use type3x() before upgrading to puppet 4 for backwards-compatibility, or migrate to the new parser's typing system.") # rubocop:disable Metrics/LineLength : Unable to reduce to required length
+    scope.function_type(['aoeu'])
   end
 
-  it "should return string when given a string" do
-    result = scope.function_type(["aaabbbbcccc"])
-    result.should(eq('string'))
+  it 'returns string when given a string' do
+    result = scope.function_type(['aaabbbbcccc'])
+    expect(result).to(eq('string'))
   end
 
-  it "should return array when given an array" do
-    result = scope.function_type([["aaabbbbcccc","asdf"]])
-    result.should(eq('array'))
+  it 'returns array when given an array' do
+    result = scope.function_type([%w[aaabbbbcccc asdf]])
+    expect(result).to(eq('array'))
   end
 
-  it "should return hash when given a hash" do
-    result = scope.function_type([{"a"=>1,"b"=>2}])
-    result.should(eq('hash'))
+  it 'returns hash when given a hash' do
+    result = scope.function_type([{ 'a' => 1, 'b' => 2 }])
+    expect(result).to(eq('hash'))
   end
 
-  it "should return integer when given an integer" do
-    result = scope.function_type(["1"])
-    result.should(eq('integer'))
+  it 'returns integer when given an integer' do
+    result = scope.function_type(['1'])
+    expect(result).to(eq('integer'))
   end
 
-  it "should return float when given a float" do
-    result = scope.function_type(["1.34"])
-    result.should(eq('float'))
+  it 'returns float when given a float' do
+    result = scope.function_type(['1.34'])
+    expect(result).to(eq('float'))
   end
 
-  it "should return boolean when given a boolean" do
+  it 'returns boolean when given a boolean' do
     result = scope.function_type([true])
-    result.should(eq('boolean'))
+    expect(result).to(eq('boolean'))
   end
 end

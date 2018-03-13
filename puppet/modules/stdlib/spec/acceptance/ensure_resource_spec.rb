@@ -1,20 +1,26 @@
 #! /usr/bin/env ruby -S rspec
 require 'spec_helper_acceptance'
 
-describe 'ensure_resource function', :unless => UNSUPPORTED_PLATFORMS.include?(fact('operatingsystem')) do
+describe 'ensure_resource function' do
   describe 'success' do
-    it 'ensure_resource a package' do
-      apply_manifest('package { "zsh": ensure => absent, }')
-      pp = <<-EOS
-      $a = "zsh"
-      ensure_resource('package', $a)
-      EOS
+    pp1 = <<-DOC
+      notify { "test": loglevel => 'err' }
+      ensure_resource('notify', 'test', { 'loglevel' => 'err' })
+    DOC
+    it 'ensures a resource already declared' do
+      apply_manifest('')
 
-      apply_manifest(pp, :expect_changes => true) do |r|
-        expect(r.stdout).to match(/Package\[zsh\]\/ensure: created/)
-      end
+      apply_manifest(pp1, :expect_changes => true)
     end
-    it 'ensures a resource already declared'
+
+    pp2 = <<-DOC
+      ensure_resource('notify', 'test', { 'loglevel' => 'err' })
+    DOC
+    it 'ensures a undeclared resource' do
+      apply_manifest('')
+
+      apply_manifest(pp2, :expect_changes => true)
+    end
     it 'takes defaults arguments'
   end
   describe 'failure' do

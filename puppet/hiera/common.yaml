@@ -8,6 +8,14 @@ uber::group:                    'rams'
 uber::daemon_name:              'uber_daemon'
 uber::app_logfile_name:         '/var/log/uber-app.log'
 
+uber::celery_worker_name:      'uber_celery_worker'
+uber::celery_worker_logfile:   '/var/log/uber-celery-worker.log'
+
+uber::celery_beat_name:        'uber_celery_beat'
+uber::celery_beat_logfile:     '/var/log/uber-celery-beat.log'
+
+uber::config::celery_brokerurl: 'pyamqp://localhost//'
+
 uber::socket_port:              8282
 uber::ssl_port:                 443
 uber::ssl_api_port:             4445
@@ -69,6 +77,13 @@ uber::config::contact_url: "https://www.futureme.org/letters/recently_delivered"
 uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
+
+# rabbitmq
+rabbitmq::default_user: 'celery'
+rabbitmq::default_pass: 'celery'
+rabbitmq::port: 5672
+rabbitmq::delete_guest_user: true
+rabbitmq::service_ensure: 'running'
 
 # nginx caching params
 nginx::proxy_cache_path: '/var/cache/nginx'

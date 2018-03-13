@@ -1,24 +1,26 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the upcase function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
-
-  it "should exist" do
-    Puppet::Parser::Functions.function("upcase").should == "function_upcase"
+describe 'upcase' do
+  describe 'signature validation' do
+    it { is_expected.not_to eq(nil) }
+    it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+    it { is_expected.to run.with_params('', '').and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+    it { is_expected.to run.with_params(1).and_raise_error(Puppet::ParseError, %r{Requires an array, hash or object that responds to upcase}) }
+    it { is_expected.to run.with_params([1]).and_raise_error(Puppet::ParseError, %r{Requires an array, hash or object that responds to upcase}) }
   end
 
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_upcase([]) }.should( raise_error(Puppet::ParseError))
+  describe 'normal string handling' do
+    it { is_expected.to run.with_params('abc').and_return('ABC') }
+    it { is_expected.to run.with_params('Abc').and_return('ABC') }
+    it { is_expected.to run.with_params('ABC').and_return('ABC') }
   end
 
-  it "should upcase a string" do
-    result = scope.function_upcase(["abc"])
-    result.should(eq('ABC'))
+  describe 'handling classes derived from String' do
+    it { is_expected.to run.with_params(AlsoString.new('ABC')).and_return('ABC') }
   end
 
-  it "should do nothing if a string is already upcase" do
-    result = scope.function_upcase(["ABC"])
-    result.should(eq('ABC'))
+  describe 'strings in arrays handling' do
+    it { is_expected.to run.with_params([]).and_return([]) }
+    it { is_expected.to run.with_params(%w[One twO]).and_return(%w[ONE TWO]) }
   end
 end

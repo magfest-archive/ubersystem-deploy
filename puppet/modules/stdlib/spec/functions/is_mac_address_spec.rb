@@ -1,29 +1,30 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the is_mac_address function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'is_mac_address' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params([], []).and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params('00:a0:1f:12:7f:a0').and_return(true) }
+  it { is_expected.to run.with_params('00:A0:1F:12:7F:A0').and_return(true) }
+  it { is_expected.to run.with_params('00:00:00:00:00:0g').and_return(false) }
+  it { is_expected.to run.with_params('').and_return(false) }
+  it { is_expected.to run.with_params('one').and_return(false) }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("is_mac_address").should == "function_is_mac_address"
+  context 'with  UTF8 and double byte characters' do
+    it { is_expected.to run.with_params('ƒốưř').and_return(false) }
+    it { is_expected.to run.with_params('三+').and_return(false) }
   end
 
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_is_mac_address([]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should return true if a valid mac address" do
-    result = scope.function_is_mac_address(["00:a0:1f:12:7f:a0"])
-    result.should(eq(true))
-  end
-
-  it "should return false if octets are out of range" do
-    result = scope.function_is_mac_address(["00:a0:1f:12:7f:g0"])
-    result.should(eq(false))
-  end
-
-  it "should return false if not valid" do
-    result = scope.function_is_mac_address(["not valid"])
-    result.should(eq(false))
-  end
+  it {
+    pending 'should properly typecheck its arguments'
+    is_expected.to run.with_params(1).and_return(false)
+  }
+  it {
+    pending 'should properly typecheck its arguments'
+    is_expected.to run.with_params({}).and_return(false)
+  }
+  it {
+    pending 'should properly typecheck its arguments'
+    is_expected.to run.with_params([]).and_return(false)
+  }
 end
