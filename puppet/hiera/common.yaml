@@ -15,6 +15,8 @@ uber::celery_beat_name:        'uber_celery_beat'
 uber::celery_beat_logfile:     '/var/log/uber-celery-beat.log'
 
 uber::config::celery_broker_url: 'amqp://%{hiera("rabbitmq::default_user")}:%{hiera("rabbitmq::default_pass")}@localhost//'
+uber::config::celery_beat_schedule_dir: '%{hiera("uber::path")}/data'
+uber::config::celery_beat_schedule_filename: '%{hiera("uber::config::celery_beat_schedule_dir")}/celerybeat-schedule'
 
 uber::socket_port:              8282
 uber::ssl_port:                 443
