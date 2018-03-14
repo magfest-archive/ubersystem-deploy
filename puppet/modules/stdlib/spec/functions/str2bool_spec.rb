@@ -1,31 +1,23 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the str2bool function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'str2bool' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it {
+    pending('Current implementation ignores parameters after the first.')
+    is_expected.to run.with_params('true', 'extra').and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i)
+  }
+  it { is_expected.to run.with_params('one').and_raise_error(Puppet::ParseError, %r{Unknown type of boolean given}) }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("str2bool").should == "function_str2bool"
+  describe 'when testing values that mean "true"' do
+    ['TRUE', '1', 't', 'y', 'true', 'yes', true].each do |value|
+      it { is_expected.to run.with_params(value).and_return(true) }
+    end
   end
 
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_str2bool([]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should convert string 'true' to true" do
-    result = scope.function_str2bool(["true"])
-    result.should(eq(true))
-  end
-
-  it "should convert string 'undef' to false" do
-    result = scope.function_str2bool(["undef"])
-    result.should(eq(false))
-  end
-
-  it "should return the boolean it was called with" do
-    result = scope.function_str2bool([true])
-    result.should(eq(true))
-    result = scope.function_str2bool([false])
-    result.should(eq(false))
+  describe 'when testing values that mean "false"' do
+    ['FALSE', '', '0', 'f', 'n', 'false', 'no', false, 'undef', 'undefined'].each do |value|
+      it { is_expected.to run.with_params(value).and_return(false) }
+    end
   end
 end

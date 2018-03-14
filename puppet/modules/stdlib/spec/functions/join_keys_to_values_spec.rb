@@ -1,40 +1,29 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the join_keys_to_values function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'join_keys_to_values' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{Takes exactly two arguments}) }
+  it { is_expected.to run.with_params({}, '', '').and_raise_error(Puppet::ParseError, %r{Takes exactly two arguments}) }
+  it { is_expected.to run.with_params('one', '').and_raise_error(TypeError, %r{The first argument must be a hash}) }
+  it { is_expected.to run.with_params({}, 2).and_raise_error(TypeError, %r{The second argument must be a string}) }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("join_keys_to_values").should == "function_join_keys_to_values"
+  it { is_expected.to run.with_params({}, '').and_return([]) }
+  it { is_expected.to run.with_params({}, ':').and_return([]) }
+  it { is_expected.to run.with_params({ 'key' => 'value' }, '').and_return(['keyvalue']) }
+  it { is_expected.to run.with_params({ 'key' => 'value' }, ':').and_return(['key:value']) }
+
+  context 'with UTF8 and double byte characters' do
+    it { is_expected.to run.with_params({ 'ҝẽγ' => '√ạĺűē' }, ':').and_return(['ҝẽγ:√ạĺűē']) }
+    it { is_expected.to run.with_params({ 'ҝẽγ' => '√ạĺűē' }, '万').and_return(['ҝẽγ万√ạĺűē']) }
   end
 
-  it "should raise a ParseError if there are fewer than two arguments" do
-    lambda { scope.function_join_keys_to_values([{}]) }.should raise_error Puppet::ParseError
+  it { is_expected.to run.with_params({ 'key' => nil }, ':').and_return(['key:']) }
+  it 'runs join_keys_to_values(<hash with multiple keys>, ":") and return the proper array' do
+    result = subject.call([{ 'key1' => 'value1', 'key2' => 'value2' }, ':'])
+    expect(result.sort).to eq(['key1:value1', 'key2:value2'].sort)
   end
-
-  it "should raise a ParseError if there are greater than two arguments" do
-    lambda { scope.function_join_keys_to_values([{}, 'foo', 'bar']) }.should raise_error Puppet::ParseError
-  end
-
-  it "should raise a TypeError if the first argument is an array" do
-    lambda { scope.function_join_keys_to_values([[1,2], ',']) }.should raise_error TypeError
-  end
-
-  it "should raise a TypeError if the second argument is an array" do
-    lambda { scope.function_join_keys_to_values([{}, [1,2]]) }.should raise_error TypeError
-  end
-
-  it "should raise a TypeError if the second argument is a number" do
-    lambda { scope.function_join_keys_to_values([{}, 1]) }.should raise_error TypeError
-  end
-
-  it "should return an empty array given an empty hash" do
-    result = scope.function_join_keys_to_values([{}, ":"])
-    result.should == []
-  end
-
-  it "should join hash's keys to its values" do
-    result = scope.function_join_keys_to_values([{'a'=>1,2=>'foo',:b=>nil}, ":"])
-    result.should =~ ['a:1','2:foo','b:']
+  it 'runs join_keys_to_values(<hash with array value>, " ") and return the proper array' do
+    result = subject.call([{ 'key1' => 'value1', 'key2' => %w[value2 value3] }, ' '])
+    expect(result.sort).to eq(['key1 value1', 'key2 value2', 'key2 value3'].sort)
   end
 end

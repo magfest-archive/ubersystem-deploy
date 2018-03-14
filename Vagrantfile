@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # expose cherrypy port directly for debugging purposes
     config.vm.network :forwarded_port, guest: 8282, host: 8282
 
-    # uncomment for private network 
+    # uncomment for private network
     # (useful if doing SMB or NFS shares FROM the guest OS -to- host OS
     # config.vm.network "private_network", type: "dhcp"
 
@@ -49,12 +49,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |v|
-        v.memory = 1024
+        v.memory = 2048
         v.cpus = 2
     end
-	
+
 	# setup custom facter facts so that puppet knows we're a vagrant install
-	# note: we can't use Vagrant's builtin facter support because we need to run puppet manually, and those 
+	# note: we can't use Vagrant's builtin facter support because we need to run puppet manually, and those
 	# facts won't be present unless we set them up permanently here.
 	config.vm.provision :shell do |shell|
 		shell_cmd = ""
@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 		# add any facts we want (copy+paste this line)
 		shell_cmd << "echo 'is_vagrant=1' > /etc/facter/facts.d/is_vagrant.txt; "
-		
+
 		if Vagrant::Util::Platform.windows?
 			shell_cmd << "echo 'is_vagrant_windows=1' > /etc/facter/facts.d/is_vagrant_windows.txt; "
 		end

@@ -1,27 +1,21 @@
-#! /usr/bin/env ruby -S rspec
-
 require 'spec_helper'
 
-describe "the max function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
+describe 'max' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params(1).and_return(1) }
+  it { is_expected.to run.with_params(1, 2).and_return(2) }
+  it { is_expected.to run.with_params(1, 2, 3).and_return(3) }
+  it { is_expected.to run.with_params(3, 2, 1).and_return(3) }
+  it { is_expected.to run.with_params('one').and_return('one') }
+  it { is_expected.to run.with_params('one', 'two').and_return('two') }
+  it { is_expected.to run.with_params('one', 'two', 'three').and_return('two') }
+  it { is_expected.to run.with_params('three', 'two', 'one').and_return('two') }
 
-  it "should exist" do
-    Puppet::Parser::Functions.function("max").should == "function_max"
-  end
-
-  it "should raise a ParseError if there is less than 1 arguments" do
-    lambda { scope.function_max([]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should be able to compare strings" do
-    scope.function_max(["albatross","dog","horse"]).should(eq("horse"))
-  end
-
-  it "should be able to compare numbers" do
-    scope.function_max([6,8,4]).should(eq(8))
-  end
-
-  it "should be able to compare a number with a stringified number" do
-    scope.function_max([1,"2"]).should(eq("2"))
+  describe 'implementation artifacts' do
+    it { is_expected.to run.with_params(1, 'one').and_return('one') }
+    it { is_expected.to run.with_params('1', 'one').and_return('one') }
+    it { is_expected.to run.with_params('1.3e1', '1.4e0').and_return('1.4e0') }
+    it { is_expected.to run.with_params(1.3e1, 1.4e0).and_return(1.3e1) }
   end
 end

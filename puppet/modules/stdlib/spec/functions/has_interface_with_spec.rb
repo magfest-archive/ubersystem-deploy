@@ -1,64 +1,39 @@
-#!/usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe Puppet::Parser::Functions.function(:has_interface_with) do
-
-  let(:scope) do
-    PuppetlabsSpec::PuppetInternals.scope
-  end
-
-  # The subject of these examples is the method itself.
-  subject do
-    function_name = Puppet::Parser::Functions.function(:has_interface_with)
-    scope.method(function_name)
-  end
+describe 'has_interface_with' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params('one', 'two', 'three').and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
 
   # We need to mock out the Facts so we can specify how we expect this function
   # to behave on different platforms.
-  context "On Mac OS X Systems" do
-    before :each do
-      scope.stubs(:lookupvar).with("interfaces").returns('lo0,gif0,stf0,en1,p2p0,fw0,en0,vmnet1,vmnet8,utun0')
-    end
-    it 'should have loopback (lo0)' do
-      subject.call(['lo0']).should be_true
-    end
-    it 'should not have loopback (lo)' do
-      subject.call(['lo']).should be_false
-    end
+  context 'when on Mac OS X Systems' do
+    let(:facts) { { :interfaces => 'lo0,gif0,stf0,en1,p2p0,fw0,en0,vmnet1,vmnet8,utun0' } }
+
+    it { is_expected.to run.with_params('lo0').and_return(true) }
+    it { is_expected.to run.with_params('lo').and_return(false) }
   end
-  context "On Linux Systems" do
-    before :each do
-      scope.stubs(:lookupvar).with("interfaces").returns('eth0,lo')
-      scope.stubs(:lookupvar).with("ipaddress").returns('10.0.0.1')
-      scope.stubs(:lookupvar).with("ipaddress_lo").returns('127.0.0.1')
-      scope.stubs(:lookupvar).with("ipaddress_eth0").returns('10.0.0.1')
-      scope.stubs(:lookupvar).with('muppet').returns('kermit')
-      scope.stubs(:lookupvar).with('muppet_lo').returns('mspiggy')
-      scope.stubs(:lookupvar).with('muppet_eth0').returns('kermit')
+
+  context 'when on Linux Systems' do
+    let(:facts) do
+      {
+        :interfaces => 'eth0,lo',
+        :ipaddress => '10.0.0.1',
+        :ipaddress_lo => '127.0.0.1',
+        :ipaddress_eth0 => '10.0.0.1',
+        :muppet => 'kermit',
+        :muppet_lo => 'mspiggy',
+        :muppet_eth0 => 'kermit',
+      }
     end
-    it 'should have loopback (lo)' do
-      subject.call(['lo']).should be_true
-    end
-    it 'should not have loopback (lo0)' do
-      subject.call(['lo0']).should be_false
-    end
-    it 'should have ipaddress with 127.0.0.1' do
-      subject.call(['ipaddress', '127.0.0.1']).should be_true
-    end
-    it 'should have ipaddress with 10.0.0.1' do
-      subject.call(['ipaddress', '10.0.0.1']).should be_true
-    end
-    it 'should not have ipaddress with 10.0.0.2' do
-      subject.call(['ipaddress', '10.0.0.2']).should be_false
-    end
-    it 'should have muppet named kermit' do
-      subject.call(['muppet', 'kermit']).should be_true
-    end
-    it 'should have muppet named mspiggy' do
-      subject.call(['muppet', 'mspiggy']).should be_true
-    end
-    it 'should not have muppet named bigbird' do
-      subject.call(['muppet', 'bigbird']).should be_false
-    end
+
+    it { is_expected.to run.with_params('lo').and_return(true) }
+    it { is_expected.to run.with_params('lo0').and_return(false) }
+    it { is_expected.to run.with_params('ipaddress', '127.0.0.1').and_return(true) }
+    it { is_expected.to run.with_params('ipaddress', '10.0.0.1').and_return(true) }
+    it { is_expected.to run.with_params('ipaddress', '8.8.8.8').and_return(false) }
+    it { is_expected.to run.with_params('muppet', 'kermit').and_return(true) }
+    it { is_expected.to run.with_params('muppet', 'mspiggy').and_return(true) }
+    it { is_expected.to run.with_params('muppet', 'bigbird').and_return(false) }
   end
 end

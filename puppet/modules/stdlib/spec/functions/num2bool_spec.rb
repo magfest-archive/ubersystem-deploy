@@ -1,67 +1,22 @@
-#! /usr/bin/env ruby -S rspec
 require 'spec_helper'
 
-describe "the num2bool function" do
-  let(:scope) { PuppetlabsSpec::PuppetInternals.scope }
-
-  it "should exist" do
-    Puppet::Parser::Functions.function("num2bool").should == "function_num2bool"
-  end
-
-  it "should raise a ParseError if there are no arguments" do
-    lambda { scope.function_num2bool([]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should raise a ParseError if there are more than 1 arguments" do
-    lambda { scope.function_num2bool(["foo","bar"]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should raise a ParseError if passed something non-numeric" do
-    lambda { scope.function_num2bool(["xyzzy"]) }.should( raise_error(Puppet::ParseError))
-  end
-
-  it "should return true if passed string 1" do
-    result = scope.function_num2bool(["1"])
-    result.should(be_true)
-  end
-
-  it "should return true if passed string 1.5" do
-    result = scope.function_num2bool(["1.5"])
-    result.should(be_true)
-  end
-
-  it "should return true if passed number 1" do
-    result = scope.function_num2bool([1])
-    result.should(be_true)
-  end
-
-  it "should return false if passed string 0" do
-    result = scope.function_num2bool(["0"])
-    result.should(be_false)
-  end
-
-  it "should return false if passed number 0" do
-    result = scope.function_num2bool([0])
-    result.should(be_false)
-  end
-
-  it "should return false if passed string -1" do
-    result = scope.function_num2bool(["-1"])
-    result.should(be_false)
-  end
-
-  it "should return false if passed string -1.5" do
-    result = scope.function_num2bool(["-1.5"])
-    result.should(be_false)
-  end
-
-  it "should return false if passed number -1" do
-    result = scope.function_num2bool([-1])
-    result.should(be_false)
-  end
-
-  it "should return false if passed float -1.5" do
-    result = scope.function_num2bool([-1.5])
-    result.should(be_false)
-  end
+describe 'num2bool' do
+  it { is_expected.not_to eq(nil) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params(1, 2).and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params('abc').and_raise_error(Puppet::ParseError, %r{does not look like a number}) }
+  it { is_expected.to run.with_params(1).and_return(true) }
+  it { is_expected.to run.with_params('1').and_return(true) }
+  it { is_expected.to run.with_params(1.5).and_return(true) }
+  it { is_expected.to run.with_params('1.5').and_return(true) }
+  it { is_expected.to run.with_params(-1).and_return(false) }
+  it { is_expected.to run.with_params('-1').and_return(false) }
+  it { is_expected.to run.with_params(-1.5).and_return(false) }
+  it { is_expected.to run.with_params('-1.5').and_return(false) }
+  it { is_expected.to run.with_params(0).and_return(false) }
+  it { is_expected.to run.with_params('0').and_return(false) }
+  it { is_expected.to run.with_params([]).and_return(false) }
+  it { is_expected.to run.with_params('[]').and_raise_error(Puppet::ParseError, %r{does not look like a number}) }
+  it { is_expected.to run.with_params({}).and_return(false) }
+  it { is_expected.to run.with_params('{}').and_raise_error(Puppet::ParseError, %r{does not look like a number}) }
 end
