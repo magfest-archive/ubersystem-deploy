@@ -14,7 +14,14 @@ uber::celery_worker_logfile:   '/var/log/uber-celery-worker.log'
 uber::celery_beat_name:        'uber_celery_beat'
 uber::celery_beat_logfile:     '/var/log/uber-celery-beat.log'
 
-uber::config::celery_broker_url: 'amqp://%{hiera("rabbitmq::default_user")}:%{hiera("rabbitmq::default_pass")}@localhost//'
+uber::rabbitmq::user: 'celery'
+uber::rabbitmq::pass: 'celery'
+uber::rabbitmq::host: 'localhost'
+uber::rabbitmq::port: '5672'
+uber::rabbitmq::vhost: 'uber'
+uber::rabbitmq::queue: 'celery'
+
+uber::config::celery_broker_url: 'amqp://%{hiera("uber::rabbitmq::user")}:%{hiera("uber::rabbitmq::pass")}@%{hiera("uber::rabbitmq::host")}:%{hiera("uber::rabbitmq::port")}/%{hiera("uber::rabbitmq::vhost")}'
 uber::config::celery_beat_schedule_dir: '%{hiera("uber::path")}/data'
 uber::config::celery_beat_schedule_filename: '%{hiera("uber::config::celery_beat_schedule_dir")}/celerybeat-schedule'
 
@@ -79,13 +86,6 @@ uber::config::contact_url: "https://www.futureme.org/letters/recently_delivered"
 uber::config::numbered_badges:          'True'
 
 role_common::timezone:          'America/New_York'
-
-# rabbitmq
-rabbitmq::default_user: 'celery'
-rabbitmq::default_pass: 'celery'
-rabbitmq::port: 5672
-rabbitmq::delete_guest_user: true
-rabbitmq::service_ensure: 'running'
 
 # nginx caching params
 nginx::proxy_cache_path: '/var/cache/nginx'
