@@ -92,6 +92,10 @@ def start_uber_service():
     sudo('supervisorctl start all')
 
 
+def restart_celery_service():
+    sudo('supervisorctl restart uber_celery_worker uber_celery_beat')
+
+
 def set_remote_hostname():
     sudo('hostname ' + env.host)
 
@@ -194,6 +198,10 @@ def puppet_apply(dry_run='no'):
             backup_db()
             upgrade_db()
             start_uber_service()
+        else:
+            # Even if the DB hasn't changed, we still need to restart
+            # celery to pick up any code changes.
+            restart_celery_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
