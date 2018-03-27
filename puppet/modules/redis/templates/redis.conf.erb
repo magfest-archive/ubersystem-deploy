@@ -514,7 +514,7 @@ auto-aof-rewrite-min-size   <%= @auto_aof_rewrite_min_size %>
 # the server will still exit with an error. This option only applies when
 # Redis will try to read more data from the AOF file but not enough bytes
 # will be found.
-aof-load-truncated <% if @aof_load_truncated -%>yes<% else -%>no<% end -%>
+# aof-load-truncated <% if @aof_load_truncated -%>yes<% else -%>no<% end -%>
 
 ################################ LUA SCRIPTING  ###############################
 
