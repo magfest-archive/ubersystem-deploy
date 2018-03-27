@@ -200,8 +200,8 @@ def puppet_apply(dry_run='no'):
             start_uber_service()
         else:
             # Even if the DB hasn't changed, we still need to restart
-            # celery to pick up any code changes.
-            restart_celery_service()
+            # the uber services to pick up any code changes.
+            restart_uber_service()
 
     # TODO: after 'puppet apply', delete the node config since it contains secret info
 
