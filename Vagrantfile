@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |v|
-        v.memory = 1024
+        v.memory = 1536
         v.cpus = 2
     end
 
