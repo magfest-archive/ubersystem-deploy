@@ -49,33 +49,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |v|
-        v.memory = 2048
+        v.memory = 1024
         v.cpus = 2
     end
 
-	# setup custom facter facts so that puppet knows we're a vagrant install
-	# note: we can't use Vagrant's builtin facter support because we need to run puppet manually, and those
-	# facts won't be present unless we set them up permanently here.
-	config.vm.provision :shell do |shell|
-		shell_cmd = ""
+    # setup custom facter facts so that puppet knows we're a vagrant install
+    # note: we can't use Vagrant's builtin facter support because we need to run puppet manually, and those
+    # facts won't be present unless we set them up permanently here.
+    config.vm.provision :shell do |shell|
+        shell_cmd = ""
 
-		# Make sure the facts directory exists
-		shell_cmd << "mkdir -p /etc/facter/facts.d/; "
+        # Make sure the facts directory exists
+        shell_cmd << "mkdir -p /etc/facter/facts.d/; "
 
-		# make this work for non-root users (they don't look in /etc/facter)
-		# more info here: https://projects.puppetlabs.com/issues/17875#change-82554
-		shell_cmd << "ln -s /etc/facter/ /home/vagrant/.facter; "
+        # make this work for non-root users (they don't look in /etc/facter)
+        # more info here: https://projects.puppetlabs.com/issues/17875#change-82554
+        shell_cmd << "ln -s /etc/facter/ /home/vagrant/.facter; "
 
-		# add any facts we want (copy+paste this line)
-		shell_cmd << "echo 'is_vagrant=1' > /etc/facter/facts.d/is_vagrant.txt; "
+        # add any facts we want (copy+paste this line)
+        shell_cmd << "echo 'is_vagrant=1' > /etc/facter/facts.d/is_vagrant.txt; "
 
-		if Vagrant::Util::Platform.windows?
-			shell_cmd << "echo 'is_vagrant_windows=1' > /etc/facter/facts.d/is_vagrant_windows.txt; "
-		end
+        if Vagrant::Util::Platform.windows?
+            shell_cmd << "echo 'is_vagrant_windows=1' > /etc/facter/facts.d/is_vagrant_windows.txt; "
+        end
 
-		# Run the inline shell to create those facts
-		shell.inline = "#{shell_cmd}"
-	end
+        # Run the inline shell to create those facts
+        shell.inline = "#{shell_cmd}"
+    end
 
     config.vm.provision :shell, :path => "vagrant/vagrant.sh"
 
