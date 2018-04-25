@@ -13,5 +13,6 @@
 *.md	text
 vagrant/bash_aliases text
 
+*.ez 	binary
 *.png 	binary
 *.jpg 	binary
