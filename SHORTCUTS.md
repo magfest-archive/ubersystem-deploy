@@ -1,3 +1,9 @@
+2018 example for maglabs 2018 production:
+```
+hiera --config hiera/hiera.yaml uber::config::hide_schedule ::fqdn=labs2018.uber.magfest.org ::event_name=labs ::environment=production ::event_year=2018
+```
+
+older examples below
 
 run this on a node to see the values as interpreted by hiera
 ```
