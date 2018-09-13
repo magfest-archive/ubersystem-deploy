@@ -1,3 +1,9 @@
+# THIS REPOSITORY IS ARCHIVED
+
+For current Reggie deployments, see the following repositories:
+- https://github.com/magfest/reggie-formula
+- https://github.com/magfest/infrastructure
+
 Ubersystem Deploy Repository
 ============================
 
